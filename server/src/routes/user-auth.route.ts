@@ -1,10 +1,10 @@
 import { Request, Response, Router } from "express";
+import { signupUser } from "../controller/user-auth";
+
 
 const userRoutes = () => {
     const router = Router();
-    router.get('/', async (req: Request, res: Response) => {
-        res.send('welcome guys')
-    })
+    router.post('/signup',signupUser)
 
     return router
 }

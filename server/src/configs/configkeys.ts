@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-import configTypes from '../types/config-types';
+import {configTypes} from '../types/config-types';
 dotenv.config();
 
 function configKey():configTypes {
