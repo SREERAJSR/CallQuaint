@@ -23,7 +23,6 @@ const userSchema = new mongoose.Schema({
     },
     password:{
         type: String,
-        unique: true,
         required:true
     },
     verified: {
@@ -32,9 +31,7 @@ const userSchema = new mongoose.Schema({
     }
 })
 
-userSchema.index({})
-
-const User = mongoose.model<UserDocument, UserModel>('user', userSchema)
+const User = mongoose.model<UserDocument, UserModel>('user', userSchema)    
 
 export default User;
 

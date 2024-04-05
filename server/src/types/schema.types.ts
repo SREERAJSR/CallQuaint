@@ -5,7 +5,6 @@ export interface UserDocument extends Document {
     lastname: string;
     email: string;
     gender: string;
-    mobile: string;
     password: string;
     verified:boolean
 }
