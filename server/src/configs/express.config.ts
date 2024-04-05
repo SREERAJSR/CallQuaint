@@ -5,17 +5,17 @@ import cors from 'cors';
 import configKey from './configkeys';
 import { Application } from 'express';
 import { corsOptionsType } from '../types/config-types';
-import 'express-async-error'
+
 
 
 const corsOptions:corsOptionsType = { origin: configKey().ORIGIN ,optionSuccessStatus:200};
 
 const expressConfig = (app: Application) => {
     app.use(cors(corsOptions)),
-    app.use(morgan('dev')),
-    app.use(cookieParser()),
-    app.use(express.json()),
-    app.use(express.urlencoded({ extended: true }))
+        app.use(morgan('dev')),
+        app.use(cookieParser()),
+        app.use(express.json()),
+        app.use(express.urlencoded({ extended: true }));
 }
 
 export default expressConfig;
