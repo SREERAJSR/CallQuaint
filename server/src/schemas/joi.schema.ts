@@ -13,8 +13,7 @@ export const authSignup = Joi.object({
 })
 
 export const verifyRoute = Joi.object({
-    id: Joi.string().required(),
-    token:Joi.string().required()
+    verificationToken:Joi.string().required()
 })
 
 

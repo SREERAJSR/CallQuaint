@@ -1,10 +1,10 @@
 import express ,{ Application, Router} from "express";
-import userRoutes from "./user-auth.route";
+import userRoutes from "./auth/user-auth.route";
 
 
 
- const routesConfig = (app:Application) => {
-     app.use('/api', userRoutes())
+const routesConfig = (app: Application) => {
+  app.use('/api/v1/user', userRoutes())
 }
 
 export default routesConfig;

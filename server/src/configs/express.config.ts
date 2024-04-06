@@ -5,16 +5,19 @@ import cors from 'cors';
 import configKey from './configkeys';
 import { Application } from 'express';
 import { corsOptionsType } from '../types/config-types';
+import session from 'express-session';
 
 
 
 const corsOptions:corsOptionsType = { origin: configKey().ORIGIN ,optionSuccessStatus:200};
 
 const expressConfig = (app: Application) => {
-    app.use(cors(corsOptions)),
+
+       app.use(cors(corsOptions)),
         app.use(morgan('dev')),
         app.use(cookieParser()),
-        app.use(express.json()),
+           app.use(express.json()),
+           app.use(session({secret:'ss'}))
         app.use(express.urlencoded({ extended: true }));
 }
 

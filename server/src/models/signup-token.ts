@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import mongoose, { Schema, SchemaType } from "mongoose";
-import { TokenDocument, TokenModel } from "../types/schema.types";
+
 
 
 const tokenSchema = new mongoose.Schema({
@@ -15,6 +15,6 @@ const tokenSchema = new mongoose.Schema({
     }
 })
 
-const signup_token = mongoose.model<TokenDocument, TokenModel>('token', tokenSchema);
+const signup_token = mongoose.model('token', tokenSchema);
 
 export default signup_token;

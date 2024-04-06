@@ -12,7 +12,13 @@ function configKey():configTypes {
         HOST: process.env.HOST as string,
         SERVICE: process.env.SERVICE as string,
         MAIL: process.env.MAIL as string,
-        PASS: process.env.PASS as string
+        PASS: process.env.PASS as string,
+        EXPRESS_SESSION_SECRET: process.env.EXPRESS_SESSION_SECRET as string,
+        ACCESS_TOKEN_EXPIRY: process.env.ACCESS_TOKEN_EXPIRY as string,
+        ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET as string,
+        REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET as string,
+        REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY as string
+    
     }
 }
 

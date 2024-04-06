@@ -2,7 +2,7 @@ import expressAsyncHandler from 'express-async-handler';
 import nodemailer from 'nodemailer';
 import configKey from '../configs/configkeys';
 import AppError from './AppError';
-import HttpStatus from '../types/http-statuscodes';
+import HttpStatus from '../types/constants/http-statuscodes';
 
 
 const sendEmail = async (email: string, subject: string, text: string) => {

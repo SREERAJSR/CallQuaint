@@ -1,8 +1,9 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import  { authSignup, verifyRoute } from "../schemas/joi.schema";
-import HttpStatus from "../types/http-statuscodes";
-import { CustomError, JoiError, ValidationError } from "../types/joi-error.types";
+import { CustomError, JoiError, ValidationError } from "../../types/joi-error.types";
 import { ObjectSchema } from "joi";
+import HttpStatus from "../../types/constants/http-statuscodes";
+import { authSignup, verifyRoute } from "../../schemas/joi.schema";
+
 
 
 
@@ -18,6 +19,7 @@ const validationOptions = {
 
 
 const validate = (useJoiError: boolean, validateItem: string, schema: ObjectSchema): RequestHandler => {
+
     return (req: Request, res: Response, next: NextFunction) => {
         let operation;
         if (validateItem === "REQUEST_BODY") operation = req.body;
@@ -55,9 +57,9 @@ export const schemaValidator = (validateItem:string,useJoiError = true): Request
 return validate(useJoiError,validateItem,authSignup)
 };
 
-export const routeSchemaValidator = (validateItem:string,useJoiError = true): RequestHandler => {
+export const routeSchemaValidator =(validateItem: string, useJoiError = true): RequestHandler => {
 
-    return validate(useJoiError,validateItem,verifyRoute)
+    return  validate(useJoiError,validateItem,verifyRoute)
 };
 
 

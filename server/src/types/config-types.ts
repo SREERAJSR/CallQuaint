@@ -7,7 +7,12 @@ export  interface configTypes{
     HOST: string,
     SERVICE: string,
     MAIL: string,
-    PASS:string
+    PASS: string,
+    EXPRESS_SESSION_SECRET: string,
+    ACCESS_TOKEN_SECRET:string,
+    ACCESS_TOKEN_EXPIRY: string,
+    REFRESH_TOKEN_SECRET: string,
+    REFRESH_TOKEN_EXPIRY:string
 }
 
 export type corsOptionsType = { origin:string , optionSuccessStatus:number}
