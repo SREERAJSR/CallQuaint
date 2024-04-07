@@ -17,7 +17,8 @@ function configKey():configTypes {
         ACCESS_TOKEN_EXPIRY: process.env.ACCESS_TOKEN_EXPIRY as string,
         ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET as string,
         REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET as string,
-        REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY as string
+        REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY as string,
+        NODE_ENV: process.env.NODE_ENV as string
     
     }
 }

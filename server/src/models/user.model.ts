@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema({
     loginType: {
         type: String,
         enum: AvailableSocialLogins,
-        default:SocialLoginEnums.GOOGLE
+        default:SocialLoginEnums.EMAIL_PASSWORD
     },
     isEmailVerified: {
     type: Boolean,
@@ -91,7 +91,7 @@ userSchema.pre('save', async function(next) {
 userSchema.methods.isPasswordCorrect = async function(password: string) {
     return bcrypt.compare(password, this.password);
 }
-userSchema.methods.generateAccessToken = async function () {
+userSchema.methods.generateAccessToken = async function ():Promise<string> {
     return jwt.sign(
         {
             _id: this._id,
@@ -104,7 +104,7 @@ userSchema.methods.generateAccessToken = async function () {
 )
 }
 
-userSchema.methods.generateRefreshToken = async function () {
+userSchema.methods.generateRefreshToken = async function ():Promise<string>{
     return jwt.sign(
         {
             _id:this._id

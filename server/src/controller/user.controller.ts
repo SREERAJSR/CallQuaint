@@ -3,15 +3,13 @@ import asyncHandler from "express-async-handler"
 import AppError from "../utils/AppError";
 import HttpStatus from "../types/constants/http-statuscodes";
 import User from "../models/user.model";
-import bcrypt from 'bcrypt'
-import signup_token from "../models/signup-token";
 import * as crypto from 'crypto';
-import { config } from "rxjs";
 import configKey from "../configs/configkeys";
 import sendEmail from "../utils/create-email";
-import { UserRolesEnum } from "../types/constants/common.constant";
+import { SocialLoginEnums, UserRolesEnum } from "../types/constants/common.constant";
 import ApiResponse from "../utils/ApiReponse";
-import { update } from "lodash";
+import { generateAcessTokenAndrefreshToken } from "../services/user.services";
+
 
 
 export const signupUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -67,3 +65,29 @@ export const verifyEmail = asyncHandler(async (req: Request, res: Response, next
    res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{isEmailVerified:true}))
 }
 );
+
+
+export const loginUser = asyncHandler(async(req: Request, res: Response, next: NextFunction):Promise<void> => {
+   const { email, password } = req.body;
+   
+   const user = await User.findOne({ email: email });
+   if (!user) throw new AppError("User does not exist", HttpStatus.NOT_FOUND);
+   if (user.loginType !== SocialLoginEnums.EMAIL_PASSWORD)
+      throw new AppError(`You have previously registered using ${user.loginType.toLowerCase()} please use the ${user.loginType.toLowerCase()} login option for access your account`, HttpStatus.BAD_REQUEST);
+
+   const isPasswordValid = await user.isPasswordCorrect(password);
+   if (!isPasswordValid) throw new AppError("invalid credentials", HttpStatus.UNAUTHORIZED);
+
+   const { accessToken, refreshToken } = await generateAcessTokenAndrefreshToken(user._id);
+   const loggedInUser = await User.findById(user._id).select(
+      "-avatar -password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
+   );
+   const options = {
+    httpOnly: true,
+    secure:configKey().NODE_ENV=== "production",
+   };
+   res.status(HttpStatus.OK).
+      cookie('accesToken', accessToken)
+      .cookie('refreshToken', refreshToken).
+      json(new ApiResponse(HttpStatus.OK, { user: loggedInUser, accessToken: accessToken, refreshToken: refreshToken }, "user logged in succesfully"));
+})

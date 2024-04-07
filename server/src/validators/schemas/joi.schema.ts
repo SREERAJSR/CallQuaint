@@ -16,4 +16,7 @@ export const verifyRoute = Joi.object({
     verificationToken:Joi.string().required()
 })
 
-
+export const authLogin = Joi.object({
+  email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
+  password: Joi.string().pattern(PASSWORD_REGEX).min(8).required(),
+})

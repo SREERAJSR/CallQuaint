@@ -2,7 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from "express";
 import { CustomError, JoiError, ValidationError } from "../../types/joi-error.types";
 import { ObjectSchema } from "joi";
 import HttpStatus from "../../types/constants/http-statuscodes";
-import { authSignup, verifyRoute } from "../../schemas/joi.schema";
+import { authLogin, authSignup, verifyRoute } from "../schemas/joi.schema";
 
 
 
@@ -53,7 +53,7 @@ const validate = (useJoiError: boolean, validateItem: string, schema: ObjectSche
     };
 }
 
-export const schemaValidator = (validateItem:string,useJoiError = true): RequestHandler => {
+export const authSingupSchemaValidator = (validateItem:string,useJoiError = true): RequestHandler => {
 return validate(useJoiError,validateItem,authSignup)
 };
 
@@ -62,4 +62,8 @@ export const routeSchemaValidator =(validateItem: string, useJoiError = true): R
     return  validate(useJoiError,validateItem,verifyRoute)
 };
 
+
+export const authLoginSchemaValidator = (validateItem: string, useJoiError = true): RequestHandler => {
+    return validate(useJoiError,validateItem,authLogin)
+}
 
