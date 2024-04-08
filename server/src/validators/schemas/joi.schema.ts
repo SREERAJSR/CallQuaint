@@ -24,3 +24,12 @@ export const authLoginSchema = Joi.object({
 export const forgotPasswordSchema = Joi.object({
     email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
 })
+export const resetPasswordTokenSchema = Joi.object({
+  resetToken: Joi.string().required()
+})
+
+export const resetPasswordBodySchema = Joi.object({
+  password: Joi.string().pattern(PASSWORD_REGEX).min(8).required(),
+  confirm_password: Joi.ref('password')
+
+});

@@ -138,9 +138,33 @@ export const forgotPasswordRequest = asyncHandler(async (req: Request, res: Resp
    user.forgotPasswordExpiry = tokenExpiry;
    await user.save({ validateBeforeSave: false });
 
-   const url = `${configKey().BASE_URL}/reset-password/${unHashedToken}`
+   const url = `${configKey().BASE_URL}/user/reset-password/${unHashedToken}`
 
    await sendEmail(email, "Please verify your email to reset password", url)
    
    res.status(200).json(new ApiResponse(HttpStatus.OK, {}, "Password reset mail has been sent on your mail id"));
 });
+
+export const resetPasswordRequest = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+   const { password, confirm_password } = req.body;
+   const { resetToken } = req.params;
+   if (password !== confirm_password) throw new AppError("Both passwords are not same", HttpStatus.BAD_GATEWAY);
+
+   const hashedToken = await crypto.createHash('sha256').update(resetToken).digest('hex');
+   if (!hashedToken) throw new AppError("token is wrong", HttpStatus.BAD_REQUEST);
+
+   const user = await User.findOne({
+      forgotPasswordToken: hashedToken,
+      forgotPasswordExpiry: { $gt: Date.now() }
+   });
+
+   if (!user) throw new AppError("token is invalid or expired", HttpStatus.BAD_EVENT);
+
+   user.forgotPasswordToken = undefined;
+   user.forgotPasswordExpiry = undefined;
+   user.password = password;
+
+   await user.save({ validateBeforeSave: false });
+   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {}, "reset password sucessfully"));
+
+})

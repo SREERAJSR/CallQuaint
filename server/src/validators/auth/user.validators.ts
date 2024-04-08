@@ -1,8 +1,14 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { CustomError, JoiError, ValidationError } from "../../types/joi-error.types";
-import { ObjectSchema } from "joi";
+import { ObjectSchema, valid } from "joi";
 import HttpStatus from "../../types/constants/http-statuscodes";
-import { authLoginSchema, authSignupSchema, forgotPasswordSchema, verifyRouteSchema } from "../schemas/joi.schema";
+import {
+    authLoginSchema, authSignupSchema,
+    forgotPasswordSchema, verifyRouteSchema,
+    resetPasswordTokenSchema,
+    resetPasswordBodySchema
+} from "../schemas/joi.schema";
+import { validateItems } from "../../types/constants/validateItems";
 
 
 
@@ -69,4 +75,13 @@ export const authLoginSchemaValidator = (validateItem: string, useJoiError = tru
 
 export const userForgotPasswordBodyValidator = (validateItem: string, useJoiError = true): RequestHandler => {
     return validate(useJoiError,validateItem,forgotPasswordSchema)
+}
+
+export const userResetPasswordTokenValidator = (validateItems: validateItems, useJoiError = true): RequestHandler => {
+    return validate(useJoiError,validateItems,resetPasswordTokenSchema)
+}
+
+
+export const userResetPasswordBodyValidator = (validateItems: validateItems, useJoiError = true): RequestHandler => {
+    return validate(useJoiError,validateItems,resetPasswordBodySchema)
 }
