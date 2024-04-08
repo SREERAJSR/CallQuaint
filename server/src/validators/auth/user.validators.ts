@@ -2,7 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from "express";
 import { CustomError, JoiError, ValidationError } from "../../types/joi-error.types";
 import { ObjectSchema } from "joi";
 import HttpStatus from "../../types/constants/http-statuscodes";
-import { authLogin, authSignup, verifyRoute } from "../schemas/joi.schema";
+import { authLoginSchema, authSignupSchema, forgotPasswordSchema, verifyRouteSchema } from "../schemas/joi.schema";
 
 
 
@@ -54,16 +54,19 @@ const validate = (useJoiError: boolean, validateItem: string, schema: ObjectSche
 }
 
 export const authSingupSchemaValidator = (validateItem:string,useJoiError = true): RequestHandler => {
-return validate(useJoiError,validateItem,authSignup)
+return validate(useJoiError,validateItem,authSignupSchema)
 };
 
 export const routeSchemaValidator =(validateItem: string, useJoiError = true): RequestHandler => {
 
-    return  validate(useJoiError,validateItem,verifyRoute)
+    return  validate(useJoiError,validateItem,verifyRouteSchema)
 };
 
 
 export const authLoginSchemaValidator = (validateItem: string, useJoiError = true): RequestHandler => {
-    return validate(useJoiError,validateItem,authLogin)
+    return validate(useJoiError,validateItem,authLoginSchema)
 }
 
+export const userForgotPasswordBodyValidator = (validateItem: string, useJoiError = true): RequestHandler => {
+    return validate(useJoiError,validateItem,forgotPasswordSchema)
+}

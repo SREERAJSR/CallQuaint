@@ -5,7 +5,7 @@ import AppError from './AppError';
 import HttpStatus from '../types/constants/http-statuscodes';
 
 
-const sendEmail = async (email: string, subject: string, text: string) => {
+const sendEmail = async (email: string, subject: string, url: string) => {
     try {
         const transporter = nodemailer.createTransport({
             host: configKey().HOST,
@@ -21,7 +21,7 @@ const sendEmail = async (email: string, subject: string, text: string) => {
             from: configKey().MAIL,
             to: email,
             subject: subject,
-            text: text,
+            text: url,
             html:`<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,7 +32,7 @@ const sendEmail = async (email: string, subject: string, text: string) => {
 </head>
 <body>
     <h1>Hello User!!! This is from callquaint</h1>
-<a href="${text}">
+<a href="${url}">
   <button>Click here to verify</button>
 </a>
 <p>Thank you for reading!</p>

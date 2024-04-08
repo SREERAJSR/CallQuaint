@@ -9,7 +9,8 @@ import sendEmail from "../utils/create-email";
 import { SocialLoginEnums, UserRolesEnum } from "../types/constants/common.constant";
 import ApiResponse from "../utils/ApiReponse";
 import { generateAcessTokenAndrefreshToken } from "../services/user.services";
-
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { UserDocument } from "../types/usermodel.types";
 
 
 export const signupUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -34,8 +35,8 @@ export const signupUser = asyncHandler(async (req: Request, res: Response, next:
 
    await user.save({ validateBeforeSave: false });
    
-   const message = `${configKey().BASE_URL}/user/verify/${unHashedToken}`;
-   await sendEmail(email, 'verify email', message);
+   const url = `${configKey().BASE_URL}/user/verify/${unHashedToken}`;
+   await sendEmail(email, 'verify email', url);
 
    const createdUser = await User.findById(user._id).select(
       "-avatar -password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
@@ -91,3 +92,55 @@ export const loginUser = asyncHandler(async(req: Request, res: Response, next: N
       .cookie('refreshToken', refreshToken).
       json(new ApiResponse(HttpStatus.OK, { user: loggedInUser, accessToken: accessToken, refreshToken: refreshToken }, "user logged in succesfully"));
 })
+
+export const refreshAccessToken = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+   console.log(req.cookies)
+   const incomingRefreshToken: string = req.cookies.refreshToken || req.body.incomingRefreshToken;
+   if (!incomingRefreshToken) throw new AppError("Unauthorized request", HttpStatus.UNAUTHORIZED);
+   try {
+      const decodedToken = await jwt.verify(
+         incomingRefreshToken,
+         configKey().REFRESH_TOKEN_SECRET) as JwtPayload;
+      const user = await User.findById(decodedToken?._id)
+      if (!user) throw new AppError('Invalid refresh token', HttpStatus.UNAUTHORIZED);
+      if (incomingRefreshToken !== user?.refreshToken)
+         throw new AppError("Refresh token is expired or used", HttpStatus.UNAUTHORIZED);
+      const { accessToken, refreshToken: newRefreshToken } =
+         await generateAcessTokenAndrefreshToken(user._id);
+         const options = {
+      httpOnly: true,
+      secure:configKey().NODE_ENV === "production",
+         };
+      res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", newRefreshToken, options)
+      .json(
+        new ApiResponse(
+          HttpStatus.OK,
+          { accessToken, refreshToken: newRefreshToken },
+          "Access token refreshed"
+        )
+      );
+      
+   } catch (error) {
+         throw new AppError("Invalid refresh token", HttpStatus.UNAUTHORIZED)
+   }
+});
+
+export const forgotPasswordRequest = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+   const { email } = req.body;
+   const user = await User.findOne({ email: email });
+   if (!user) throw new AppError("user doesn't exist with this email", HttpStatus.BAD_REQUEST);
+
+   const { unHashedToken, hashedToken, tokenExpiry } = await user.generateTemporaryToken();
+   user.forgotPasswordToken = hashedToken;
+   user.forgotPasswordExpiry = tokenExpiry;
+   await user.save({ validateBeforeSave: false });
+
+   const url = `${configKey().BASE_URL}/reset-password/${unHashedToken}`
+
+   await sendEmail(email, "Please verify your email to reset password", url)
+   
+   res.status(200).json(new ApiResponse(HttpStatus.OK, {}, "Password reset mail has been sent on your mail id"));
+});

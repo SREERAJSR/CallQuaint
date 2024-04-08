@@ -23,7 +23,7 @@ serverConfig(app)
 //routes config
 routesConfig(app)
 
-app.use(errorHandling)
+app.use(errorHandling) 
 
  
 app.all('*', asynchHandler(async(req,res,next:NextFunction) => {
