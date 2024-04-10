@@ -1,11 +1,15 @@
 import { Request, Response, Router } from "express";
-import { loginUser, signupUser, verifyEmail ,refreshAccessToken ,forgotPasswordRequest, resetPasswordRequest} from "../../controller/user.controller";
+import {
+    loginUser, signupUser, verifyEmail, refreshAccessToken,
+    forgotPasswordRequest, resetPasswordRequest,handleSocialLogin
+} from "../../controller/user.controller";
 import {
     routeSchemaValidator, authSingupSchemaValidator,
     authLoginSchemaValidator, userForgotPasswordBodyValidator,
     userResetPasswordTokenValidator, userResetPasswordBodyValidator,
 } from "../../validators/auth/user.validators";
 import { validateItems } from "../../types/constants/validateItems";
+import passport from "passport";
 
 
 const userRoutes = () => {
@@ -20,6 +24,11 @@ const userRoutes = () => {
         userResetPasswordBodyValidator(validateItems.REQUEST_BODY),resetPasswordRequest)
        
  
+    router.get("/google", passport.authenticate("google", { scope: ['profile', 'email'] }), (req: Request, res: Response, next)=>{
+        res.send('sucess'); 
+    })
+
+     router.get("/google/callback",passport.authenticate('google'),handleSocialLogin)
     return router
 }
  

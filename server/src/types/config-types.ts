@@ -13,7 +13,11 @@ export  interface configTypes{
     ACCESS_TOKEN_EXPIRY: string,
     REFRESH_TOKEN_SECRET: string,
     REFRESH_TOKEN_EXPIRY: string,
-    NODE_ENV:string
+    NODE_ENV: string,
+    GOOGLE_CLIENT_ID: string,
+    GOOGLE_CLIENT_SECRET: string,
+    GOOGLE_CALLBACK_URL: string,
+    CLIENT_SSO_REDIRECT_URL:string
 }
 
 export type corsOptionsType = { origin:string , optionSuccessStatus:number}

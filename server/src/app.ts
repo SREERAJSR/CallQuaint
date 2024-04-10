@@ -6,13 +6,13 @@ import routesConfig from "./routes/routes";
 import errorHandling from "./middlewares/global-error-handling";
 import AppError from "./utils/AppError";
 import asynchHandler from 'express-async-handler';
-import  "./utils/cron";
+import "./utils/cron";
+import   './passport/index'
 
 const app: Application = express();
 
-
 // database config
-databaseConfg() 
+databaseConfg()  
 
 //express config 
 expressConfig(app);

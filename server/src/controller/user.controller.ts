@@ -22,7 +22,6 @@ export const signupUser = asyncHandler(async (req: Request, res: Response, next:
       firstname: firstname,
       lastname: lastname,
       email: email,
-      gender: gender,
       password: password,
       isEmailVerified: false,
       role:UserRolesEnum.USER
@@ -168,3 +167,29 @@ export const resetPasswordRequest = asyncHandler(async (req: Request, res: Respo
    res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {}, "reset password sucessfully"));
 
 })
+
+
+export const handleSocialLogin = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+
+   const _id = req?.user?._id.toString()
+   
+   const user = await User.findById(_id)
+   if (!user) {
+      throw new AppError("user does not exist",HttpStatus.NOT_FOUND)
+   }
+   
+   const { accessToken, refreshToken } =await  generateAcessTokenAndrefreshToken(_id)
+     const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+  };
+
+   res
+    .status(HttpStatus.MOVED_PERMANENTLY)
+    .cookie("accessToken", accessToken, options) // set the access token in the cookie
+    .cookie("refreshToken", refreshToken, options) // set the refresh token in the cookie
+    .redirect(
+      // redirect user to the frontend with access and refresh token in case user is not using cookies
+      `${configKey().CLIENT_SSO_REDIRECT_URL}?accessToken=${accessToken}&refreshToken=${refreshToken}`
+    );
+}) 

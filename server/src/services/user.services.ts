@@ -10,7 +10,7 @@ import { UserDocument } from "../types/usermodel.types"
 
 
 
-export const generateAcessTokenAndrefreshToken = async (userId: ObjectId): Promise<AccessTokenAndrefreshTokenInterface> => {
+export const generateAcessTokenAndrefreshToken = async (userId: string | undefined): Promise<AccessTokenAndrefreshTokenInterface> => {
     try {
         const user = await User.findById(userId)
         if (user) {

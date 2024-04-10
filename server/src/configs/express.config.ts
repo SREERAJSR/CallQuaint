@@ -6,6 +6,7 @@ import configKey from './configkeys';
 import { Application } from 'express';
 import { corsOptionsType } from '../types/config-types';
 import session from 'express-session';
+import passport from 'passport';
 
 
 
@@ -16,9 +17,15 @@ const expressConfig = (app: Application) => {
        app.use(cors(corsOptions)),
         app.use(morgan('dev')),
         app.use(cookieParser()),
-           app.use(express.json()),
-           app.use(session({secret:'ss'}))
-        app.use(express.urlencoded({ extended: true }));
+        app.use(express.json()),
+        app.use(express.urlencoded({ extended: true })),
+          app.use(session({
+             secret: configKey().EXPRESS_SESSION_SECRET,
+             resave: false,
+           saveUninitialized:false
+        })),
+   app.use(passport.initialize()),
+   app.use(passport.session())
 }
 
 export default expressConfig;

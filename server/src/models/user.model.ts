@@ -1,4 +1,4 @@
-import mongoose  from "mongoose";
+import mongoose, { mongo }  from "mongoose";
 import { AvailableSocialLogins, SocialLoginEnums, USER_TEMPORARY_TOKEN_EXPIRY, UserRolesEnum, availableUserRoles } from "../types/constants/common.constant";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -6,6 +6,7 @@ import configKey from "../configs/configkeys";
 import crypto from 'node:crypto';
 
 import { TemporaryToken, UserDocument } from "../types/usermodel.types";
+import { required } from "joi";
 
 const userSchema = new mongoose.Schema({
     avatar: {
@@ -32,10 +33,6 @@ const userSchema = new mongoose.Schema({
         lowerCase: true,
         trim: true,
         required: true,
-    },
-    gender: {
-        type: String,
-        required:true
     },
     role: {
         type: String,

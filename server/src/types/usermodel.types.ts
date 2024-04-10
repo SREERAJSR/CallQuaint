@@ -1,3 +1,4 @@
+import mongoose,{Document} from "mongoose";
 
 
 export interface TemporaryToken{
@@ -6,12 +7,11 @@ export interface TemporaryToken{
 export interface UserDocument extends Document {
     avatar: {
         String?: string | null | undefined;
-        localPath?: string | null | undefined;
+        localPath?: string | null | undefined; 
     };
     firstname: string;
     lastname: string;
     email: string;
-    gender: string;
     role: string;
     password: string;
     loginType: string;
