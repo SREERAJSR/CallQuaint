@@ -192,4 +192,4 @@ export const handleSocialLogin = asyncHandler(async (req: Request, res: Response
       // redirect user to the frontend with access and refresh token in case user is not using cookies
       `${configKey().CLIENT_SSO_REDIRECT_URL}?accessToken=${accessToken}&refreshToken=${refreshToken}`
     );
-}) 
+})  

@@ -10,7 +10,7 @@ import {
 } from "../../validators/auth/user.validators";
 import { validateItems } from "../../types/constants/validateItems";
 import passport from "passport";
-
+ 
 
 const userRoutes = () => {
     const router = Router();
@@ -28,8 +28,14 @@ const userRoutes = () => {
         res.send('sucess'); 
     })
 
-     router.get("/google/callback",passport.authenticate('google'),handleSocialLogin)
+    router.get("/google/callback", passport.authenticate('google'), handleSocialLogin)
+    
+    // router.get('/github', passport.authenticate('github', { scope: ["profile", "email"] }), (req, res) => {
+    //     res.send('redirecting to github')
+    // })
+
+    // router.get('/github/callback',passport.authenticate('github'),handleSocialLogin)
     return router
-}
+} 
  
 export default userRoutes; 

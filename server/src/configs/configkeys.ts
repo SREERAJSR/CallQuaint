@@ -22,7 +22,10 @@ function configKey():configTypes {
         GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
         GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET as string,
         GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL as string,
-        CLIENT_SSO_REDIRECT_URL:process.env.CLIENT_SSO_REDIRECT_URL as string
+        CLIENT_SSO_REDIRECT_URL: process.env.CLIENT_SSO_REDIRECT_URL as string,
+        GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID as string,
+        GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET as string,
+        GITHUB_CALLBACK_URL: process.env.GITHUB_CALLBACK_URL as string
     
     }
 }
