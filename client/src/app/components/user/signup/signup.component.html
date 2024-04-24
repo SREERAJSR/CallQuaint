@@ -1,0 +1,50 @@
+<section class="bg-gray-50  min-h-screen  flex justify-center items-center">
+
+    <div class="bg-gray-100 flex max-w-3xl rounded-xl shadow-2xl p-5">
+        <!-- form container -->
+        <div class="md:w-1/2 text-center">
+            <h1 class="font-mono text-2xl md:text-xl mt-8">Welcome to our world</h1>
+            <div class="mt-8 ">
+                <form action="" class="grid grid-cols-2 gap-3 ">
+                    <mat-form-field class="border rounded-lg">
+                        <mat-label>Firstname</mat-label>
+                        <input matInput required>
+                    </mat-form-field>
+                    <mat-form-field class="border rounded-lg">
+                        <mat-label>Lastname</mat-label>
+                        <input matInput required>
+                    </mat-form-field>
+                    <mat-form-field class="border rounded-lg col-span-2 gap-4">
+                        <mat-label>Enter your email</mat-label>
+                        <input matInput placeholder="pat@example.com" required>
+                        <!-- <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error> -->
+                    </mat-form-field>
+                    <mat-form-field class="border rounded-lg md:col-span-2 gap-4">
+                        <mat-label>Enter your password</mat-label>
+                        <input matInput [type]="hide ? 'password' : 'text'" required>
+                        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="hide">
+                            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                        </button>
+                    </mat-form-field>
+                    <mat-form-field class="border rounded-lg md:col-span-2 gap-4">
+                        <mat-label>Confirm password</mat-label>
+                        <input matInput [type]="hide ? 'password' : 'text'" required>
+                        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="hide">
+                            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                        </button>
+                    </mat-form-field>
+                    <div class="col-span-2 text-center">
+                        <button class="mt-4 w-52" type="submit" mat-raised-button color="primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <!-- img container -->
+        <div class="hidden md:block w-1/2 ">
+            <app-lottify></app-lottify>
+        </div>
+    </div>
+</section>

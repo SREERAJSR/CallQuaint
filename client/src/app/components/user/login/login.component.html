@@ -1,0 +1,44 @@
+<section class="bg-gray-200 min-h-screen flex justify-center items-center ">
+    <!-- form container -->
+    <div class="bg-gray-100 flex rounded-2xl shadow-lg max-w-3xl p-5 text-center">
+        <!-- form section  -->
+        <div class="sm:w-1/2 text-center">
+            <p class="text-black font-light text-xs">Not a member? <a class="text-indigo-500" href="">Register now </a>
+            </p>
+            <div class="mt-5">
+                <h1 class="text-2xl">Hello Again!</h1>
+                <p class="text-light mt-3 text-gray-500 text-xs">Welcome back you've have been missed</p>
+            </div>
+
+            <form [formGroup]="loginForm" (ngSubmit)="loginFormSubmit()" class="mt-8 flex flex-col items-center ">
+                <mat-form-field  class="w-60 mt-6 border">
+                    <mat-label>Enter your email</mat-label>
+                    <input matInput placeholder="pat@example.com" formControlName="email" required>
+                    <!-- <mat-error *ngIf="loginForm.controls."></mat-error> -->
+                </mat-form-field>
+                <mat-form-field  class="w-60 mt-6 border">
+                    <mat-label>Enter your password</mat-label>
+                    <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+                    <!-- <mat-error *ngIf="">password is required</mat-error> -->
+                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                        [attr.aria-pressed]="hide">
+                        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </button>
+                </mat-form-field>
+                <button class="mt-9 w-32" type="submit" [disabled]="loginForm.invalid" mat-raised-button
+                    color="primary">Login</button>
+            </form>
+
+            <div class="text-center mt-5">
+                <p class="text-light text-sm mt-3 text-indigo-700">or continue with</p>
+                <a href="/google"><img class="w-12 mx-auto" src="/assets/auth-images/icons8-google-64.png" alt=""></a>
+            </div>
+        </div>
+        <!-- img section -->
+        <div class="w-1/2 hidden sm:block ">
+            <app-lottify></app-lottify>
+        </div>
+    </div>
+
+
+</section>
