@@ -1,14 +1,16 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, Inject, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-
+import { NgxUiLoaderService } from 'ngx-ui-loader'
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent {
-  constructor() {
+export class LoginComponent implements OnInit {
+  constructor(private ngxLoader:NgxUiLoaderService) {
   }    
+  ngOnInit(): void {
+  }
   hide = true;
 
   loginForm = new FormGroup({
@@ -19,7 +21,9 @@ export class LoginComponent {
   })
 
   loginFormSubmit() {
-    console.log(this.loginForm  )
+    console.log(this.loginForm)
+    this.ngxLoader.start()
+    this.ngxLoader.stop()
   }
 
   

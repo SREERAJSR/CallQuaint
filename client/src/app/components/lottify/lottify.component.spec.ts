@@ -8,6 +8,7 @@ describe('LottifyComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      
       declarations: [LottifyComponent]
     });
     fixture = TestBed.createComponent(LottifyComponent);

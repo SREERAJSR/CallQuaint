@@ -9,7 +9,39 @@ import { LoginComponent } from './components/user/login/login.component';
 import { ReactiveFormsModule } from "@angular/forms";
 import { SignupComponent } from './components/user/signup/signup.component';
 import { LottifyComponent } from './components/lottify/lottify.component';
+import { NgxUiLoaderModule, NgxUiLoaderConfig, NgxUiLoaderRouterModule, NgxUiLoaderHttpModule } from "ngx-ui-loader"
 
+const ngxUiLoaderConfig: NgxUiLoaderConfig  =
+{
+  "bgsColor": "#7252b9",
+  "bgsOpacity": 0.7,
+  "bgsPosition": "bottom-right",
+  "bgsSize": 70,
+  "bgsType": "cube-grid",
+  "blur": 0,
+  "delay": 0,
+  "fastFadeOut": true,
+  "fgsColor": "#7252b9",
+  "fgsPosition": "center-center",
+  "fgsSize": 60,
+  "fgsType": "square-jelly-box",
+  "gap": 27,
+  "logoPosition": "center-center",
+  "logoSize": 120,
+  "logoUrl": '',
+  "masterLoaderId": "master",
+  "overlayBorderRadius": "0",
+  "overlayColor": "rgba(0,0,0,0.13)",
+  "pbColor": "#7252b9",
+  "pbDirection": "ltr",
+  "pbThickness": 2,
+  "hasProgressBar": true,
+  "text": "Loading...",
+  "textColor": "#222222",
+  "textPosition": "center-center",
+  "maxTime": -1,
+  "minTime": 300
+}
 
 
 @NgModule({
@@ -26,7 +58,9 @@ import { LottifyComponent } from './components/lottify/lottify.component';
     BrowserAnimationsModule,
     FormsModule,
     MaterialModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
+    NgxUiLoaderRouterModule
   ],
   providers: [],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
