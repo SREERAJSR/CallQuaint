@@ -10,7 +10,7 @@ import { SocialLoginEnums, UserRolesEnum } from "../types/constants/common.const
 import ApiResponse from "../utils/ApiReponse";
 import { generateAcessTokenAndrefreshToken } from "../services/user.services";
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { UserDocument } from "../types/usermodel.types";
+
 
 
 export const signupUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -34,7 +34,7 @@ export const signupUser = asyncHandler(async (req: Request, res: Response, next:
 
    await user.save({ validateBeforeSave: false });
    
-   const url = `${configKey().BASE_URL}/user/verify/${unHashedToken}`;
+   const url = `${configKey().ORIGIN}/login/${unHashedToken}`;
    await sendEmail(email, 'verify email', url);
 
    const createdUser = await User.findById(user._id).select(

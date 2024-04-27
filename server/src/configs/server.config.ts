@@ -7,7 +7,6 @@ const serverConfig =  (app: Application) => {
     app.listen(PORT,() => {
         console.log(`SERVER IS CONNECTED ${PORT}`);
     }) 
-
     
 } 
 

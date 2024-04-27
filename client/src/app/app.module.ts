@@ -11,8 +11,9 @@ import { SignupComponent } from './components/user/signup/signup.component';
 import { LottifyComponent } from './components/lottify/lottify.component';
 import { NgxUiLoaderModule,  NgxUiLoaderRouterModule, NgxUiLoaderHttpModule } from "ngx-ui-loader"
 import { ngxUiLoaderConfig } from './configs/ngxconfig';
-import { ToastrModule } from 'ngx-toastr';
-
+import { toasterConfig } from './configs/toasterConfig';
+import { GlobalConfig, ToastrModule } from 'ngx-toastr';
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -28,14 +29,13 @@ import { ToastrModule } from 'ngx-toastr';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     FormsModule,
     MaterialModule,
     ReactiveFormsModule,
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
     NgxUiLoaderRouterModule,
-    ToastrModule.forRoot({timeOut: 800,
-    positionClass: 'toast-top-right',
-      preventDuplicates: true,progressAnimation:'increasing',closeButton:true}),
+    ToastrModule.forRoot(toasterConfig),
   ],
   providers: [],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],

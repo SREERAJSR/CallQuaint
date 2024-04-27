@@ -22,3 +22,22 @@ export function lowerCaseValidator(): ValidatorFn{
         return null
     }
 }
+
+
+export function confirmPasswordValidator(passsword:AbstractControl): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+      const password = passsword.value;
+    const confirmPassword = control.value;
+    if (!password && !confirmPassword) {
+      return null;
+    }
+    if (!password || !confirmPassword) {
+      return { passwordMismatch: true };
+    }
+    if (password !== confirmPassword) {
+      return { passwordMismatch: true };
+    }
+    return null;
+  };
+
+}

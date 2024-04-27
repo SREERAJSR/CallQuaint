@@ -23,4 +23,4 @@ export  interface configTypes{
     GITHUB_CALLBACK_URL:string
 }
 
-export type corsOptionsType = { origin:string , optionSuccessStatus:number}
+export type corsOptionsType = { origin:string }

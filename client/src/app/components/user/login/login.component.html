@@ -38,9 +38,9 @@
                     <mat-label class="font-mono text-sm">Enter your password</mat-label>
                     <input matInput [type]="hide ? 'password' : 'text'" #password formControlName="password">
                     <mat-error *ngIf="loginForm.get('password')?.untouched">Password is required</mat-error>
-<mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
-    For better security, your password must be at least 8 characters long.
-</mat-error>                    <mat-error
+                    <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
+                        For better security, your password must be at least 8 characters long.
+                    </mat-error> <mat-error
                         *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">Password
                         isrequired</mat-error>
                     <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
@@ -55,7 +55,7 @@
 
             <div class="text-center mt-5">
                 <p class="text-light text-sm mt-3 text-indigo-700">or continue with</p>
-                <a href="/google"><img
+                <a routerLink="/signup"><img
                         class="w-12 mx-auto cursor-pointer !transition ease-in-out delay-150 hover:-translate-y-1 hover:!scale-125 !duration-300"
                         src="/assets/auth-images/icons8-google-64.png" alt=""></a>
             </div>
