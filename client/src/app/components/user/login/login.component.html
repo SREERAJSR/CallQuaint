@@ -48,11 +48,14 @@
                         <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
                     </button>
                 </mat-form-field>
+            <div class="block w-full text-xs mt-4 ml-32">
+                    <p class="cursor-pointer font-light text-indigo-500" routerLink="/forgot-password" >Recovery password?</p>
+            </div>
                 <button
                     class="mt-9 w-52 cursor-pointer !transition ease-in-out delay-150 hover:!bg-indigo-500 hover:-translate-y-1 hover:!scale-110 !duration-300"
                     type="submit" mat-raised-button (click)="loginFormSubmit()" color="primary">Login</button>
             </form>
-
+ 
             <div class="text-center mt-5">
                 <p class="text-light text-sm mt-3 text-indigo-700">or continue with</p>
                 <a routerLink="/signup"><img

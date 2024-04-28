@@ -22,8 +22,6 @@ const userRoutes = () => {
     router.post('/reset-password/:resetToken',
         userResetPasswordTokenValidator(validateItems.ROUTE_PARAMS),
         userResetPasswordBodyValidator(validateItems.REQUEST_BODY),resetPasswordRequest)
-       
- 
     router.get("/google",passport.authenticate("google", { scope: ['profile', 'email'] }), (req: Request, res: Response, next) => {
         console.log('ha')
         res.send('sucess'); 

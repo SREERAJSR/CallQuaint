@@ -20,13 +20,13 @@ export class SignupComponent implements OnInit {
   ngxLoader = inject(NgxUiLoaderService)
   constructor(private formbuilder: FormBuilder) {
     this.signupForm = formbuilder.group({
-      firstname: ["sreeraj", [Validators.required]],
-      lastname: ["sr", [Validators.required]],
-      email: ["sreeraj.devp@gmail.com", [Validators.required, Validators.email, emailValidator(), lowerCaseValidator()]],
-      password: ["sddf@er@SDFa4", [Validators.required, Validators.minLength(8), Validators.pattern(new RegExp(
+      firstname: ["", [Validators.required]],
+      lastname: ["", [Validators.required]],
+      email: ["", [Validators.required, Validators.email, emailValidator(), lowerCaseValidator()]],
+      password: ["", [Validators.required, Validators.minLength(8), Validators.pattern(new RegExp(
         "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!.@#$%^&*])(?=.{8,})"
       ))]],
-      confirm_password: ["sddf@er@SDFa4", [Validators.required, Validators.minLength(8), Validators.pattern(new RegExp(
+      confirm_password: ["", [Validators.required, Validators.minLength(8), Validators.pattern(new RegExp(
         "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!.@#$%^&*])(?=.{8,})"
       )),]]
     })

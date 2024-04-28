@@ -137,7 +137,7 @@ export const forgotPasswordRequest = asyncHandler(async (req: Request, res: Resp
    user.forgotPasswordExpiry = tokenExpiry;
    await user.save({ validateBeforeSave: false });
 
-   const url = `${configKey().BASE_URL}/user/reset-password/${unHashedToken}`
+   const url = `${configKey().ORIGIN}/reset-password/${unHashedToken}`
 
    await sendEmail(email, "Please verify your email to reset password", url)
    

@@ -14,6 +14,8 @@ import { ngxUiLoaderConfig } from './configs/ngxconfig';
 import { toasterConfig } from './configs/toasterConfig';
 import { GlobalConfig, ToastrModule } from 'ngx-toastr';
 import { HttpClientModule } from '@angular/common/http';
+import { ForgotpasswordComponent } from './components/user/forgotpassword/forgotpassword.component';
+import { ResetpasswordComponent } from './components/user/resetpassword/resetpassword.component';
 
 
 
@@ -23,7 +25,8 @@ import { HttpClientModule } from '@angular/common/http';
     LoginComponent,
     SignupComponent,
     LottifyComponent,
-
+    ForgotpasswordComponent,
+    ResetpasswordComponent
   ],
   imports: [
     BrowserModule,
