@@ -22,12 +22,10 @@ const userRoutes = () => {
     router.post('/reset-password/:resetToken',
         userResetPasswordTokenValidator(validateItems.ROUTE_PARAMS),
         userResetPasswordBodyValidator(validateItems.REQUEST_BODY),resetPasswordRequest)
-    router.get("/google",passport.authenticate("google", { scope: ['profile', 'email'] }), (req: Request, res: Response, next) => {
-        console.log('ha')
+router.post("/google",passport.authenticate("google", { scope: ['profile', 'email'] }), (req: Request, res: Response, next) => {
         res.send('sucess'); 
     })
-
-    router.get("/google/callback", passport.authenticate('google'), handleSocialLogin)
+router.get("/google/callback", passport.authenticate('google',{ scope: ['profile', 'email'] }), handleSocialLogin)
     
     // router.get('/github', passport.authenticate('github', { scope: ["profile", "email"] }), (req, res) => {
     //     res.send('redirecting to github')
