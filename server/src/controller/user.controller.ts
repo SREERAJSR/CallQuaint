@@ -10,6 +10,7 @@ import { SocialLoginEnums, UserRolesEnum } from "../types/constants/common.const
 import ApiResponse from "../utils/ApiReponse";
 import { generateAcessTokenAndrefreshToken } from "../services/user.services";
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import { GoogleAuthenticatedUserInterface } from "../types/usermodel.types";
 
 
 
@@ -171,25 +172,37 @@ export const resetPasswordRequest = asyncHandler(async (req: Request, res: Respo
 
 export const handleSocialLogin = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 
-   const _id = req?.user?._id.toString()
-   
-   const user = await User.findById(_id)
-   if (!user) {
-      throw new AppError("user does not exist",HttpStatus.NOT_FOUND)
-   }
-   
-   const { accessToken, refreshToken } =await  generateAcessTokenAndrefreshToken(_id)
-     const options = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-  };
+   const { firstName, lastName, email, provider:loginType, photoUrl } = req.body as GoogleAuthenticatedUserInterface
+   const user = await User.findOne({ email: email });
 
-   res
-    .status(HttpStatus.MOVED_PERMANENTLY)
-    .cookie("accessToken", accessToken, options) // set the access token in the cookie
-      .cookie("refreshToken", refreshToken, options) // set the refresh token in the cookie
-    .redirect(
-      // redirect user to the frontend with access and refresh token in case user is not using cookies
-      `${configKey().CLIENT_SSO_REDIRECT_URL}?accessToken=${accessToken}&refreshToken=${refreshToken}`
-    );
-})  
+   if (user) {
+      if (user.loginType !== loginType) {
+         throw new AppError(`you have previously registered using ${user?.loginType.toLowerCase()}.  Please use the ${user?.loginType?.toLowerCase()}login option to access your account.`, HttpStatus.BAD_REQUEST)
+      }
+      const _id: string = user?._id;
+      const { accessToken, refreshToken } = await generateAcessTokenAndrefreshToken(_id);
+      const options = {
+         httpOnly: true,
+         secure: process.env.NODE_ENV === "production"
+      }
+      res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, { accessToken: accessToken, refreshAccessToken: refreshToken},"authentication sucessfully"))
+   } else {
+         const createdUser = await new User({
+      firstname: firstName, 
+      lastname: lastName,
+      email: email,
+      isEmailVerified: true,
+      role: UserRolesEnum.USER,
+      loginType: loginType,
+      avatar:photoUrl
+         })
+      await createdUser.save({ validateBeforeSave: false });
+      const createdUserId = createdUser?._id;
+       const { accessToken, refreshToken } = await generateAcessTokenAndrefreshToken(createdUserId);
+      const options = {
+         httpOnly: true,
+         secure: process.env.NODE_ENV === "production"
+      }
+      res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {accessToken:accessToken,refreshAccessToken:refreshToken}, "user sucessfully authenticatedss "))
+   }
+})

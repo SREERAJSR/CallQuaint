@@ -7,42 +7,30 @@ import { Observable, Subscription, catchError, map, pluck, tap, throwError } fro
 import { emailValidator, lowerCaseValidator } from 'src/app/custom-validators/auth-validators';
 import { AuthService } from 'src/app/services/auth.service';
 import { SharedService } from 'src/app/services/shared.service';
+import {Router} from "@angular/router";
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit , OnDestroy{
-  constructor(private ngxLoader:NgxUiLoaderService,private toastr: ToastrService) {   
-  }    
-   socialUser!: SocialUser;
-  public user: SocialUser = new SocialUser();
-  loggedIn?: boolean
-  accessToken:any
-
-  authService = inject(AuthService)
-  sharedService: SharedService = inject(SharedService)
-  socialAuthService: SocialAuthService = inject(SocialAuthService);
+  constructor(private ngxLoader:NgxUiLoaderService,private toastr: ToastrService) {
+  }
 
   ngOnInit(): void {
     this.sharedService.successMessges$.subscribe((message:string) => {
       this.toastr.success(message)
-
     })
     this.sharedService.errorMessage$.subscribe((message: string) => {
       this.toastr.error(message)
     })
-    this.socialAuthService.authState.subscribe((user1:SocialUser) => {
-      this.socialUser = user1;
-      console.log(user1)
-    });
+
   }
-  hide = true;
-  t = this.toastr
-  private userLoginSubscription?: Subscription;
- 
-
-
+  authService:AuthService = inject(AuthService)
+  sharedService: SharedService = inject(SharedService)
+  router :Router = inject(Router)
+  hide:boolean = true;
+  private userLoginSubscription?: Subscription; 
 //login reactive form
   loginForm = new FormGroup({
     email: new FormControl("", [Validators.required, Validators.email ,emailValidator(),lowerCaseValidator()]),
@@ -52,17 +40,18 @@ export class LoginComponent implements OnInit , OnDestroy{
   })
 
   //submisssion of loginForm
-  loginFormSubmit() {
-    console.log(this.loginForm)
+  loginFormSubmit():void {
     if(this.loginForm.get('password')?.hasError('pattern'))
       this.toastr.error('Password must contain at least one uppercase letter,one lowercase letter,one number, and one special character', 'Password Error')
     if (this.loginForm.valid) {
         this.ngxLoader.start()
       const payload = this.loginForm.value as Record<string, string>;
       this.userLoginSubscription = this.authService.userLogin(payload).pipe(
-      ).subscribe((data: any) => {
-        if (data.statusCode === 200) {
-          this.toastr.success(data.message)
+      ).subscribe((response: any) => {
+        if (response.statusCode === 200) {
+localStorage.setItem('emailaccessToken', response.data.accessToken)
+localStorage.setItem('emailrefreshToken', response.data.refreshAccessToken)
+          this.toastr.success(response.message)
           this.ngxLoader.stop()
         }
       },
@@ -72,18 +61,10 @@ export class LoginComponent implements OnInit , OnDestroy{
           this.ngxLoader.stop()
         })
     }
-  }       
-
-
-   refreshToken(): void {
-    this.socialAuthService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID);
-  }
-
-  getAccessToken(): void {
-    this.socialAuthService.getAccessToken(GoogleLoginProvider.PROVIDER_ID).then(accessToken => this.accessToken = accessToken);
   }
 
   ngOnDestroy(): void {
     this.userLoginSubscription?.unsubscribe()
+
   }
-} 
+}

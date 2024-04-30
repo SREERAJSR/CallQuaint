@@ -29,3 +29,18 @@ export interface UserDocument extends Document {
     generateRefreshToken(): Promise<string>;
     generateTemporaryToken(): Promise<TemporaryToken>;
 }
+
+
+export interface GoogleAuthenticatedUserInterface {
+  email:string,
+firstName: string
+id: string
+idToken: string
+lastName?:string
+name?: string
+photoUrl?:string
+provider?:string
+    
+}
+
+

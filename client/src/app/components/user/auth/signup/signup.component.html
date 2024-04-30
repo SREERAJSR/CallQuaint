@@ -1,6 +1,6 @@
 <section class="bg-gray-50  min-h-screen  flex justify-center items-center">
 
-    <div class="bg-gray-100 flex max-w-4xl rounded-xl shadow-2xl p-5">
+    <div class="bg-gray-100 flex max-w-3xl rounded-xl shadow-2xl p-5">
         <!-- form container -->
         <div class="md:w-1/2 text-center">
             <h1 class="font-mono text-2xl md:text-xl mt-8">Welcome to our world</h1>
@@ -82,11 +82,9 @@
                     </div>
                 </form>
             </div>
-            <div class="text-center mt-5">
+            <div class="text-center mt-5 flex flex-col items-center" >
                 <p class="text-light text-sm mt-3 text-indigo-700">or register with</p>
-                <a href="/google"><img
-                        class="w-12 mx-auto cursor-pointer hover:-rotate-180  !transition ease-in-out delay-150 hover:-translate-y-1 hover:!scale-125 !duration-300"
-                        src="/assets/auth-images/icons8-google-64.png" alt=""></a>
+<app-google-auth></app-google-auth>
             </div>
         </div>
         <!-- img container -->
@@ -96,5 +94,4 @@
     </div>
 </section>
 
-
-<ngx-ui-loader></ngx-ui-loader>
+<!-- <ngx-ui-loader></ngx-ui-loader> -->

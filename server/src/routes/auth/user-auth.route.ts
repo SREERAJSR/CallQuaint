@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import {
     loginUser, signupUser, verifyEmail, refreshAccessToken,
-    forgotPasswordRequest, resetPasswordRequest,handleSocialLogin
+    forgotPasswordRequest, resetPasswordRequest,handleSocialLogin,
 } from "../../controller/user.controller";
 import {
     routeSchemaValidator, authSingupSchemaValidator,
@@ -22,10 +22,11 @@ const userRoutes = () => {
     router.post('/reset-password/:resetToken',
         userResetPasswordTokenValidator(validateItems.ROUTE_PARAMS),
         userResetPasswordBodyValidator(validateItems.REQUEST_BODY),resetPasswordRequest)
-router.post("/google",passport.authenticate("google", { scope: ['profile', 'email'] }), (req: Request, res: Response, next) => {
-        res.send('sucess'); 
-    })
-router.get("/google/callback", passport.authenticate('google',{ scope: ['profile', 'email'] }), handleSocialLogin)
+// router.post("/google",passport.authenticate("google", { scope: ['profile', 'email'] }), (req: Request, res: Response, next) => {
+//         res.send('sucess');     
+    // })
+    router.post('/google',handleSocialLogin)
+// router.get("/google/callback", passport.authenticate('google',{ scope: ['profile', 'email'] }), handleSocialLogina)
     
     // router.get('/github', passport.authenticate('github', { scope: ["profile", "email"] }), (req, res) => {
     //     res.send('redirecting to github')

@@ -10,8 +10,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 </head>
 <body >
   <app-root></app-root>
 </body>
+<!-- <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <script>
+    function decodeJWTToken(token) {
+      return JSON.parse(atob(token.split(".")[1]));
+    }
+    function handleCredentialResponse(response) {
+      // to decode the credential response.
+      const responsePayload = decodeJWTToken(response.credential);
+      sessionStorage.setItem("loggedInUser", JSON.stringify(responsePayload));
+      window.location.href = "/login";
+    }
+    function handleSignout() {
+      google.accounts.id.disableAutoSelect();
+    }    
+  </script> -->
 </html>

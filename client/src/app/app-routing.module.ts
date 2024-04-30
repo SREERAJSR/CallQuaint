@@ -7,6 +7,7 @@ import { ForgotpasswordComponent } from './components/user/auth/forgotpassword/f
 import { ResetpasswordComponent } from './components/user/auth/resetpassword/resetpassword.component';
 import { resetpasswordGuard } from './routeguards/canActivate/resetpassword.guard';
 import { HomeComponent } from './components/user/publicpages/home/home.component';
+import { ErrorpageComponent } from './components/user/publicpages/errorpage/errorpage.component';
 
 
 const routes: Routes = [
@@ -16,6 +17,7 @@ const routes: Routes = [
   { path: "signup", component: SignupComponent },
   { path: "forgot-password", component: ForgotpasswordComponent },
   { path: "reset-password/:token", component: ResetpasswordComponent, canActivate: [resetpasswordGuard] },
+  {path:"**",component:ErrorpageComponent}
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],         

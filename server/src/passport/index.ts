@@ -68,7 +68,7 @@
                     }
                 }
             
-            }))
+            })) 
 
             // passport.use(new GithubStrategy({
             //     clientID: configKey().GITHUB_CLIENT_ID,

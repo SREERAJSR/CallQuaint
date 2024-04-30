@@ -8,22 +8,24 @@ import { MaterialModule } from './material-module/material-module.module';
 import { LoginComponent } from './components/user/auth/login/login.component';
 import { ReactiveFormsModule } from "@angular/forms";
 import { SignupComponent } from './components/user/auth/signup/signup.component';
-import { LottifyComponent } from './components/lottify/lottify.component';
+import { LottifyComponent } from './components/user/lottify/lottify.component';
 import { NgxUiLoaderModule,  NgxUiLoaderRouterModule, NgxUiLoaderHttpModule } from "ngx-ui-loader"
 import { ngxUiLoaderConfig } from './configs/ngxconfig';
 import { toasterConfig } from './configs/toasterConfig';
-import { GlobalConfig, ToastrModule } from 'ngx-toastr';
+import {ToastrModule } from 'ngx-toastr';
 import { HttpClientModule } from '@angular/common/http';
 import { ForgotpasswordComponent } from './components/user/auth/forgotpassword/forgotpassword.component';
 import { ResetpasswordComponent } from './components/user/auth/resetpassword/resetpassword.component';
-import { SocialLoginModule, SocialAuthServiceConfig, GoogleInitOptions } from '@abacritt/angularx-social-login';
-import { GoogleLoginProvider } from '@abacritt/angularx-social-login'; 
+import { SocialLoginModule, SocialAuthServiceConfig, GoogleSigninButtonModule, } from '@abacritt/angularx-social-login';
 import { environment } from 'src/environments/environment.development';
 import { HomeComponent } from './components/user/publicpages/home/home.component';
-const googleLoginOptions: GoogleInitOptions = {
-  oneTapEnabled: false, // default is true
-  scopes: ['profile', 'email']
-}; 
+import { ErrorpageComponent } from './components/user/publicpages/errorpage/errorpage.component';
+import { NavbarComponent } from './components/user/navbar/navbar.component';
+import googleLoginConfig from './configs/googleLogin.config';
+import { GoogleAuthComponent } from './components/user/auth/google-auth/google-auth.component';
+
+
+
 
 @NgModule({
   declarations: [
@@ -33,7 +35,13 @@ const googleLoginOptions: GoogleInitOptions = {
     LottifyComponent,
     ForgotpasswordComponent,
     ResetpasswordComponent,
-    HomeComponent
+    HomeComponent,
+    ErrorpageComponent,
+    NavbarComponent,
+    GoogleAuthComponent,
+
+
+
   ],
   imports: [
     BrowserModule,
@@ -46,17 +54,16 @@ const googleLoginOptions: GoogleInitOptions = {
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
     NgxUiLoaderRouterModule,
     ToastrModule.forRoot(toasterConfig),
-    SocialLoginModule
+    SocialLoginModule,
+    GoogleSigninButtonModule,
+   
   ],
   providers: [{
       provide: 'SocialAuthServiceConfig',
       useValue: {
         autoLogin: false,
         providers: [
-          {
-            id: GoogleLoginProvider.PROVIDER_ID,
-            provider: new GoogleLoginProvider(environment.GOOGLE_CLIENT_ID)
-          },
+         googleLoginConfig
         ],
         onError: (err) => {
           console.error(err);

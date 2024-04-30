@@ -14,19 +14,8 @@ import { SharedService } from 'src/app/services/shared.service';
   styleUrls: ['./resetpassword.component.css']
 })
 export class ResetpasswordComponent implements OnInit ,OnDestroy{
-  formbuilder = inject(FormBuilder);
-  authServices = inject(AuthService);
-  sharedServices:SharedService = inject(SharedService);
-  toaster: ToastrService = inject(ToastrService)
-  ngxLoader: NgxUiLoaderService = inject(NgxUiLoaderService);
-  router:Router = inject(Router)
-  resetPasswordForm;
-  hide = true;
-  hide2 = true;
-  payloadToken?: string;
-  tokenSubscription?: Subscription;
+  
   constructor() {
- 
     this.resetPasswordForm = this.formbuilder.group({
        password: ["", [Validators.required, Validators.minLength(8), Validators.pattern(new RegExp(
         "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!.@#$%^&*])(?=.{8,})"
@@ -42,6 +31,19 @@ export class ResetpasswordComponent implements OnInit ,OnDestroy{
     })
   this.resetPasswordForm?.get('confirm_password')?.setValidators([confirmPasswordValidator(this.resetPasswordForm?.get('password')!)])
   }
+  formbuilder = inject(FormBuilder);
+  authServices = inject(AuthService);
+  sharedServices:SharedService = inject(SharedService);
+  toaster: ToastrService = inject(ToastrService)
+  ngxLoader: NgxUiLoaderService = inject(NgxUiLoaderService);
+  router:Router = inject(Router)
+  resetPasswordForm;
+  hide = true;
+  hide2 = true;
+  payloadToken?: string;
+  tokenSubscription?: Subscription;
+
+
   resetPasswordFormSubmit() {
     if (this.resetPasswordForm.valid && this.payloadToken) {
       this.ngxLoader.start();
