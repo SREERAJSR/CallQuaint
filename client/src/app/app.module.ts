@@ -23,6 +23,9 @@ import { ErrorpageComponent } from './components/user/publicpages/errorpage/erro
 import { NavbarComponent } from './components/user/navbar/navbar.component';
 import googleLoginConfig from './configs/googleLogin.config';
 import { GoogleAuthComponent } from './components/user/auth/google-auth/google-auth.component';
+import { NotificationComponent } from './components/user/navbar/notification/notification.component';
+import { FooterComponent } from './components/user/footer/footer.component';
+
 
 
 
@@ -39,6 +42,9 @@ import { GoogleAuthComponent } from './components/user/auth/google-auth/google-a
     ErrorpageComponent,
     NavbarComponent,
     GoogleAuthComponent,
+    NotificationComponent,
+    FooterComponent,
+
 
 
 
