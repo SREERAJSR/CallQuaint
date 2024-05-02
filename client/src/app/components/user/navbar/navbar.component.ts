@@ -1,6 +1,8 @@
-import { Component, ElementRef, HostListener, Renderer2, ViewChild, ViewChildren, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Renderer2, ViewChild, ViewChildren, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
+
 import { AuthService } from 'src/app/services/auth.service';
+import { NotificationComponent } from './notification/notification.component';
 
 @Component({
   selector: 'app-navbar',
@@ -10,7 +12,7 @@ import { AuthService } from 'src/app/services/auth.service';
 export class NavbarComponent {
   renderer2 = inject(Renderer2);
   authService = inject(AuthService)
-  notification = false;
+
 
   isScrolled = false;
 
@@ -39,6 +41,13 @@ console.log(scrollPosition)
     this.renderer2.addClass(this.menu?.nativeElement, 'top-[-1000%]');
   }
   }    
+  
+  @ViewChild('notificationComponent') notificationComponent!: NotificationComponent;
 
+  notification = false;
+  // showDrawer() {
+  //   this.notification = !this.notification
+  //   this.notificationComponent.toggleDrawer()
+  // }
 }
                 
