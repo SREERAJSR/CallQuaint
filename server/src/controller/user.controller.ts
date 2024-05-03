@@ -81,7 +81,7 @@ export const loginUser = asyncHandler(async(req: Request, res: Response, next: N
 
    const { accessToken, refreshToken } = await generateAcessTokenAndrefreshToken(user._id);
    const loggedInUser = await User.findById(user._id).select(
-      "-avatar -password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
+      " -password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
    );
    const options = {
     httpOnly: true,
@@ -181,18 +181,18 @@ export const handleSocialLogin = asyncHandler(async (req: Request, res: Response
       }
       const _id: string = user?._id;
       const { accessToken, refreshToken } = await generateAcessTokenAndrefreshToken(_id);
-      const options = {
-         httpOnly: true,
-         secure: process.env.NODE_ENV === "production"
-      }
-      res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, { accessToken: accessToken, refreshAccessToken: refreshToken},"authentication sucessfully"))
+
+      const existedUser = await User.findById(_id).select(
+      "-password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
+   );
+      res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, { accessToken: accessToken, refreshToken: refreshToken,user:existedUser},"authentication sucessfully"))
    } else {
          const createdUser = await new User({
       firstname: firstName, 
       lastname: lastName,
       email: email,
       isEmailVerified: true,
-      role: UserRolesEnum.USER,
+      role: UserRolesEnum.USER, 
       loginType: loginType,
       avatar:photoUrl
          })
@@ -203,6 +203,10 @@ export const handleSocialLogin = asyncHandler(async (req: Request, res: Response
          httpOnly: true,
          secure: process.env.NODE_ENV === "production"
       }
-      res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {accessToken:accessToken,refreshAccessToken:refreshToken}, "user sucessfully authenticatedss "))
+const newUser = await User.findById(createdUserId).select(
+      " -password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
+   );
+   if (!newUser) throw new AppError("Something went wrong while registering the user", HttpStatus.INTERNAL_SERVER_ERROR);
+      res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {accessToken:accessToken,refreshToken:refreshToken ,user:newUser}, "user sucessfully authenticatedss "))
    }
 })

@@ -10,7 +10,7 @@ import { required } from "joi";
 
 const userSchema = new mongoose.Schema({
    
-    avatar: {
+    avatar: {   
         type: String,
         default: 'https://via.placeholder.com/200x200.png'
 },
