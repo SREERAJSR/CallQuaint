@@ -3,3 +3,9 @@
   transition: background-color 0.3s ease;
 color: rgb(164, 164, 164);
 }
+ 
+.active {
+  background-color: rgb(0, 4, 84);
+  color: white;
+}
+ 

@@ -8,15 +8,18 @@ import { ResetpasswordComponent } from './components/user/auth/resetpassword/res
 import { resetpasswordGuard } from './routeguards/canActivate/resetpassword.guard';
 import { HomeComponent } from './components/user/publicpages/home/home.component';
 import { ErrorpageComponent } from './components/user/publicpages/errorpage/errorpage.component';
+import { ConnectComponent } from './components/privatepages/connect/connect.component';
 
 
 const routes: Routes = [
-  {path:"",component:HomeComponent},
+  {path:"home",component:HomeComponent},
+  { path: "", redirectTo:"home",pathMatch:'full'},
   { path: "login/:token", component: LoginComponent, canActivate: [canActivateGuard] },
   { path: "login", component: LoginComponent },
   { path: "signup", component: SignupComponent },
   { path: "forgot-password", component: ForgotpasswordComponent },
   { path: "reset-password/:token", component: ResetpasswordComponent, canActivate: [resetpasswordGuard] },
+  {path:"connect",component:ConnectComponent},
   {path:"**",component:ErrorpageComponent}
 ];
 @NgModule({

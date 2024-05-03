@@ -25,6 +25,13 @@ import googleLoginConfig from './configs/googleLogin.config';
 import { GoogleAuthComponent } from './components/user/auth/google-auth/google-auth.component';
 import { NotificationComponent } from './components/user/navbar/notification/notification.component';
 import { FooterComponent } from './components/user/footer/footer.component';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { ConnectComponent } from './components/privatepages/connect/connect.component';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { authReducer } from './store/auth/reducers';
+import { appEffects } from './store/auth/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 
 
@@ -44,6 +51,8 @@ import { FooterComponent } from './components/user/footer/footer.component';
     GoogleAuthComponent,
     NotificationComponent,
     FooterComponent,
+    ConfirmDialogComponent,
+    ConnectComponent,
 
 
 
@@ -62,7 +71,12 @@ import { FooterComponent } from './components/user/footer/footer.component';
     ToastrModule.forRoot(toasterConfig),
     SocialLoginModule,
     GoogleSigninButtonModule,
-   
+    EffectsModule.forRoot([appEffects]),
+    StoreModule.forRoot({ auth: authReducer }),
+   StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production,
+    })
   ],
   providers: [{
       provide: 'SocialAuthServiceConfig',
@@ -75,7 +89,8 @@ import { FooterComponent } from './components/user/footer/footer.component';
           console.error(err);
         }
       } as SocialAuthServiceConfig,
-    }],
+  }
+  ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })

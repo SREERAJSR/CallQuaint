@@ -8,6 +8,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule, matFormFieldAnimations} from '@angular/material/form-field';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatDialogModule} from '@angular/material/dialog';
 
 
 @NgModule({
@@ -21,9 +22,10 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatDividerModule,
     MatFormFieldModule,
     MatInputModule, MatSidenavModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDialogModule
   ],
-  exports: [MatSlideToggleModule, MatButtonModule, MatIconModule, MatDividerModule, MatFormFieldModule, MatInputModule,MatSidenavModule,MatTooltipModule],
+  exports: [MatSlideToggleModule, MatButtonModule, MatIconModule, MatDividerModule, MatFormFieldModule, MatInputModule,MatSidenavModule,MatTooltipModule,MatDialogModule],
   providers:[]
 
 })

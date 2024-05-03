@@ -8,13 +8,18 @@ import { emailValidator, lowerCaseValidator } from 'src/app/custom-validators/au
 import { AuthService } from 'src/app/services/auth.service';
 import { SharedService } from 'src/app/services/shared.service';
 import {Router} from "@angular/router";
+import { ApiResponse } from 'src/app/types/api.interface';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/store/store';
+import { loginAction } from 'src/app/store/auth/actions';
+import {  selectLoginErrorMessage, selectLoginSucessMessage } from 'src/app/store/auth/selectors';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit , OnDestroy{
-  constructor(private ngxLoader:NgxUiLoaderService,private toastr: ToastrService) {
+  constructor(private ngxLoader:NgxUiLoaderService,private toastr: ToastrService,private store:Store<AppState>) {
   }
 
   ngOnInit(): void {
@@ -22,6 +27,15 @@ export class LoginComponent implements OnInit , OnDestroy{
       this.toastr.success(message)
     })
     this.sharedService.errorMessage$.subscribe((message: string) => {
+      this.toastr.error(message)
+    })
+    //store subscription
+    this.store.select(selectLoginSucessMessage).subscribe((message) => {
+      if(message)
+        this.toastr.success(message)
+    })
+    this.store.select(selectLoginErrorMessage).subscribe((message) => {
+      if(message)
       this.toastr.error(message)
     })
 
@@ -44,22 +58,8 @@ export class LoginComponent implements OnInit , OnDestroy{
     if(this.loginForm.get('password')?.hasError('pattern'))
       this.toastr.error('Password must contain at least one uppercase letter,one lowercase letter,one number, and one special character', 'Password Error')
     if (this.loginForm.valid) {
-        this.ngxLoader.start()
       const payload = this.loginForm.value as Record<string, string>;
-      this.userLoginSubscription = this.authService.userLogin(payload).pipe(
-      ).subscribe((response: any) => {
-        if (response.statusCode === 200) {
-localStorage.setItem('emailaccessToken', response.data.accessToken)
-localStorage.setItem('emailrefreshToken', response.data.refreshAccessToken)
-          this.toastr.success(response.message)
-          this.ngxLoader.stop()
-        }
-      },
-        (error) => {
-          const err = error.error.errorMessage;
-          this.toastr.error(err)
-          this.ngxLoader.stop()
-        })
+      this.store.dispatch(loginAction(payload as any))
     }
   }
 

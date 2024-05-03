@@ -3,6 +3,9 @@ import { MatIcon } from '@angular/material/icon';
 
 import { AuthService } from 'src/app/services/auth.service';
 import { NotificationComponent } from './notification/notification.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
+
 
 @Component({
   selector: 'app-navbar',
@@ -12,7 +15,7 @@ import { NotificationComponent } from './notification/notification.component';
 export class NavbarComponent {
   renderer2 = inject(Renderer2);
   authService = inject(AuthService)
-
+  matDialog:MatDialog = inject(MatDialog)
 
   isScrolled = false;
 
@@ -31,7 +34,6 @@ console.log(scrollPosition)
 
   @ViewChild('menusection') menu?: ElementRef;
   onToggleMenu(el: MatIcon) {
-    console.log(this.menu);
   el.fontIcon = el.fontIcon === 'menu' ? 'close' : 'menu';
   if (this.menu?.nativeElement.classList.contains('top-[-1000%]')) {
     this.renderer2.removeClass(this.menu?.nativeElement, 'top-[-1000%]');
@@ -42,12 +44,27 @@ console.log(scrollPosition)
   }
   }    
   
-  @ViewChild('notificationComponent') notificationComponent!: NotificationComponent;
-
   notification = false;
-  // showDrawer() {
-  //   this.notification = !this.notification
-  //   this.notificationComponent.toggleDrawer()
-  // }
+// this.matDialog.open(component,{
+//       data : data,
+//       disableClose: true,
+//     }).afterClosed();
+
+logout() {
+  const dialogRef = this.matDialog.open(ConfirmDialogComponent, {
+    data:{title:"Confirmation",message: "Are you sure you want to perform this action?"
+},
+    disableClose:true
+  }).afterClosed().subscribe((res) => {
+    if (res) {
+             this.authService.removeAccessToken();
+      this.authService.removeRefreshToken();
+    }
+     
+    })
+
+
+}
+
 }
                 
