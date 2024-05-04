@@ -9,16 +9,17 @@ import { resetpasswordGuard } from './routeguards/canActivate/resetpassword.guar
 import { HomeComponent } from './components/user/publicpages/home/home.component';
 import { ErrorpageComponent } from './components/user/publicpages/errorpage/errorpage.component';
 import { ConnectComponent } from './components/privatepages/connect/connect.component';
+import { authGuard } from './routeguards/canActivate/auth.guard';
 
 
 const routes: Routes = [
   {path:"home",component:HomeComponent},
   { path: "", redirectTo:"home",pathMatch:'full'},
   { path: "login/:token", component: LoginComponent, canActivate: [canActivateGuard] },
-  { path: "login", component: LoginComponent },
-  { path: "signup", component: SignupComponent },
-  { path: "forgot-password", component: ForgotpasswordComponent },
-  { path: "reset-password/:token", component: ResetpasswordComponent, canActivate: [resetpasswordGuard] },
+  { path: "login", component: LoginComponent ,canActivate:[authGuard]},
+  { path: "signup", component: SignupComponent ,canActivate:[authGuard]},
+  { path: "forgot-password", component: ForgotpasswordComponent,canActivate:[authGuard] },
+  { path: "reset-password/:token", component: ResetpasswordComponent, canActivate: [resetpasswordGuard]},
   {path:"connect",component:ConnectComponent},
   {path:"**",component:ErrorpageComponent}
 ];

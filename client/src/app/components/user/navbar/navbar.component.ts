@@ -5,6 +5,9 @@ import { AuthService } from 'src/app/services/auth.service';
 import { NotificationComponent } from './notification/notification.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
+import { AppState } from 'src/app/store/store';
+import { Store } from '@ngrx/store';
+import { logout } from 'src/app/store/auth/actions';
 
 
 @Component({
@@ -16,7 +19,7 @@ export class NavbarComponent {
   renderer2 = inject(Renderer2);
   authService = inject(AuthService)
   matDialog:MatDialog = inject(MatDialog)
-
+store:Store<AppState> = inject(Store<AppState>)
   isScrolled = false;
 
   @HostListener('window:scroll', ['$event'])
@@ -57,10 +60,8 @@ logout() {
     disableClose:true
   }).afterClosed().subscribe((res) => {
     if (res) {
-             this.authService.removeAccessToken();
-      this.authService.removeRefreshToken();
+      this.store.dispatch(logout())
     }
-     
     })
 
 

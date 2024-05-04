@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, act, createEffect, ofType } from "@ngrx/effects";
 import { AuthService } from "../../services/auth.service";
-import { googleLoginAction, googleLoginFail, googleLoginSucess, loginAction, loginFail, loginSuccess } from "./actions";
+import { googleLoginAction, googleLoginFail, googleLoginSucess, loginAction, loginFail, loginSuccess, logout, logoutFailed, logoutSuccess } from "./actions";
 import { Observable, catchError, map, of, switchMap, tap } from "rxjs";
 import { Store } from "@ngrx/store";
 import { InitialState } from "@ngrx/store/src/models";
@@ -9,6 +9,8 @@ import { AppState } from "../store";
 import { UserState } from "../state.model";
 import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
 import { ApiResponse } from "src/app/types/api.interface";
+import { Router } from "@angular/router";
+
 
 
 
@@ -17,8 +19,8 @@ export class appEffects {
     constructor(
         private action$: Actions,
         private authService: AuthService,
-        private store: Store<AppState>) { }
-    
+        private store: Store<AppState>,
+        private router: Router) { }
     
     loginUser$ = createEffect(() =>
         this.action$.pipe(
@@ -42,6 +44,7 @@ export class appEffects {
                             console.log(response);
                             this.authService.setAccessToken(response.data?.accessToken as string)
                             this.authService.setRefreshToken(response.data?.refreshToken as string)
+                            this.router.navigate(['/home'])
                             return loginSuccess(props)
                         }
                         throw new Error("Something went wrong")
@@ -63,9 +66,6 @@ export class appEffects {
             ofType(googleLoginAction),
             switchMap(({ user }) => {
                 return this.authService.googleAuthenticaton(user).pipe(
-                    tap((response) => {
-                        console.log(response);   
-                    }),
                     map((response: ApiResponse) => {
                         if (response.statusCode === 200) {
                             this.authService.setAccessToken(response?.data?.accessToken);
@@ -77,11 +77,11 @@ export class appEffects {
                                 fullname: response?.data?.user?.firstname +' ' + response.data.user.lastname,
                                 email:response.data.user.email
                              } as UserState
-                            console.log(user)
                         const payload = {
                             user: user,
                             loginSuccess: response.message
                         }
+                            this.router.navigate(['/home'])
                      return googleLoginSucess(payload)
                         }
                         throw new Error('something went wrong')
@@ -95,6 +95,18 @@ export class appEffects {
                 })    
                 )
             })
+        )
+    })
+
+    logoutUser$ = createEffect(() => {
+        return this.action$.pipe(
+            ofType(logout),
+            map((action) => {
+                this.authService.removeAccessToken();
+                this.authService.removeRefreshToken();
+                return logoutSuccess()
+            }),
+            catchError((err)=> of(logoutFailed()))
         )
     })
     

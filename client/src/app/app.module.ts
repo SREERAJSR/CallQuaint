@@ -80,7 +80,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
   ],
   providers: [{
       provide: 'SocialAuthServiceConfig',
-      useValue: {
+    useValue: {
+        
         autoLogin: false,
         providers: [
          googleLoginConfig

@@ -43,7 +43,8 @@ export class LoginComponent implements OnInit , OnDestroy{
   authService:AuthService = inject(AuthService)
   sharedService: SharedService = inject(SharedService)
   router :Router = inject(Router)
-  hide:boolean = true;
+  hide: boolean = true;
+
   private userLoginSubscription?: Subscription; 
 //login reactive form
   loginForm = new FormGroup({
