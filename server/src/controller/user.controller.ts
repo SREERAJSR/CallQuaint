@@ -10,7 +10,8 @@ import { SocialLoginEnums, UserRolesEnum } from "../types/constants/common.const
 import ApiResponse from "../utils/ApiReponse";
 import { generateAcessTokenAndrefreshToken } from "../services/user.services";
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { UserDocument } from "../types/usermodel.types";
+import { GoogleAuthenticatedUserInterface } from "../types/usermodel.types";
+
 
 
 export const signupUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -34,7 +35,7 @@ export const signupUser = asyncHandler(async (req: Request, res: Response, next:
 
    await user.save({ validateBeforeSave: false });
    
-   const url = `${configKey().BASE_URL}/user/verify/${unHashedToken}`;
+   const url = `${configKey().ORIGIN}/login/${unHashedToken}`;
    await sendEmail(email, 'verify email', url);
 
    const createdUser = await User.findById(user._id).select(
@@ -80,7 +81,7 @@ export const loginUser = asyncHandler(async(req: Request, res: Response, next: N
 
    const { accessToken, refreshToken } = await generateAcessTokenAndrefreshToken(user._id);
    const loggedInUser = await User.findById(user._id).select(
-      "-avatar -password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
+      " -password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
    );
    const options = {
     httpOnly: true,
@@ -94,13 +95,13 @@ export const loginUser = asyncHandler(async(req: Request, res: Response, next: N
 
 export const refreshAccessToken = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
    console.log(req.cookies)
-   const incomingRefreshToken: string = req.cookies.refreshToken || req.body.incomingRefreshToken;
+   const incomingRefreshToken: string =  req.body.incomingRefreshToken ||req.cookies.refreshToken  ;
    if (!incomingRefreshToken) throw new AppError("Unauthorized request", HttpStatus.UNAUTHORIZED);
    try {
       const decodedToken = await jwt.verify(
          incomingRefreshToken,
          configKey().REFRESH_TOKEN_SECRET) as JwtPayload;
-      const user = await User.findById(decodedToken?._id)
+      const user = await User.findById(decodedToken?._id) 
       if (!user) throw new AppError('Invalid refresh token', HttpStatus.UNAUTHORIZED);
       if (incomingRefreshToken !== user?.refreshToken)
          throw new AppError("Refresh token is expired or used", HttpStatus.UNAUTHORIZED);
@@ -137,7 +138,7 @@ export const forgotPasswordRequest = asyncHandler(async (req: Request, res: Resp
    user.forgotPasswordExpiry = tokenExpiry;
    await user.save({ validateBeforeSave: false });
 
-   const url = `${configKey().BASE_URL}/user/reset-password/${unHashedToken}`
+   const url = `${configKey().ORIGIN}/reset-password/${unHashedToken}`
 
    await sendEmail(email, "Please verify your email to reset password", url)
    
@@ -171,25 +172,56 @@ export const resetPasswordRequest = asyncHandler(async (req: Request, res: Respo
 
 export const handleSocialLogin = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 
-   const _id = req?.user?._id.toString()
-   
-   const user = await User.findById(_id)
-   if (!user) {
-      throw new AppError("user does not exist",HttpStatus.NOT_FOUND)
-   }
-   
-   const { accessToken, refreshToken } =await  generateAcessTokenAndrefreshToken(_id)
-     const options = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-  };
+   const { firstName, lastName, email, provider:loginType, photoUrl } = req.body as GoogleAuthenticatedUserInterface
+   const user = await User.findOne({ email: email });
 
-   res
-    .status(HttpStatus.MOVED_PERMANENTLY)
-    .cookie("accessToken", accessToken, options) // set the access token in the cookie
-    .cookie("refreshToken", refreshToken, options) // set the refresh token in the cookie
-    .redirect(
-      // redirect user to the frontend with access and refresh token in case user is not using cookies
-      `${configKey().CLIENT_SSO_REDIRECT_URL}?accessToken=${accessToken}&refreshToken=${refreshToken}`
-    );
-})  
+   if (user) {
+      if (user.loginType !== loginType) {
+         throw new AppError(`you have previously registered using ${user?.loginType.toLowerCase()}.  Please use the ${user?.loginType?.toLowerCase()}login option to access your account.`, HttpStatus.BAD_REQUEST)
+      }
+      const _id: string = user?._id;
+      const { accessToken, refreshToken } = await generateAcessTokenAndrefreshToken(_id);
+
+      const existedUser = await User.findById(_id).select(
+      "-password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
+   );
+      res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, { accessToken: accessToken, refreshToken: refreshToken,user:existedUser},"authentication sucessfully"))
+   } else {
+         const createdUser = await new User({
+      firstname: firstName, 
+      lastname: lastName,
+      email: email,
+      isEmailVerified: true,
+      role: UserRolesEnum.USER, 
+      loginType: loginType,
+      avatar:photoUrl
+         })
+      await createdUser.save({ validateBeforeSave: false });
+      const createdUserId = createdUser?._id;
+       const { accessToken, refreshToken } = await generateAcessTokenAndrefreshToken(createdUserId);
+      const options = {
+         httpOnly: true,
+         secure: process.env.NODE_ENV === "production"
+      }
+const newUser = await User.findById(createdUserId).select(
+      " -password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
+   );
+   if (!newUser) throw new AppError("Something went wrong while registering the user", HttpStatus.INTERNAL_SERVER_ERROR);
+      res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {accessToken:accessToken,refreshToken:refreshToken ,user:newUser}, "user sucessfully authenticatedss "))
+   }
+})
+
+export const logoutUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+   const _id = req.user?._id;
+   const user = await User.findByIdAndUpdate(_id,
+      {
+         $set: {
+            refreshAccessToken: undefined
+         }
+      }, {
+      new: true
+   });
+
+   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{},"User logout sucessfully"))
+      
+})

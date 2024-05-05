@@ -6,26 +6,20 @@ import configKey from "../configs/configkeys";
 import crypto from 'node:crypto';
 
 import { TemporaryToken, UserDocument } from "../types/usermodel.types";
-import { required } from "joi";
+
 
 const userSchema = new mongoose.Schema({
-    avatar: {
-        type: {
-            String,
-            localPath: String
-        },
-        default: {
-            url: `https://via.placeholder.com/200x200.png`,
-            localPath:""
-        }
-    },
+   
+    avatar: {   
+        type: String,
+        default: 'https://via.placeholder.com/200x200.png'
+},
     firstname: {
         type: String,
         required: true
     },
     lastname: {
         type: String,
-        required: true
     },
     email: {
         type: String,
