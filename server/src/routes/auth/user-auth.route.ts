@@ -1,7 +1,12 @@
 import { Request, Response, Router } from "express";
 import {
     loginUser, signupUser, verifyEmail, refreshAccessToken,
+<<<<<<< Updated upstream
     forgotPasswordRequest, resetPasswordRequest,handleSocialLogin
+=======
+    forgotPasswordRequest, resetPasswordRequest,handleSocialLogin,
+    logoutUser,
+>>>>>>> Stashed changes
 } from "../../controller/user.controller";
 import {
     routeSchemaValidator, authSingupSchemaValidator,
@@ -10,7 +15,12 @@ import {
 } from "../../validators/auth/user.validators";
 import { validateItems } from "../../types/constants/validateItems";
 import passport from "passport";
+<<<<<<< Updated upstream
  
+=======
+import { verifyJWT } from "../../middlewares/authMiddlewares";
+    
+>>>>>>> Stashed changes
 
 const userRoutes = () => {
     const router = Router();
@@ -22,6 +32,7 @@ const userRoutes = () => {
     router.post('/reset-password/:resetToken',
         userResetPasswordTokenValidator(validateItems.ROUTE_PARAMS),
         userResetPasswordBodyValidator(validateItems.REQUEST_BODY),resetPasswordRequest)
+<<<<<<< Updated upstream
        
  
     router.get("/google", passport.authenticate("google", { scope: ['profile', 'email'] }), (req: Request, res: Response, next)=>{
@@ -33,8 +44,12 @@ const userRoutes = () => {
     // router.get('/github', passport.authenticate('github', { scope: ["profile", "email"] }), (req, res) => {
     //     res.send('redirecting to github')
     // })
+=======
+    router.post('/google', handleSocialLogin),
+        
+    router.post('/logout',verifyJWT,logoutUser)
+>>>>>>> Stashed changes
 
-    // router.get('/github/callback',passport.authenticate('github'),handleSocialLogin)
     return router
 } 
  
