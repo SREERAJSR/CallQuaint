@@ -1,0 +1,28 @@
+<div class=" w-full ">
+    <div class="flex flex-col md:flex-row justify-center mt-16 items-center">
+        <div class="md:w-full  bg-slate-50 rounded">
+    <img class=" mx-auto rounded-full w-72 h-72" src="/assets/auth-images/tyler-nix-qs0im4pLYbE-unsplash.jpg" alt="">
+        </div>
+        <div class="w-full text-center font-bold text-3xl text-gray-500">
+            <mat-divider></mat-divider>
+            <h1 class="mt-3 mb-2">{{'Select gender'| uppercase}}</h1>
+    <mat-divider></mat-divider>
+            <div class="mt-16">
+    <mat-radio-group class="relative">
+        <mat-radio-button class=" mr-8" disabled="true" color="primary"  matTooltip="premium" value="auto">Male</mat-radio-button>
+        <mat-radio-button class="mr-8" disabled="true" value="always" matTooltip="premium" color="warn">Female</mat-radio-button>
+        <div class="absolute left-10 -top-5">
+            <img class="" class="w-8" src="/assets/images/premium.png" alt="">
+        </div>
+        <div class="absolute left-40 -top-5">
+            <img  class="w-8" src="/assets/images/premium.png" alt="">
+        </div>
+        <mat-radio-button class="mr-8" value="always" color="accent">Any</mat-radio-button>
+    </mat-radio-group>
+   <br class="block md:hidden">
+    <button class="block !w-28 !h-12 !rounded mt-3 md:mt-1 " mat-raised-button color="primary" (click)="startCall()" >Connect</button>
+            </div>
+        </div>
+    
+    </div>
+</div>

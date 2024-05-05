@@ -33,6 +33,10 @@ import { authReducer } from './store/auth/reducers';
 import { appEffects } from './store/auth/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { FriendsComponent } from './components/privatepages/connect/friends/friends.component';
+import { RequestsComponent } from './components/privatepages/connect/requests/requests.component';
+import { CallsAndHistoryComponent } from './components/privatepages/connect/calls-and-history/calls-and-history.component';
+import { CallSetupComponent } from './components/privatepages/connect/call-setup/call-setup.component';
 
 
 
@@ -55,6 +59,10 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     FooterComponent,
     ConfirmDialogComponent,
     ConnectComponent,
+    FriendsComponent,
+    RequestsComponent,
+    CallsAndHistoryComponent,
+    CallSetupComponent,
 
 
 
