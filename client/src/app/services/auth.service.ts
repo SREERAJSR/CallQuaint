@@ -31,6 +31,10 @@ export class AuthService {
     return this.http.post(this.API_URL+'/user/signup',payload)
   }
 
+  userLogout() {
+    return this.http.post<ApiResponse>(this.API_URL+'/user/logout',{})
+  }
+
     verifyEmail(token: string){
       return this.http.get(this.API_URL+`/user/verify/${token}`)
     }
@@ -46,14 +50,17 @@ export class AuthService {
   googleAuthenticaton(payload: SocialUser):Observable<ApiResponse>{
     return this.http.post<ApiResponse>(this.API_URL + `/user/google`, payload).pipe(
       catchError((error: HttpErrorResponse) => {
-           const err = {
+         const err = {
           message: error?.error?.errorMessage,
-             statusCode: error.status
-          
+          statusCode: error.status
         } 
         return throwError(()=> err)
       })
     )
+  }
+  refreshAccessToken() {
+    const incomingRefreshToken = this.getRefreshToken()
+    return this.http.post<ApiResponse>(this.API_URL+`/user/refreshToken`,{incomingRefreshToken:incomingRefreshToken})
   }
 
   getUserLoggedIn():boolean{

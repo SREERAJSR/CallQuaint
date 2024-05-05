@@ -95,13 +95,13 @@ export const loginUser = asyncHandler(async(req: Request, res: Response, next: N
 
 export const refreshAccessToken = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
    console.log(req.cookies)
-   const incomingRefreshToken: string = req.cookies.refreshToken || req.body.incomingRefreshToken;
+   const incomingRefreshToken: string =  req.body.incomingRefreshToken ||req.cookies.refreshToken  ;
    if (!incomingRefreshToken) throw new AppError("Unauthorized request", HttpStatus.UNAUTHORIZED);
    try {
       const decodedToken = await jwt.verify(
          incomingRefreshToken,
          configKey().REFRESH_TOKEN_SECRET) as JwtPayload;
-      const user = await User.findById(decodedToken?._id)
+      const user = await User.findById(decodedToken?._id) 
       if (!user) throw new AppError('Invalid refresh token', HttpStatus.UNAUTHORIZED);
       if (incomingRefreshToken !== user?.refreshToken)
          throw new AppError("Refresh token is expired or used", HttpStatus.UNAUTHORIZED);
@@ -209,4 +209,19 @@ const newUser = await User.findById(createdUserId).select(
    if (!newUser) throw new AppError("Something went wrong while registering the user", HttpStatus.INTERNAL_SERVER_ERROR);
       res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {accessToken:accessToken,refreshToken:refreshToken ,user:newUser}, "user sucessfully authenticatedss "))
    }
+})
+
+export const logoutUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+   const _id = req.user?._id;
+   const user = await User.findByIdAndUpdate(_id,
+      {
+         $set: {
+            refreshAccessToken: undefined
+         }
+      }, {
+      new: true
+   });
+
+   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{},"User logout sucessfully"))
+      
 })

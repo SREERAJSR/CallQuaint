@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Actions, act, createEffect, ofType } from "@ngrx/effects";
 import { AuthService } from "../../services/auth.service";
 import { googleLoginAction, googleLoginFail, googleLoginSucess, loginAction, loginFail, loginSuccess, logout, logoutFailed, logoutSuccess } from "./actions";
-import { Observable, catchError, map, of, switchMap, tap } from "rxjs";
+import { Observable, catchError, map, of, switchMap, tap, throwError } from "rxjs";
 import { Store } from "@ngrx/store";
 import { InitialState } from "@ngrx/store/src/models";
 import { AppState } from "../store";
@@ -98,16 +98,29 @@ export class appEffects {
         )
     })
 
+
     logoutUser$ = createEffect(() => {
         return this.action$.pipe(
             ofType(logout),
-            map((action) => {
-                this.authService.removeAccessToken();
-                this.authService.removeRefreshToken();
-                return logoutSuccess()
-            }),
-            catchError((err)=> of(logoutFailed()))
+            switchMap(() => {
+                return this.authService.userLogout().pipe(
+                    map((response: ApiResponse) => {
+                        if(response.statusCode ===200){
+                            this.authService.removeAccessToken();
+                            this.authService.removeRefreshToken();
+                            return logoutSuccess()
+                        }
+                        throw new Error("logout error ")
+                    }),
+                    catchError((error: HttpErrorResponse) => {
+                        return of(logoutFailed())
+                    })
+                )
+            })
         )
     })
     
-}
+} 
+
+
+

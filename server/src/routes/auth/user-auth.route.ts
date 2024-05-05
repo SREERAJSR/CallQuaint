@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import {
     loginUser, signupUser, verifyEmail, refreshAccessToken,
     forgotPasswordRequest, resetPasswordRequest,handleSocialLogin,
+    logoutUser,
 } from "../../controller/user.controller";
 import {
     routeSchemaValidator, authSingupSchemaValidator,
@@ -10,6 +11,7 @@ import {
 } from "../../validators/auth/user.validators";
 import { validateItems } from "../../types/constants/validateItems";
 import passport from "passport";
+import { verifyJWT } from "../../middlewares/authMiddlewares";
     
 
 const userRoutes = () => {
@@ -22,17 +24,10 @@ const userRoutes = () => {
     router.post('/reset-password/:resetToken',
         userResetPasswordTokenValidator(validateItems.ROUTE_PARAMS),
         userResetPasswordBodyValidator(validateItems.REQUEST_BODY),resetPasswordRequest)
-// router.post("/google",passport.authenticate("google", { scope: ['profile', 'email'] }), (req: Request, res: Response, next) => {
-//         res.send('sucess');     
-    // })
-    router.post('/google',handleSocialLogin)
-// router.get("/google/callback", passport.authenticate('google',{ scope: ['profile', 'email'] }), handleSocialLogina)
-    
-    // router.get('/github', passport.authenticate('github', { scope: ["profile", "email"] }), (req, res) => {
-    //     res.send('redirecting to github')
-    // })
+    router.post('/google', handleSocialLogin),
+        
+    router.post('/logout',verifyJWT,logoutUser)
 
-    // router.get('/github/callback',passport.authenticate('github'),handleSocialLogin)
     return router
 } 
  

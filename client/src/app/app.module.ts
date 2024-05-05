@@ -13,7 +13,7 @@ import { NgxUiLoaderModule,  NgxUiLoaderRouterModule, NgxUiLoaderHttpModule } fr
 import { ngxUiLoaderConfig } from './configs/ngxconfig';
 import { toasterConfig } from './configs/toasterConfig';
 import {ToastrModule } from 'ngx-toastr';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ForgotpasswordComponent } from './components/user/auth/forgotpassword/forgotpassword.component';
 import { ResetpasswordComponent } from './components/user/auth/resetpassword/resetpassword.component';
 import { SocialLoginModule, SocialAuthServiceConfig, GoogleSigninButtonModule, } from '@abacritt/angularx-social-login';
@@ -32,6 +32,8 @@ import { StoreModule } from '@ngrx/store';
 import { authReducer } from './store/auth/reducers';
 import { appEffects } from './store/auth/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+
 
 
 
@@ -81,7 +83,6 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
   providers: [{
       provide: 'SocialAuthServiceConfig',
     useValue: {
-        
         autoLogin: false,
         providers: [
          googleLoginConfig
@@ -90,7 +91,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
           console.error(err);
         }
       } as SocialAuthServiceConfig,
-  }
+  },
+    {provide:HTTP_INTERCEPTORS,useClass:AuthInterceptor,multi:true}
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
