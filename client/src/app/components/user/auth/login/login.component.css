@@ -1,0 +1,77 @@
+/* import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Router } from 'express';
+import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
+import { SharedService } from 'src/app/services/shared.service';
+
+@Component({
+  selector: 'app-social-login',
+  templateUrl: './social-login.component.html',
+  styleUrls: ['./social-login.component.css']
+})
+export class SocialLoginComponent implements OnInit,OnDestroy {
+
+
+ngOnInit(): void {
+  
+    if(!this.authService.getUserLoggedIn()) {
+      // @ts-ignore
+      this.socialLoginSubscription = this.socialAuthService.authState.subscribe((user: SocialUser): void => {
+        this.user = user;
+        this.loggedIn = (user != null);
+        this.loggedIn = true;
+        this.authService.setUserLoggedIn(true)
+        if (user) {
+          this.googleSubscription = this.authService.googleAuthenticaton(user).subscribe((response: any) => {
+            if (response.statusCode === 200) {
+              console.log(response);
+              localStorage.setItem('accessToken', response.data.accessToken)
+              this.toastr.success(response.message)
+              this.loggedIn = true;
+              // this.router.navigate(['/'])
+            }
+          })
+
+        } else {
+          this.toastr.error("Google authentication failed")
+        }
+      });
+    }
+}
+  
+  
+   socialUser!: SocialUser;
+  public user: SocialUser = new SocialUser();
+  loggedIn?: boolean =false
+  accessToken:any
+  authService:AuthService = inject(AuthService)
+  socialAuthService: SocialAuthService = inject(SocialAuthService);
+  router: Router = inject(Router)
+  toastr:ToastrService = inject(ToastrService)
+  hide:boolean = true;
+  private userLoginSubscription?: Subscription;
+  socialLoginSubscription?: Subscription;
+ googleSubscription?:Subscription
+
+
+    ngOnDestroy(): void {
+ 
+    this.googleSubscription?.unsubscribe()
+    console.log(this.socialLoginSubscription,'ddsd')
+  }
+
+
+} */
+
+/* 
+<asl-google-signin-button type='standard' size='medium' class="mt-3" theme="filled_blue">
+    <div id="g_id_onload" data-client_id="800989903761-2ddrb1u7slce6v90i2rdbm0octno4ll3.apps.googleusercontent.com"
+        data-context="use" data-ux_mode="popup" data-login_uri="http://localhost:3000/api/v1/user/google"
+        data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_blue"
+        data-text="signin_with" data-size="large" data-logo_alignment="left">
+    </div>
+</asl-google-signin-button> */

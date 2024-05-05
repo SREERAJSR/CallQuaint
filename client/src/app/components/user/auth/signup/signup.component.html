@@ -1,0 +1,97 @@
+<section class="bg-gray-50  min-h-screen  flex justify-center items-center">
+
+    <div class="bg-gray-100 flex max-w-3xl rounded-xl shadow-2xl p-5">
+        <!-- form container -->
+        <div class="md:w-1/2 text-center">
+            <h1 class="font-mono text-2xl md:text-xl mt-8">Welcome to our world</h1>
+            <div class="mt-8 ">
+                <form action="" [formGroup]="signupForm" class="grid grid-cols-2 gap-3 ">
+                    <mat-form-field class="border rounded-lg">
+                        <mat-label class="font-mono text-sm">Firstname</mat-label>
+                        <input matInput required formControlName="firstname">
+                        <mat-error *ngIf="signupForm.get('firstname')?.untouched">firstname is required</mat-error>
+                        <ng-container class="h-1" *ngIf="signupForm.get('firstname')?.touched">
+                            <mat-error class="text-xs"
+                                *ngIf="signupForm.get('firstname')?.touched &&signupForm.get('firstname')?.getError('required') ">Firstname
+                                is required</mat-error>
+                        </ng-container>
+                    </mat-form-field>
+                    <mat-form-field class="border rounded-lg">
+                        <mat-label class="font-mono text-sm">Lastname</mat-label>
+                        <input matInput required formControlName="lastname">
+                        <mat-error *ngIf="signupForm.get('lastname')?.untouched">lastname is required</mat-error>
+                        <ng-container *ngIf="signupForm.get('lastname')?.touched">
+                            <mat-error class="text-xs"
+                                *ngIf="signupForm.get('lastname')?.touched &&signupForm.get('lastname')?.getError('required') ">Lastname
+                                is
+                                required</mat-error>
+                        </ng-container>
+                    </mat-form-field>
+                    <mat-form-field class="border rounded-lg col-span-2 gap-4">
+                        <mat-label class="font-mono text-sm">Enter your email</mat-label>
+                        <input matInput placeholder="pat@example.com" required formControlName="email">
+                        <mat-error class="text-xs" *ngIf="signupForm.get('email')?.untouched">
+                            Email is required
+                        </mat-error>
+                        <ng-container class="text-xs" *ngIf="signupForm.get('email')?.touched">
+                            <mat-error class="text-xs" *ngIf="signupForm.get('email')?.hasError('required')">
+                                Email is required
+                            </mat-error>
+                            <ng-container class="text-xs" *ngIf="!signupForm.get('email')?.hasError('required')">
+                                <mat-error class="text-xs" *ngIf="signupForm.get('email')?.hasError('notLowerCase')">
+                                    Email address must be in lowercase.
+                                </mat-error>
+                                <mat-error class="text-xs"
+                                    *ngIf="signupForm.get('email')?.hasError('invalidEmail') && !signupForm.get('email')?.hasError('notLowerCase')">
+                                    Email is not valid
+                                </mat-error>
+                            </ng-container>
+                        </ng-container>
+                    </mat-form-field>
+                    <mat-form-field class="border rounded-lg col-span-2 gap-6">
+                        <mat-label class="font-mono text-sm">Enter your password</mat-label>
+                        <input matInput [type]="hide ? 'password' : 'text'" required formControlName="password">
+                        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="hide">
+                            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                        </button>
+                        <mat-error *ngIf="signupForm.get('password')?.untouched">Password is required</mat-error>
+                        <ng-container *ngIf="signupForm.get('password')?.hasError('pattern')">
+                            <mat-error class="text-xs" *ngIf="signupForm.get('password')?.hasError('pattern')">Password
+                                must contain at least one uppercase letter,one lowercase letter,one number, and one
+                                special character</mat-error>
+                        </ng-container>
+                    </mat-form-field>
+                    <mat-form-field class="border rounded-lg col-span-2 gap-6">
+                        <mat-label class="font-mono text-sm">Confirm password</mat-label>
+                        <input matInput [type]="hide2 ? 'password' : 'text'" required formControlName="confirm_password">
+                        <button mat-icon-button matSuffix (click)="hide2 = !hide2" [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="hide2">
+                            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                        </button>
+                        <mat-error *ngIf="signupForm.get('confirm_password')?.untouched ">Password is
+                            required</mat-error>
+                        <mat-error *ngIf="signupForm.get('confirm_password')?.hasError('passwordMismatch')">
+                            Confirm password does not match the password.
+                        </mat-error>
+                    </mat-form-field>
+                    <div class="col-span-2 text-center">
+                        <button
+                            class="mt-4 w-52 cursor-pointer !transition ease-in-out delay-150 hover:!bg-indigo-500 hover:-translate-y-1 hover:!scale-110 !duration-300"
+                            type="submit" (click)="signupFormSubmit()" mat-raised-button color="primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <div class="text-center mt-5 flex flex-col items-center" >
+                <p class="text-light text-sm mt-3 text-indigo-700">or register with</p>
+<app-google-auth></app-google-auth>
+            </div>
+        </div>
+        <!-- img container -->
+        <div class="hidden md:block w-1/2 ">
+            <app-lottify></app-lottify>
+        </div>
+    </div>
+</section>
+
+<!-- <ngx-ui-loader></ngx-ui-loader> -->

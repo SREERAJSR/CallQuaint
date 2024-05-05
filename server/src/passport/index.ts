@@ -30,7 +30,6 @@
             
             })
 
-
             passport.use(new GoggleStrategy({
                 clientID: configKey().GOOGLE_CLIENT_ID,
                 clientSecret: configKey().GOOGLE_CLIENT_SECRET,
@@ -69,7 +68,7 @@
                     }
                 }
             
-            }))
+            })) 
 
             // passport.use(new GithubStrategy({
             //     clientID: configKey().GITHUB_CLIENT_ID,
