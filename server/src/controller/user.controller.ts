@@ -177,6 +177,7 @@ export const handleSocialLogin = asyncHandler(async (req: Request, res: Response
    if (!user) {
       throw new AppError("user does not exist",HttpStatus.NOT_FOUND)
    }
+<<<<<<< Updated upstream
    
    const { accessToken, refreshToken } =await  generateAcessTokenAndrefreshToken(_id)
      const options = {
@@ -193,3 +194,21 @@ export const handleSocialLogin = asyncHandler(async (req: Request, res: Response
       `${configKey().CLIENT_SSO_REDIRECT_URL}?accessToken=${accessToken}&refreshToken=${refreshToken}`
     );
 })  
+=======
+})
+
+export const logoutUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+   const _id = req.user?._id;
+   const user = await User.findByIdAndUpdate(_id,
+      {
+         $set: {
+            refreshAccessToken: undefined
+         }
+      }, {
+      new: true
+   });
+
+   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{},"User logout sucessfully"))
+      
+})
+>>>>>>> Stashed changes

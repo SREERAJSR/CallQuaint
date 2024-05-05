@@ -6,7 +6,7 @@ import configKey from "../configs/configkeys";
 import crypto from 'node:crypto';
 
 import { TemporaryToken, UserDocument } from "../types/usermodel.types";
-import { required } from "joi";
+
 
 const userSchema = new mongoose.Schema({
     avatar: {
