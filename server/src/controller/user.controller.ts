@@ -11,7 +11,7 @@ import ApiResponse from "../utils/ApiReponse";
 import { generateAcessTokenAndrefreshToken } from "../services/user.services";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GoogleAuthenticatedUserInterface } from "../types/usermodel.types";
-
+import uuid from 'uuid';
 
 
 export const signupUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -212,6 +212,7 @@ const newUser = await User.findById(createdUserId).select(
 })
 
 export const logoutUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+
    const _id = req.user?._id;
    const user = await User.findByIdAndUpdate(_id,
       {

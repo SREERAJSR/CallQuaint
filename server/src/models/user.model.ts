@@ -4,8 +4,8 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import configKey from "../configs/configkeys";
 import crypto from 'node:crypto';
-
 import { TemporaryToken, UserDocument } from "../types/usermodel.types";
+import uuid from 'uuid';
 
 
 const userSchema = new mongoose.Schema({
@@ -37,6 +37,12 @@ const userSchema = new mongoose.Schema({
     password:{
         type: String,
         required:true
+    },
+    channelName: {
+        type: String,
+        unique: true,
+        required: true,
+        default:()=> generateChannelName()
     },
     loginType: {
         type: String,
@@ -116,7 +122,9 @@ userSchema.methods.generateTemporaryToken = async function ():Promise<TemporaryT
     }
 }
 
-
+function generateChannelName(){
+return `channel${crypto.randomUUID()}`
+}
  const User = mongoose.model<UserDocument>('user', userSchema)    
 
 export default User;

@@ -26,7 +26,6 @@ const userRoutes = () => {
         userResetPasswordBodyValidator(validateItems.REQUEST_BODY),resetPasswordRequest)
        
     router.post('/google', handleSocialLogin),
-        
     router.post('/logout',verifyJWT,logoutUser)
     return router
 } 
