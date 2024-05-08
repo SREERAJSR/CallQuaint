@@ -6,6 +6,7 @@ export interface UserState {
     lastname: string,
     fullname: string,
     email: string,
+    gender:string |null
 }
 
 export interface AuthState{

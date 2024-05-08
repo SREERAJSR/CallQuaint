@@ -19,3 +19,10 @@ export const SocialLoginEnums = {
 export const AvailableSocialLogins = Object.values(SocialLoginEnums)
 
 export const USER_TEMPORARY_TOKEN_EXPIRY = 20 * 60 * 1000;
+
+export const genderEnums = {
+  MALE: 'male',
+  FEMALE:'female'
+}
+
+export const genders = Object.values(genderEnums);

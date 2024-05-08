@@ -1,5 +1,5 @@
 import mongoose, { mongo }  from "mongoose";
-import { AvailableSocialLogins, SocialLoginEnums, USER_TEMPORARY_TOKEN_EXPIRY, UserRolesEnum, availableUserRoles } from "../types/constants/common.constant";
+import { AvailableSocialLogins, SocialLoginEnums, USER_TEMPORARY_TOKEN_EXPIRY, UserRolesEnum, availableUserRoles, genders } from "../types/constants/common.constant";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import configKey from "../configs/configkeys";
@@ -10,16 +10,21 @@ import uuid from 'uuid';
 
 const userSchema = new mongoose.Schema({
    
-    avatar: {   
+    avatar: {
         type: String,
         default: 'https://via.placeholder.com/200x200.png'
-},
+    },
     firstname: {
         type: String,
         required: true
     },
     lastname: {
         type: String,
+    },
+    gender: {
+        type: String || null,
+        required: true,
+        enum:genders || null
     },
     email: {
         type: String,
@@ -91,10 +96,14 @@ userSchema.methods.isPasswordCorrect = async function(password: string) {
 userSchema.methods.generateAccessToken = async function ():Promise<string> {
     return jwt.sign(
         {
-            _id: this._id,
             firstname: this.firstname,
+            lastname: this.lastname,
+            _id: this._id,
             email: this.email,
-            role:this.role
+            avatar: this.avatar,
+            gender: this.gender,
+            role: this.role
+            
         },
         configKey().ACCESS_TOKEN_SECRET,
         {expiresIn:configKey().ACCESS_TOKEN_EXPIRY}

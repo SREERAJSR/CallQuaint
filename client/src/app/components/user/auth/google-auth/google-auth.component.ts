@@ -20,8 +20,8 @@ export class GoogleAuthComponent implements OnInit, OnDestroy {
   store = inject(Store<AppState>);
   ngOnInit(): void {
     if (!this.authService.getUserLoggedIn()) {
-       this.socialAuthService.authState.subscribe({
-      next: (user) => {
+   this.socialLoginSubscription$=   this.socialAuthService.authState.subscribe({
+        next: (user) => {
            this.authService.setUserLoggedIn(true)
            this.store.dispatch(googleLoginAction({ user }))
          }, error: (error) => {
@@ -35,7 +35,7 @@ export class GoogleAuthComponent implements OnInit, OnDestroy {
   user: SocialUser | null = null;
   loggedIn?: boolean;
   googleLogin?:boolean
-  socialLoginSubscription!: Subscription;
+  socialLoginSubscription$!: Subscription;
   socialAuthService: SocialAuthService = inject(SocialAuthService);
   authService:AuthService = inject(AuthService)
   router: Router = inject(Router)
@@ -44,10 +44,11 @@ export class GoogleAuthComponent implements OnInit, OnDestroy {
 
     refreshToken() {
     return this.socialAuthService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID);
-  }
+    }
+
   ngOnDestroy(): void {
-    // this.select.unsubscribe()
-    // this.socialLoginSubscription.unsubscribe()
+
+// this.socialLoginSubscription$.unsubscribe()
   }
 
 }

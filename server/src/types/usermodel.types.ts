@@ -13,6 +13,7 @@ export interface UserDocument extends Document {
     lastname: string;
     email: string;
     role: string;
+    gender: string;
     password: string;
     loginType: string;
     isEmailVerified: boolean;

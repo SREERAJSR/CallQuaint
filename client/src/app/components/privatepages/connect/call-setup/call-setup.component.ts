@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { CallingscreenComponent } from './callingscreen/callingscreen.component';
 
 @Component({
   selector: 'app-call-setup',
@@ -7,8 +9,14 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class CallSetupComponent {
 
-  @Output() index: EventEmitter<number> = new EventEmitter<number>();
-  startCall() {
-    this.index.emit(1);
+  matDialog: MatDialog = inject(MatDialog);
+
+  connectToCall() {
+    this.matDialog.open(CallingscreenComponent, {
+      data: { title: "calling", message: "hai haia" },
+      disableClose:true
+    }).afterClosed().subscribe((res) => {
+      
+    })
   }
 }
