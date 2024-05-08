@@ -35,7 +35,8 @@ export class appEffects {
                                 firstname: response.data.user.firstname,
                                 lastname: response.data.user.lastname,
                                 fullname: response.data.user.firstname + '' + response.data.user.lastname,
-                                email:response.data.user.email
+                                email: response.data.user.email,
+                                gender:response.data.user.gender
                             } as UserState,
                             userLoggedIn: true
                         }

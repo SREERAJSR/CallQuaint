@@ -25,7 +25,8 @@ export const signupUser = asyncHandler(async (req: Request, res: Response, next:
       email: email,
       password: password,
       isEmailVerified: false,
-      role:UserRolesEnum.USER
+      role: UserRolesEnum.USER,
+      gender:gender
    })
 
    const { unHashedToken, hashedToken, tokenExpiry } = await user.generateTemporaryToken()

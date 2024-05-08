@@ -9,3 +9,4 @@ const routesConfig = (app: Application) => {
 }
 
 export default routesConfig;
+// channel2dc75590 - e37a - 467d - 9912 - 4de3230ad3f4

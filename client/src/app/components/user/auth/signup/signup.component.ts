@@ -18,6 +18,7 @@ export class SignupComponent implements OnInit {
       firstname: ["", [Validators.required]],
       lastname: ["", [Validators.required]],
       email: ["", [Validators.required, Validators.email, emailValidator(), lowerCaseValidator()]],
+      gender:["male",[Validators.required]],
       password: ["", [Validators.required, Validators.minLength(8), Validators.pattern(new RegExp(
         "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!.@#$%^&*])(?=.{8,})"
       ))]],
@@ -38,7 +39,8 @@ export class SignupComponent implements OnInit {
   toaster:ToastrService = inject(ToastrService);
   ngxLoader: NgxUiLoaderService = inject(NgxUiLoaderService)
   formbuilder = inject (FormBuilder)
-  signupFormSubmit():void {
+  signupFormSubmit(): void {
+
     if (this.signupForm.valid) {
       this.ngxLoader.start()
       const payload = this.signupForm.value;
