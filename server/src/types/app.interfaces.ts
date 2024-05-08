@@ -3,3 +3,9 @@ export interface AccessTokenAndrefreshTokenInterface{
     refreshToken: string;
     
 }
+
+export interface ConnectUserInterface {
+    channelName: string,
+    gender: string,
+    target:string
+}

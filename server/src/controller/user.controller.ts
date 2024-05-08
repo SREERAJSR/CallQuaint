@@ -83,8 +83,8 @@ export const loginUser = asyncHandler(async(req: Request, res: Response, next: N
    const { accessToken, refreshToken } = await generateAcessTokenAndrefreshToken(user._id);
    const loggedInUser = await User.findById(user._id).select(
       " -password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
-   );
-   const options = {
+   ); 
+   const options = {  
     httpOnly: true,
     secure:configKey().NODE_ENV=== "production",
    };
@@ -92,7 +92,7 @@ export const loginUser = asyncHandler(async(req: Request, res: Response, next: N
       cookie('accesToken', accessToken)
       .cookie('refreshToken', refreshToken).
       json(new ApiResponse(HttpStatus.OK, { user: loggedInUser, accessToken: accessToken, refreshToken: refreshToken }, "user logged in succesfully"));
-})
+}) 
 
 export const refreshAccessToken = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
    console.log(req.cookies)
