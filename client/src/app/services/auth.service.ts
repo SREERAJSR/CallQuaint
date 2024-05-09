@@ -9,7 +9,7 @@ import { ApiError, ApiResponse } from '../types/api.interface';
   providedIn: 'root'
 })
 export class AuthService {
-  constructor() { }
+  constructor() {console.log('object'); }
   http = inject(HttpClient);
   API_URL: string = environment.api_Url;
   loggedIn: boolean = false;
