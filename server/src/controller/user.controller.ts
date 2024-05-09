@@ -11,7 +11,7 @@ import ApiResponse from "../utils/ApiReponse";
 import { generateAcessTokenAndrefreshToken } from "../services/user.services";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GoogleAuthenticatedUserInterface } from "../types/usermodel.types";
-
+import uuid from 'uuid';
 
 
 export const signupUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -25,7 +25,8 @@ export const signupUser = asyncHandler(async (req: Request, res: Response, next:
       email: email,
       password: password,
       isEmailVerified: false,
-      role:UserRolesEnum.USER
+      role: UserRolesEnum.USER,
+      gender:gender
    })
 
    const { unHashedToken, hashedToken, tokenExpiry } = await user.generateTemporaryToken()
@@ -82,8 +83,8 @@ export const loginUser = asyncHandler(async(req: Request, res: Response, next: N
    const { accessToken, refreshToken } = await generateAcessTokenAndrefreshToken(user._id);
    const loggedInUser = await User.findById(user._id).select(
       " -password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
-   );
-   const options = {
+   ); 
+   const options = {  
     httpOnly: true,
     secure:configKey().NODE_ENV=== "production",
    };
@@ -91,7 +92,7 @@ export const loginUser = asyncHandler(async(req: Request, res: Response, next: N
       cookie('accesToken', accessToken)
       .cookie('refreshToken', refreshToken).
       json(new ApiResponse(HttpStatus.OK, { user: loggedInUser, accessToken: accessToken, refreshToken: refreshToken }, "user logged in succesfully"));
-})
+}) 
 
 export const refreshAccessToken = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
    console.log(req.cookies)
@@ -185,7 +186,7 @@ export const handleSocialLogin = asyncHandler(async (req: Request, res: Response
       const existedUser = await User.findById(_id).select(
       "-password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
    );
-      res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, { accessToken: accessToken, refreshToken: refreshToken,user:existedUser},"authentication sucessfully"))
+      res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, { accessToken: accessToken, refreshToken: refreshToken,user:existedUser},"Google authentication successfull!"))
    } else {
          const createdUser = await new User({
       firstname: firstName, 
@@ -194,7 +195,8 @@ export const handleSocialLogin = asyncHandler(async (req: Request, res: Response
       isEmailVerified: true,
       role: UserRolesEnum.USER, 
       loginType: loginType,
-      avatar:photoUrl
+            avatar: photoUrl,
+      gender:null
          })
       await createdUser.save({ validateBeforeSave: false });
       const createdUserId = createdUser?._id;
@@ -207,11 +209,27 @@ const newUser = await User.findById(createdUserId).select(
       " -password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
    );
    if (!newUser) throw new AppError("Something went wrong while registering the user", HttpStatus.INTERNAL_SERVER_ERROR);
-      res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {accessToken:accessToken,refreshToken:refreshToken ,user:newUser}, "user sucessfully authenticatedss "))
+      res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {accessToken:accessToken,refreshToken:refreshToken ,user:newUser}, "Google authentication successfull! "))
    }
 })
 
+
+export const setGenderForGoogleAuthUsers = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+   const { gender } = req.body;
+   const user_id = req.user?._id;
+   const user = await User.findById(user_id);
+   if (!user) throw new AppError("user is not available", HttpStatus.UNAUTHORIZED);
+
+   user.gender = gender;
+   user.save({ validateBeforeSave: false });
+  const updatedUser = await User.findById(user._id).select(
+      "-password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
+   );
+   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {user:updatedUser}, 'sucessfully gender information updated'));
+
+})
 export const logoutUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+
    const _id = req.user?._id;
    const user = await User.findByIdAndUpdate(_id,
       {

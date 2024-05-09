@@ -37,6 +37,10 @@ import { FriendsComponent } from './components/privatepages/connect/friends/frie
 import { RequestsComponent } from './components/privatepages/connect/requests/requests.component';
 import { CallsAndHistoryComponent } from './components/privatepages/connect/calls-and-history/calls-and-history.component';
 import { CallSetupComponent } from './components/privatepages/connect/call-setup/call-setup.component';
+import { CallingscreenComponent } from './components/privatepages/connect/call-setup/callingscreen/callingscreen.component';
+import { SelectGenderComponent } from './components/user/publicpages/home/select-gender/select-gender.component';
+
+
 
 
 
@@ -63,6 +67,10 @@ import { CallSetupComponent } from './components/privatepages/connect/call-setup
     RequestsComponent,
     CallsAndHistoryComponent,
     CallSetupComponent,
+    CallingscreenComponent,
+    SelectGenderComponent,
+
+
 
 
 
@@ -74,6 +82,7 @@ import { CallSetupComponent } from './components/privatepages/connect/call-setup
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
+    
     MaterialModule,
     ReactiveFormsModule,
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),

@@ -25,7 +25,6 @@ store:Store<AppState> = inject(Store<AppState>)
   @HostListener('window:scroll', ['$event'])
   onWindowScroll() {
     const scrollPosition = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
-console.log(scrollPosition)
     if (scrollPosition > 0  ) {
       this.isScrolled = true
       this.renderer2.addClass(document.querySelector('header'), 'scrolled')
@@ -48,10 +47,7 @@ console.log(scrollPosition)
   }    
   
   notification = false;
-// this.matDialog.open(component,{
-//       data : data,
-//       disableClose: true,
-//     }).afterClosed();
+
 
 logout() {
   const dialogRef = this.matDialog.open(ConfirmDialogComponent, {

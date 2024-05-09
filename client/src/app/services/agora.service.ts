@@ -1,61 +1,63 @@
-import { HttpHandler } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import AgoraRTC,{ClientConfig,IAgoraRTCClient,IAgoraRTCRemoteUser,IAgoraRTC} from 'agora-rtc-sdk-ng'
+import { HttpClient, HttpHandler } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import AgoraRTC, { ClientConfig, IAgoraRTCClient, IAgoraRTCRemoteUser, IAgoraRTC,ILocalAudioTrack,IRemoteAudioTrack ,UID} from 'agora-rtc-sdk-ng'
+
 import { environment } from 'src/environments/environment.development';
-import { AuthService } from './auth.service';
+import { ApiResponse } from '../types/api.interface';
 @Injectable({
   providedIn: 'root'
 })
 export class AgoraService {
 
-  constructor(private authService :AuthService) {
-    this.iniRtc();
-
+  constructor() {
+  this.initRtc()
   }
-  appid = environment.appid;
-  token = null;
-  rtcUid?:string
-
+  http: HttpClient = inject(HttpClient);
   rtcClient?: IAgoraRTCClient;
-  config: ClientConfig = {
-    codec: 'vp8',
-    mode: 'rtc'
+  API_URL = environment.api_Url;
+  appid = environment.appid;
+  // channel?: string;
+  token = null;
+  uid = null;
+  channelParameters: {
+    localAudioTrack: ILocalAudioTrack |null,
+    remoteAudioTrack: IRemoteAudioTrack|null, 
+    remoteUid:UID | null
+  } = {
+    localAudioTrack:null,
+    remoteAudioTrack: null,
+    remoteUid: null,
+    };
+  
+  initRtc() {
+    this.rtcClient = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' })
+    
+    this.rtcClient.on('user-published', async(user: IAgoraRTCRemoteUser, mediaType: 'audio' |'video') => {
+      await this.rtcClient?.subscribe(user, mediaType);
+      if (mediaType === 'audio') {
+        console.log('subscribed audio sucess');
+        user.audioTrack?.play()
+      }
+    })
+    this.rtcClient.on('user-unpublished', async (user: IAgoraRTCRemoteUser) => {
+      console.log('user left');
+    })
   }
 
-audioTracks: {
-  localAudioTrack:any,
-  remoteAudioTrack: any // Index signature
-} = {
-  localAudioTrack: null,
-  remoteAudioTrack: {} 
-};
-  iniRtc() {
-    this.rtcClient = AgoraRTC.createClient(this.config);
-
-    this.rtcClient.on('user-joined', this.handleUserJoined)
-    this.rtcClient.on('user-published', this.handleUserPublished)
-    this.rtcClient.on('user-left',this.handleUserLeft)
-  }
- 
-  async handleUserJoined(user: IAgoraRTCRemoteUser) {
-    console.log(user);
+  async startCall(channelname:string) {
+    await this.rtcClient?.join(this.appid, channelname , this.token, this.uid);
+   this.channelParameters.localAudioTrack =  await AgoraRTC.createMicrophoneAudioTrack();
+    await this.rtcClient?.publish([this.channelParameters.localAudioTrack])
   }
 
-  async handleUserPublished(user: IAgoraRTCRemoteUser, mediaType: "audio"|"video"|"datachannel") {
-    await this.rtcClient?.subscribe(user, mediaType);
-    if (mediaType === 'audio') {
-      console.log('subscribe audio  sucess');
-      this.audioTracks.remoteAudioTrack[user.uid] = [user.audioTrack];
-      user.audioTrack?.play();
-    }
+  async leaveCall() {
+    this.channelParameters.localAudioTrack?.close();
+    await this.rtcClient?.leave();
   }
 
-  async handleUserLeft(user:IAgoraRTCRemoteUser) {
-    delete this.audioTracks.remoteAudioTrack[user.uid]
+  getChannelName(target:string) {
+   return this.http.get<ApiResponse>(this.API_URL + `/user/connect/call?target=${target}`)
+
   }
 
-
-  async join() {
-    this.rtcClient?.join()
-  }
 }

@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { googleLoginAction, googleLoginFail, googleLoginSucess, loginAction, loginFail, loginSuccess, logout, logoutFailed, logoutSuccess } from "./actions";
+import {  changeUserStateInRefresh, changeUserStateInRefreshSucess, googleLoginAction, googleLoginFail, googleLoginSucess, loginAction, loginFail, loginSuccess, logout, logoutFailed, logoutSuccess, setGender, setGenderFail, setGenderSucess } from "./actions";
 import { AuthState } from "../state.model";
 
 export const initialState:AuthState  = {
@@ -56,11 +56,39 @@ export const authReducer = createReducer(initialState,
             loginError:action.loginError
         }
     }),
+    on(setGender, (state, action) => {
+        return {
+            ...state,
+        }
+    }),   on(setGenderSucess, (state, action) => {
+        return {
+            ...state,
+            user: action.user
+        }
+    }),
+       on(setGenderFail, (state) => {
+        return {
+            ...state,
+        }
+    }),
     on(logout, (state) => {
         return {
             ...state,
         }
     }),
     on(logoutSuccess, state => ({ ...state, userLoggedIn: false, loginSuccess: null,user:null })),
-    on(logoutFailed,state=>({...state}))
+    on(logoutFailed, state => ({ ...state })),
+    on(changeUserStateInRefresh, (state, action) => {
+        return {
+            ...state,
+            userLoggedIn:true
+       }
+    }),
+    on(changeUserStateInRefreshSucess, (state, action) => {
+        return {
+            ...state,
+            user: action.user,
+            userLoggedIn: true
+        }
+    })
 )

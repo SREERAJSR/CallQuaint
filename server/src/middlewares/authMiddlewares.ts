@@ -10,9 +10,9 @@ export const verifyJWT = asyncHandler(async (req: Request, res: Response, next: 
     const token =  req.cookies?.accessToken?.trim() || req.header("authorization")?.replace("Bearer","").trim();
     if (!token) throw new AppError("Unauthorized request", HttpStatus.UNAUTHORIZED);
     try {
+        
         const secret = configKey().ACCESS_TOKEN_SECRET;
         const decodedToken =  jwt.verify(token,secret) as JwtPayload ;    
-        console.log(decodedToken,'jwt');
         const user = await User.findById(decodedToken?._id).select("-password -refreshToken -emailVerificationToken -emailVerificationExpiry")
         if (!user) throw new AppError("Invalid access token", HttpStatus.UNAUTHORIZED);
         req.user = user;

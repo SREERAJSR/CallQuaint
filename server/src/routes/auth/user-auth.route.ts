@@ -2,7 +2,8 @@ import { Request, Response, Router } from "express";
 import {
     loginUser, signupUser, verifyEmail, refreshAccessToken,
     forgotPasswordRequest, resetPasswordRequest,handleSocialLogin,
-    logoutUser
+    logoutUser,
+    setGenderForGoogleAuthUsers
 } from "../../controller/user.controller";
 import {
     routeSchemaValidator, authSingupSchemaValidator,
@@ -24,9 +25,8 @@ const userRoutes = () => {
     router.post('/reset-password/:resetToken',
         userResetPasswordTokenValidator(validateItems.ROUTE_PARAMS),
         userResetPasswordBodyValidator(validateItems.REQUEST_BODY),resetPasswordRequest)
-       
     router.post('/google', handleSocialLogin),
-        
+    router.post('/setgender',verifyJWT,setGenderForGoogleAuthUsers)
     router.post('/logout',verifyJWT,logoutUser)
     return router
 } 

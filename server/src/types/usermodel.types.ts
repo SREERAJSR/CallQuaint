@@ -13,6 +13,7 @@ export interface UserDocument extends Document {
     lastname: string;
     email: string;
     role: string;
+    gender: string;
     password: string;
     loginType: string;
     isEmailVerified: boolean;
@@ -22,6 +23,7 @@ export interface UserDocument extends Document {
     emailVerificationToken?: string;
     emailVerificationExpiry?: Date;
     expireAt?: Date;
+    channelName:string
     
     // Define methods
     isPasswordCorrect(password: string): Promise<boolean>;

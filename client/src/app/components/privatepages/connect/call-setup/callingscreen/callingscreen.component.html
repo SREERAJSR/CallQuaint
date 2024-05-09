@@ -1,0 +1,31 @@
+
+<h2 mat-dialog-title class="text-center">Random calling <br><span>10:00min</span> </h2>
+
+<mat-dialog-content class="mat-typography w-full h-full">
+    <div class="flex flex-col items-center justify-center ">
+        <div class="left-section">
+            <div class="flex  gap-4 md:gap-32">
+                <div class="md:w-full rounded ">
+                    <h1 class="text-center font-bold">You</h1>
+                    <img class="mx-auto rounded-full w-32 h-32 md:w-48 md:h-48"
+                        src="/assets/auth-images/tyler-nix-qs0im4pLYbE-unsplash.jpg" alt="">
+                </div>
+
+                <div class="md:w-full rounded">
+                    <h1 class="text-center font-bold">Stranger</h1>
+                    <img class="mx-auto rounded-full w-32 h-32 md:w-48 md:h-48"
+                        src="/assets/auth-images/tyler-nix-qs0im4pLYbE-unsplash.jpg" alt="">
+                </div>
+            </div>
+
+
+        </div>
+        <div class="right-section ">
+
+            <mat-dialog-actions align="center">
+                <button mat-raised-button mat-dialog-close="open" (click)="endcall()" color="warn">End call</button>
+                <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
+            </mat-dialog-actions>
+        </div>
+    </div>
+</mat-dialog-content>

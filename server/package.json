@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/jsonwebtoken": "^9.0.6",
+    "@types/uuid": "^9.0.8",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -27,7 +28,8 @@
     "nodemailer": "^6.9.13",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
-    "passport-google-oauth20": "^2.0.0"
+    "passport-google-oauth20": "^2.0.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

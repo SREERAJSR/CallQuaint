@@ -1,0 +1,18 @@
+<div class="header">
+    <h2 mat-dialog-title>{{data.title}}</h2>
+
+</div>
+    <form #genderForm ="ngForm"(submit)="genderSelectSubmit(genderForm)">
+<div mat-dialog-content>
+
+<mat-radio-group required  [(ngModel)]="selectedGender" name="gender" aria-label="Select an option">
+    <mat-radio-button type="radio"  value="male"  >Male</mat-radio-button>
+    <mat-radio-button type="radio"  value="female">Female</mat-radio-button>
+</mat-radio-group>
+
+</div>
+<div mat-dialog-actions [align]="'end'">
+    <!-- <button mat-raised-button [mat-dialog-close]="false">Cancel</button> -->
+    <button mat-raised-button color="primary" type="submit" [mat-dialog-close]="open"  >Submit</button>
+</div>
+</form>

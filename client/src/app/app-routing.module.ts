@@ -13,13 +13,14 @@ import { authGuard } from './routeguards/canActivate/auth.guard';
 
 
 const routes: Routes = [
+  
   {path:"home",component:HomeComponent},
   { path: "", redirectTo:"home",pathMatch:'full'},
   { path: "login/:token", component: LoginComponent, canActivate: [canActivateGuard] },
   { path: "login", component: LoginComponent ,canActivate:[authGuard]},
   { path: "signup", component: SignupComponent ,canActivate:[authGuard]},
   { path: "forgot-password", component: ForgotpasswordComponent,canActivate:[authGuard] },
-  { path: "reset-password/:token", component: ResetpasswordComponent, canActivate: [resetpasswordGuard]},
+  { path: "reset-password/:token", component: ResetpasswordComponent },
   {path:"connect",component:ConnectComponent},
   {path:"**",component:ErrorpageComponent}
 ];
