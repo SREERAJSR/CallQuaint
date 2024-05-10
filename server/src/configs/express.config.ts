@@ -8,7 +8,7 @@ import { corsOptionsType } from '../types/config-types';
 import session from 'express-session'; 
 import passport from 'passport';
   
-   
+         
   
 const corsOptions:corsOptionsType = { origin: configKey().ORIGIN};
  
@@ -16,7 +16,7 @@ const expressConfig = (app: Application) => {
  
        app.use(cors(corsOptions)),
         app.use(morgan('dev')),
-        app.use(cookieParser()),
+        app.use(cookieParser()), 
         app.use(express.json()),
         app.use(express.urlencoded({ extended: true })),
           app.use(session({

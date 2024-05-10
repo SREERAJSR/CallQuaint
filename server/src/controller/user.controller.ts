@@ -189,7 +189,7 @@ export const handleSocialLogin = asyncHandler(async (req: Request, res: Response
       res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, { accessToken: accessToken, refreshToken: refreshToken,user:existedUser},"Google authentication successfull!"))
    } else {
          const createdUser = await new User({
-      firstname: firstName, 
+      firstname: firstName,  
       lastname: lastName,
       email: email,
       isEmailVerified: true,
@@ -219,8 +219,8 @@ export const setGenderForGoogleAuthUsers = asyncHandler(async (req: Request, res
    const user_id = req.user?._id;
    const user = await User.findById(user_id);
    if (!user) throw new AppError("user is not available", HttpStatus.UNAUTHORIZED);
-
-   user.gender = gender;
+  
+   user.gender = gender;  
    user.save({ validateBeforeSave: false });
   const updatedUser = await User.findById(user._id).select(
       "-password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "

@@ -4,6 +4,7 @@ import { CallingscreenComponent } from './callingscreen/callingscreen.component'
 import { AuthService } from 'src/app/services/auth.service';
 import { AgoraService } from 'src/app/services/agora.service';
 
+
 @Component({
   selector: 'app-call-setup',
   templateUrl: './call-setup.component.html',
@@ -14,24 +15,31 @@ export class CallSetupComponent implements OnInit {
   matDialog: MatDialog = inject(MatDialog);
   authService = inject(AuthService);
   agoraService = inject(AgoraService)
-
+  target: string;
+  uid!: string
+  gender!: string;
+  constructor() {
+    this.target = 'any';
+    
+  }
 ngOnInit(): void {
    const accessToken = this.authService.getAccessToken();
-  const { _id } = this.authService.decodeJwtPayload(accessToken as string)
+  const { _id,gender ,firstname} = this.authService.decodeJwtPayload(accessToken as string)
+  this.uid = _id+' '+firstname+' '+gender;
+  this.gender = gender;
 }
 
 
      connectToCall() {
-       this.agoraService.getChannelName('any').subscribe((response) => {
+       this.agoraService.getChannelName(this.target).subscribe((response) => {
          const channel = response.data.channelName;
-         this.agoraService.startCall(channel);
+
+         this.agoraService.startCall(channel,this.uid);
     })
-    // this.matDialog.open(CallingscreenComponent, {
-    //   data: { title: "calling", message: "hai haia" },
-    //   disableClose:true
-    // }).afterClosed().subscribe((res) => {
-      
-    // })
+    this.matDialog.open(CallingscreenComponent, {
+      data: { title: "calling",gender:this.gender},
+      disableClose:true
+    }).afterClosed()
   }
   leaveCall() {
     this.agoraService.leaveCall();
