@@ -1,8 +1,10 @@
 
-import { AfterViewInit, Component, DoCheck, Input, OnInit, ViewChild, inject } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, Component, DoCheck, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableDataSourcePaginator } from '@angular/material/table';
+import { ToastrService } from 'ngx-toastr';
 import { ConnectService } from 'src/app/services/connect.service';
 import { ApiResponse } from 'src/app/types/api.interface';
 import { CallhistoryRespone, ICallHistory } from 'src/app/types/connect.interface';
@@ -10,12 +12,13 @@ import { CallhistoryRespone, ICallHistory } from 'src/app/types/connect.interfac
 @Component({
   selector: 'app-calls-and-history',
   templateUrl: './calls-and-history.component.html',
-  styleUrls: ['./calls-and-history.component.css']
+  styleUrls: ['./calls-and-history.component.css'],
+
 })
  
-export class CallsAndHistoryComponent implements AfterViewInit   {
+export class CallsAndHistoryComponent {
 
-  @Input() matIndex?: number
+
   @ViewChild(MatPaginator) paginator?: MatPaginator;
   callHistory: ICallHistory[] = [];
   dataSource :any
@@ -25,15 +28,9 @@ export class CallsAndHistoryComponent implements AfterViewInit   {
 
   }
 
-  ngAfterViewInit(): void {
-    
-  }
 
- 
-
+  toaxtrService = inject(ToastrService)
   connectService = inject(ConnectService);
-
-
   displayedColumns: string[] = ['id','firstname', 'callduration', 'date','action'];
   
   initHistoryData() {
@@ -52,11 +49,12 @@ export class CallsAndHistoryComponent implements AfterViewInit   {
             requestSent:item.requestSent
           }
         })
-      }
-        
-    })
     this.dataSource = new MatTableDataSource<ICallHistory>(this.callHistory)
     this.dataSource.paginator = this.paginator
+      }
+
+    })
+  
   }
 
   sendFriendRequest(remoteId: string) {
@@ -64,15 +62,15 @@ export class CallsAndHistoryComponent implements AfterViewInit   {
       next: (response) => {
         if (response.statusCode === 200) {
           this.initHistoryData()
+          this.toaxtrService.success(response.message)
         }
       },  
-      error: (err) => {
+      error: (err:HttpErrorResponse) => {
         console.log(err);
+        this.toaxtrService.error(err.message)
       }
     })
   }
 
-
-  
 }
 

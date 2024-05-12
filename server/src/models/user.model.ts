@@ -6,6 +6,7 @@ import configKey from "../configs/configkeys";
 import crypto from 'node:crypto';
 import { TemporaryToken, UserDocument } from "../types/usermodel.types";
 import uuid from 'uuid';
+import { ref } from "joi";
 
 
 const userSchema = new mongoose.Schema({
@@ -44,12 +45,14 @@ const userSchema = new mongoose.Schema({
         required:true
     },
     requests: [{
-        type: mongoose.Types.ObjectId
+        type: mongoose.Types.ObjectId,
+         ref:'user'
     }
     ],
     friends: [
         {
-            type:mongoose.Types.ObjectId
+            type: mongoose.Types.ObjectId,
+            ref:'user'
         }
     ],
     channelName: {

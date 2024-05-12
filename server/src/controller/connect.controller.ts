@@ -127,13 +127,60 @@ export const sendFriendRequest = asyncHanlder(async (req: Request, res: Response
     if (info.remoteUserId ==remoteId) {
       info.requestSent = true;
    }
- })
+  })
   await callHistory.save({ validateBeforeSave: false });
   await user.save({ validateBeforeSave: false });
-  res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {}, "request sent sucessfully"));
+
+   let callhistory = callHistory.callInfo;
+    // Sort the call history by date in descending order
+callhistory.sort((a, b) => {
+  const dateA = new Date(a.date as any);
+  const dateB = new Date(b.date as any);
+  return dateB.getTime() - dateA.getTime();
+});
+  res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, callHistory, "request sent sucessfully"));
 })
 
-function getRandomUsersByAnyTarget(target:string,userObject:ConnectUserInterface) {
+export const fetchFriendRequestsFromDb = asyncHanlder(async (req: Request, res: Response, next: NextFunction) => {
+  const _id = req.user?._id;
+
+  const user = await User.findById(_id).populate('requests','firstname')
+  if (!user) {
+    throw new AppError("unauthorized user", HttpStatus.UNAUTHORIZED);
+    return;
+  }
+  const requests = user.requests.reverse();
+  res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,requests,"sucessfully fetched friend requests"))
+})
+
+export const acceptFriendRequest = asyncHanlder( async (req: Request, res: Response, next: NextFunction) => {
+  const _id = req.user?._id;
+  const { remoteId } = req.body;
+  const user = await User.findById(_id);
+  if (!user) {
+  throw new AppError("unauthorized user", HttpStatus.UNAUTHORIZED);
+    return;
+  }
+  user.requests.forEach((reqstId,index) => {
+    if (reqstId == remoteId) {
+     user.friends.push(user.requests.splice(index, 1)[0]);
+    }
+  })
+  await user.save({ validateBeforeSave: false })
+  res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{},"friend request accepted succesfully"))
+})
+
+export const rejectFriendRequest = asyncHanlder(async (req: Request, res: Response, next: NextFunction) => {
+  const _id = req.user?._id;
+  const { id: remoteId } = req.query;
+  const rejected = await User.findByIdAndUpdate(_id, {
+    $pull: { requests: remoteId }
+  }, { new: true })
+    res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{},"friend request reject succesfully"))
+
+})
+
+function getRandomUsersByAnyTarget(target: string, userObject: ConnectUserInterface) {
     return [...selfHost].filter((user) => user.target === userObject.target  )
 }
 function getRandomUsersByTarget(target: string, userObject: ConnectUserInterface) {

@@ -21,3 +21,18 @@ export interface CallhistoryRespone {
   _id: string;
   requestSent:boolean
 }
+
+export interface IRequestsDataSource{
+  id: number;
+  remoteId: string,
+  name:string
+}
+
+export interface IFriendRequests{
+  _id: string,
+  firstname: string;
+}
+
+export interface IFriendRequestsApiresponse{
+  data:IFriendRequests[]
+}
