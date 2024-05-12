@@ -47,6 +47,7 @@ import { SelectGenderComponent } from './components/user/publicpages/home/select
 
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -69,12 +70,6 @@ import { SelectGenderComponent } from './components/user/publicpages/home/select
     CallSetupComponent,
     CallingscreenComponent,
     SelectGenderComponent,
-
-
-
-
-
-
   ],
   imports: [
     BrowserModule,

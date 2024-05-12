@@ -12,6 +12,7 @@ import { AgoraService } from 'src/app/services/agora.service';
 })
 export class CallSetupComponent implements OnInit {
 
+  @Output() callHistoryUpdate = new EventEmitter<string>();
   matDialog: MatDialog = inject(MatDialog);
   authService = inject(AuthService);
   agoraService = inject(AgoraService)
@@ -20,13 +21,22 @@ export class CallSetupComponent implements OnInit {
   gender!: string;
   constructor() {
     this.target = 'any';
-    
   }
 ngOnInit(): void {
    const accessToken = this.authService.getAccessToken();
   const { _id,gender ,firstname} = this.authService.decodeJwtPayload(accessToken as string)
   this.uid = _id+' '+firstname+' '+gender;
   this.gender = gender;
+
+
+
+    this.agoraService.strangerInfoSupplier.subscribe({
+      next: (info) => {
+        if (info.gender === 'nouser') {
+          this.callHistoryUpdate.emit('updatecallhistory')
+        }
+      }
+    })
 }
 
 

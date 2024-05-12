@@ -43,6 +43,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         required:true
     },
+    requests: [{
+        type: mongoose.Types.ObjectId
+    }
+    ],
+    friends: [
+        {
+            type:mongoose.Types.ObjectId
+        }
+    ],
     channelName: {
         type: String,
         unique: true,

@@ -1,5 +1,6 @@
-import { Component, inject } from '@angular/core';
-import { MatTab, MatTabGroup } from '@angular/material/tabs';
+import { Component, ViewChild, inject } from '@angular/core';
+import { MatTab, MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
+import { CallsAndHistoryComponent } from './calls-and-history/calls-and-history.component';
 
 @Component({
   selector: 'app-connect',
@@ -8,16 +9,22 @@ import { MatTab, MatTabGroup } from '@angular/material/tabs';
 })
 export class ConnectComponent {
   selectedIndex: number = 0;
-  // MatTabGroup: MatTabGroup = inject(MatTabGroup)
-  // matTab: MatTab = inject(MatTab)
-  indexChangeEvent(index:number) {
-    this.selectedIndex= index
+  @ViewChild('callHistoryComponent')historyComponent?: CallsAndHistoryComponent;
+  constructor() {
+    // this.MatTabGroup._allTabs
+  }
+  callHistoryTrigger:boolean= false;
+  triggerHistoryUpdate(str: string) {
+    if (str === 'updatecallhistory') {
+      this.callHistoryTrigger=true
+    }
   }
 
-  console() {
-    // this.MatTabGroup.color='primary'
-
-    console.log('hai');
+matTabIndex?:number
+  onTabChanged(event: MatTabChangeEvent) {
+    this.matTabIndex = event.index;
+    if (this.matTabIndex === 3) {
+      this.historyComponent?.initHistoryData();
+    }
   }
-
 }

@@ -80,7 +80,7 @@ export class AgoraService {
 
   saveCallInfoToDB() {
     const {remoteId} =this.getremoteIdAndGender(this.channelParameters.remoteUid!)
-    const payload = {remoteId:remoteId,duration:this.duration }
+    const payload = {remoteId:remoteId,duration:this.duration,date: new Date() }
     this.http.post<ApiResponse>(this.API_URL + '/user/connect/saveCallInfo', payload).subscribe({
       next: (response) => {
         console.log(response);

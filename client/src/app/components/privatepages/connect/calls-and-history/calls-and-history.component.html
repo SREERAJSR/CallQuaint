@@ -1,3 +1,36 @@
-<div class="h-[63vh] w-full ">
-    <p>calls-and-history works!</p>
-</div>
+
+<div class="mat-elevation-z8 main">
+    <table mat-table [dataSource]="dataSource">
+
+
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>No </th>
+            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+        </ng-container>
+        <ng-container matColumnDef="firstname">
+            <th mat-header-cell *matHeaderCellDef>Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.firstname}} </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="callduration">
+            <th mat-header-cell *matHeaderCellDef>Callduration </th>
+            <td mat-cell *matCellDef="let element"> {{element.callduration}} </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let element"> {{element.date | date:'medium'}} </td>
+        </ng-container>
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Action </th>
+            <td mat-cell *matCellDef="let element"> <button [disabled]="element.requestSent===true"  mat-raised-button (click)="sendFriendRequest(element.remoteId)"  color="accent">{{ element.requestSent===true? 'Request sent': 'Send request'}} </button></td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table> 
+    
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of periodic elements">
+    </mat-paginator>
+ </div>  

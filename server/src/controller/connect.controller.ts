@@ -7,6 +7,8 @@ import ApiResponse from '../utils/ApiReponse';
 import { ConnectUserInterface } from '../types/app.interfaces';
 import { ConnectTargetEnums } from '../types/constants/common.constant';
 import CallInfo from '../models/callInfo.model';
+import { Date, Schema } from 'mongoose';
+import { async } from 'rxjs';
 
 const selfHost:Set<ConnectUserInterface> = new Set<ConnectUserInterface>();
 export const callSetup = asyncHanlder(async (req: Request, res: Response, next: NextFunction) => {
@@ -48,7 +50,7 @@ export const callSetup = asyncHanlder(async (req: Request, res: Response, next: 
 
 export const saveCallInfoToDb = asyncHanlder(async(req: Request, res: Response, next: NextFunction)=>{
   
-  const { remoteId, duration } = req.body;
+  const { remoteId, duration, date } = req.body;
   const formattedDuration = secondsToTimeString(Number(duration));
   const _id = req.user?._id;
   const user = await User.findById(_id);
@@ -58,28 +60,78 @@ export const saveCallInfoToDb = asyncHanlder(async(req: Request, res: Response, 
   if (!existedCallInfo) {
     const newCallInfo = new CallInfo({
       userId: _id,
-      callInfo:[]
+      callInfo:[]  
     })
-    newCallInfo.callInfo.push({ remoteUserId: remoteId, callDuration: formattedDuration })
+    newCallInfo.callInfo.push({ remoteUserId: remoteId, callDuration: formattedDuration ,date:date})
     await newCallInfo.save({ validateBeforeSave: false })
     res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {}, "callinformation updated"))
     return
   } else {
-    existedCallInfo.callInfo.push({ remoteUserId: remoteId, callDuration:formattedDuration })
+    existedCallInfo.callInfo.push({ remoteUserId: remoteId, callDuration:formattedDuration ,date:date })
     await existedCallInfo.save({ validateBeforeSave: false })
     res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {}, "callinformation updated"))
     return
   } 
 
-  // console.log(remoteId,duration);
-  // const a = new CallInfo({ 
-  //   userId: req.user?._id,
-  // })
-  // a.callInfo.push({ remoteUserId: remoteId, callDuration: duration })
-  // a.save()
+})
+
+
+
+export const getCallHistory = asyncHanlder(async (req: Request, res: Response, next: NextFunction) => {
+  const _id = req.user?._id;
+
+  const existedCallInfo = await CallInfo.findOne({ userId: _id }).populate('callInfo.remoteUserId', 'firstname lastname ')
+  
+  if (!existedCallInfo) { 
+    res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, [], 'No call history found for this user'));
+    return;
+  }
+
+     let callhistory = existedCallInfo.callInfo;
+    // Sort the call history by date in descending order
+callhistory.sort((a, b) => {
+  const dateA = new Date(a.date as any);
+  const dateB = new Date(b.date as any);
+  return dateB.getTime() - dateA.getTime();
+});
+  
+  res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,callhistory , 'call history recieved'));
 
 })
 
+export const sendFriendRequest = asyncHanlder(async (req: Request, res: Response, next: NextFunction) => {
+  const { remoteId } = req.body;
+  console.log(req.body);
+  const _id = req.user?._id;
+  const user = await User.findById(_id);
+  if (!user) {
+    throw new AppError('unauthorized', HttpStatus.UNAUTHORIZED)
+    return;
+  }
+  const remoteUser = await User.findById(remoteId);
+  if (!remoteUser) {
+    throw new AppError("No user in this id", HttpStatus.BAD_REQUEST)
+    return
+  }
+  if (user.requests.includes(remoteId)) {
+    throw new AppError("Already you have sent request", HttpStatus.BAD_REQUEST)
+    return;
+  };
+  user.requests.push(remoteId);
+  const callHistory = await CallInfo.findOne({userId:_id});
+  if (!callHistory) {
+    throw new AppError("Not authorized user", HttpStatus.UNAUTHORIZED);
+    return;
+  }
+  callHistory.callInfo.forEach((info) => {
+    if (info.remoteUserId ==remoteId) {
+      info.requestSent = true;
+   }
+ })
+  await callHistory.save({ validateBeforeSave: false });
+  await user.save({ validateBeforeSave: false });
+  res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {}, "request sent sucessfully"));
+})
 
 function getRandomUsersByAnyTarget(target:string,userObject:ConnectUserInterface) {
     return [...selfHost].filter((user) => user.target === userObject.target  )

@@ -20,7 +20,7 @@ const routes: Routes = [
   { path: "login", component: LoginComponent ,canActivate:[authGuard]},
   { path: "signup", component: SignupComponent ,canActivate:[authGuard]},
   { path: "forgot-password", component: ForgotpasswordComponent,canActivate:[authGuard] },
-  { path: "reset-password/:token", component: ResetpasswordComponent },
+  { path: "reset-password/:token", component: ResetpasswordComponent ,canActivate:[resetpasswordGuard]},
   {path:"connect",component:ConnectComponent},
   {path:"**",component:ErrorpageComponent}
 ];

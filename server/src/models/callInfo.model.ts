@@ -4,17 +4,24 @@ import { CallInfoModel } from "../types/callinfomodel.type";
 export const callInfoSchema = new mongoose.Schema({
         userId: {
             type: mongoose.Types.ObjectId,
-            ref: 'User',
+            ref: 'user',
             required: true,
         },
         callInfo: [{
             remoteUserId: {
                 type: mongoose.Types.ObjectId,
-                ref: 'User', 
+                ref: 'user', 
             },
             callDuration: {
                 type:String,
                 required: true
+            },
+            date: {
+                type: Date,
+            },
+            requestSent: {
+                type: Boolean,
+                default:false
             }
         }]
     });

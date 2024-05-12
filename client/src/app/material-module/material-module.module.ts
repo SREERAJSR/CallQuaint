@@ -11,6 +11,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatRadioModule} from '@angular/material/radio';
+import {MatTableModule} from '@angular/material/table';
+import { MatPaginatorModule} from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -26,9 +28,12 @@ import {MatRadioModule} from '@angular/material/radio';
     MatTooltipModule,
     MatDialogModule,
     MatTabsModule,
-    MatRadioModule
+    MatRadioModule,
+    MatTableModule,
+    MatPaginatorModule
   ],
-  exports: [MatSlideToggleModule, MatButtonModule, MatIconModule, MatDividerModule, MatFormFieldModule, MatInputModule,MatSidenavModule,MatTooltipModule,MatDialogModule,MatTabsModule,MatRadioModule],
+  exports: [MatSlideToggleModule, MatButtonModule, MatIconModule, MatDividerModule, MatFormFieldModule, MatInputModule, MatSidenavModule,
+    MatTooltipModule, MatDialogModule, MatTabsModule, MatRadioModule,MatTableModule,MatPaginatorModule],
   providers:[]
 
 })
