@@ -36,3 +36,14 @@ export interface IFriendRequests{
 export interface IFriendRequestsApiresponse{
   data:IFriendRequests[]
 }
+
+export interface IfriendsList{
+  _id: string,
+  firstname:string
+}
+
+export interface IFriendsListDataSource{
+  id: number;
+  remoteId: string,
+  name:string
+}

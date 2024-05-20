@@ -56,4 +56,16 @@ export class ConnectService {
       })
     )
   }
+
+  fetchFriendsList(): Observable<ApiResponse>{
+    return this.http.get<ApiResponse>(this.API_URL + '/user/connect/getFriends').pipe(
+          catchError((error: HttpErrorResponse) => {
+        const err = {
+          message: error?.error?.errorMessage,
+          statusCode:error.status
+        } 
+        return throwError(()=>err)
+      })
+    )
+  }
 }

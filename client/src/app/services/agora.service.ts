@@ -18,9 +18,7 @@ export class AgoraService {
   API_URL = environment.api_Url;
   appid = environment.appid;
   duration: number = 0;
-  // channel?: string;
   token = null;
-  // uid = null;
  strangerInfoSupplier:Subject<{name:string,gender:string}> = new Subject<{name:string,gender:string}>();
   channelParameters: {
     localAudioTrack: ILocalAudioTrack |null,

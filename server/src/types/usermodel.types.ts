@@ -25,7 +25,8 @@ export interface UserDocument extends Document {
     expireAt?: Date;
     channelName: string;
     requests: mongoose.Types.ObjectId[];
-    friends:mongoose.Types.ObjectId[]
+    friends: mongoose.Types.ObjectId[];
+    requestSent: mongoose.Types.ObjectId[];
     
     // Define methods
     isPasswordCorrect(password: string): Promise<boolean>;

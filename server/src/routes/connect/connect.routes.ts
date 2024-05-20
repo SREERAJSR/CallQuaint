@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { acceptFriendRequest, callSetup, fetchFriendRequestsFromDb, getCallHistory, rejectFriendRequest, saveCallInfoToDb, sendFriendRequest } from "../../controller/connect.controller";
+import { acceptFriendRequest, callSetup, fetchFriendRequestsFromDb, fetchFriendsList, getCallHistory, rejectFriendRequest, saveCallInfoToDb, sendFriendRequest } from "../../controller/connect.controller";
 import { verifyJWT } from "../../middlewares/authMiddlewares";
 
 const connectRoutes = () => { 
@@ -11,7 +11,8 @@ const connectRoutes = () => {
         router.post('/sendfriendrequest', verifyJWT, sendFriendRequest),
         router.get("/getfriendrequests", verifyJWT, fetchFriendRequestsFromDb),
         router.patch('/acceptrequest', verifyJWT, acceptFriendRequest),
-        router.delete('/rejectfriendrequest',verifyJWT,rejectFriendRequest)
+        router.delete('/rejectfriendrequest', verifyJWT, rejectFriendRequest),
+        router.get('/getFriends',verifyJWT,fetchFriendsList)
     return router;
 }
 

@@ -39,6 +39,7 @@ import { CallsAndHistoryComponent } from './components/privatepages/connect/call
 import { CallSetupComponent } from './components/privatepages/connect/call-setup/call-setup.component';
 import { CallingscreenComponent } from './components/privatepages/connect/call-setup/callingscreen/callingscreen.component';
 import { SelectGenderComponent } from './components/user/publicpages/home/select-gender/select-gender.component';
+import { ChatComponent } from './components/privatepages/chat/chat.component';
 
 
 
@@ -70,6 +71,7 @@ import { SelectGenderComponent } from './components/user/publicpages/home/select
     CallSetupComponent,
     CallingscreenComponent,
     SelectGenderComponent,
+    ChatComponent,
   ],
   imports: [
     BrowserModule,

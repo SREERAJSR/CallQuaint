@@ -224,8 +224,9 @@ export const setGenderForGoogleAuthUsers = asyncHandler(async (req: Request, res
    user.save({ validateBeforeSave: false });
   const updatedUser = await User.findById(user._id).select(
       "-password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
-   );
-   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {user:updatedUser}, 'sucessfully gender information updated'));
+  );
+   const { accessToken, refreshToken } = await generateAcessTokenAndrefreshToken(user_id);
+   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {user:updatedUser,accessToken:accessToken,refreshToken:refreshToken}, 'sucessfully gender information updated'));
 
 })
 export const logoutUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {

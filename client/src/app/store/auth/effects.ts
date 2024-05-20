@@ -127,7 +127,9 @@ export class appEffects {
             switchMap(({ gender }) => {
                 const payload = {gender:gender}
                 return this.authService.setGenderForGoogleAuthUsers(payload).pipe(
-                    map((response:ApiResponse) => {
+                    map((response: ApiResponse) => {
+                           this.authService.setAccessToken(response?.data?.accessToken);
+                            this.authService.setRefreshToken(response?.data?.refreshToken);
                         if (response.statusCode === 200) {
                                const user= {
                                 avatar: response.data?.user?.avatar,
@@ -137,7 +139,7 @@ export class appEffects {
                                 gender:response?.data?.user?.gender,
                                 email:response.data.user.email
                                } as UserState
-                            const payload = {user:user}
+                            const payload = { user: user }
                             return setGenderSucess(payload)
                         }
                         throw new Error("error occurs in gender updating")

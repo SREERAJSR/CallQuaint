@@ -27,7 +27,7 @@ export const callSetup = asyncHanlder(async (req: Request, res: Response, next: 
       const randomRemoteUser = getRandomUser(matchedAnyUsers);
       selfHost.delete(randomRemoteUser);
       res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, randomRemoteUser, 'user got a remote user'));
-      res.end();
+      res.end(); 
       return; // Early return to prevent further execution
     }
   } else if (target === ConnectTargetEnums.MALE || target === ConnectTargetEnums.FEMALE) {
@@ -113,21 +113,23 @@ export const sendFriendRequest = asyncHanlder(async (req: Request, res: Response
     throw new AppError("No user in this id", HttpStatus.BAD_REQUEST)
     return
   }
-  if (user.requests.includes(remoteId)) {
+  if (user.requestSent.includes(remoteId)) {
     throw new AppError("Already you have sent request", HttpStatus.BAD_REQUEST)
     return;
   };
-  user.requests.push(remoteId);
+  user.requestSent.push(remoteId);
   const callHistory = await CallInfo.findOne({userId:_id});
   if (!callHistory) {
     throw new AppError("Not authorized user", HttpStatus.UNAUTHORIZED);
     return;
   }
+  remoteUser.requests.push(user._id);
   callHistory.callInfo.forEach((info) => {
     if (info.remoteUserId ==remoteId) {
       info.requestSent = true;
    }
   })
+  await remoteUser.save({validateBeforeSave:false})
   await callHistory.save({ validateBeforeSave: false });
   await user.save({ validateBeforeSave: false });
 
@@ -161,11 +163,15 @@ export const acceptFriendRequest = asyncHanlder( async (req: Request, res: Respo
   throw new AppError("unauthorized user", HttpStatus.UNAUTHORIZED);
     return;
   }
+  const remoteUser = await User.findById(remoteId);
   user.requests.forEach((reqstId,index) => {
     if (reqstId == remoteId) {
      user.friends.push(user.requests.splice(index, 1)[0]);
     }
   })
+  if (remoteUser?.requestSent.includes(user._id))
+    remoteUser.friends.push(user._id);
+  await remoteUser?.save({validateBeforeSave:false})
   await user.save({ validateBeforeSave: false })
   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{},"friend request accepted succesfully"))
 })
@@ -178,6 +184,17 @@ export const rejectFriendRequest = asyncHanlder(async (req: Request, res: Respon
   }, { new: true })
     res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{},"friend request reject succesfully"))
 
+})
+
+export const fetchFriendsList = asyncHanlder(async (req: Request, res: Response, next: NextFunction) => {
+  const _id = req.user?._id;
+  const user = await User.findById(_id).populate('friends', 'firstname');
+  if (!user) {
+        throw new AppError("unauthorized user", HttpStatus.UNAUTHORIZED);
+    return;
+  }
+  const friendsList = user.friends;
+      res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,friendsList,"friends list fetched succesfully"))
 })
 
 function getRandomUsersByAnyTarget(target: string, userObject: ConnectUserInterface) {
