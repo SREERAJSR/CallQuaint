@@ -10,7 +10,7 @@ import { SocialLoginEnums, UserRolesEnum } from "../types/constants/common.const
 import ApiResponse from "../utils/ApiReponse";
 import { generateAcessTokenAndrefreshToken } from "../services/user.services";
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { GoogleAuthenticatedUserInterface } from "../types/usermodel.types";
+import { GoogleAuthenticatedUserInterface } from "../types/model/usermodel.interface";
 import uuid from 'uuid';
 
 
@@ -228,7 +228,7 @@ export const setGenderForGoogleAuthUsers = asyncHandler(async (req: Request, res
    const { accessToken, refreshToken } = await generateAcessTokenAndrefreshToken(user_id);
    res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {user:updatedUser,accessToken:accessToken,refreshToken:refreshToken}, 'sucessfully gender information updated'));
 
-})
+}) 
 export const logoutUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 
    const _id = req.user?._id;

@@ -1,5 +1,5 @@
 import { Socket } from "socket.io"
-import { UserDocument } from "./usermodel.types"
+import { UserDocument } from "./model/usermodel.interface"
 import { Application } from "express";
 
 export interface CustomSocketInterface extends Socket{

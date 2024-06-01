@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": ["agora-rtc-sdk-ng"],
             "outputPath": "dist/client",
             "index": "src/index.html",
             "main": "src/main.ts",

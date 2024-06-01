@@ -1,12 +1,13 @@
 import cookie from 'cookie';
 import { Socket ,Server} from "socket.io";
 import AppError from '../utils/AppError';
-import HttpStatus from '../types/constants/http-statuscodes';
+import HttpStatus from '../types/constants/http-statuscodes';   
 import { JwtPayload, verify } from 'jsonwebtoken';
 import configKey from './configkeys';
 import User from '../models/user.model';
 import { CustomSocketInterface, RequestSocketInterface } from '../types/socket.interface';
 import { ChatEventEnum } from '../types/constants/socketEventEnums';
+import { Request } from 'express';
 
 
 const mountJoinEvent = (socket: CustomSocketInterface) => {
@@ -65,6 +66,7 @@ export const initializeIo = (io: Server) => {
 }
 
 
-export const emitSocketEvent = (req: RequestSocketInterface, roomId: string, event:string, payload:any) => {
+export const emitSocketEvent = (req: Request, roomId: string, event: string, payload: any) => {
+    
     (req.app.get('io') as Socket).in(roomId).emit(event, payload);
 }

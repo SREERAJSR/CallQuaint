@@ -5,7 +5,7 @@ import AppError from "../utils/AppError"
 import HttpStatus from "../types/constants/http-statuscodes"
 import mongoose from "mongoose"
 import asyncHandler from "express-async-handler"
-import { UserDocument } from "../types/usermodel.types"
+import { UserDocument } from "../types/model/usermodel.interface"
 
 
 
