@@ -59,6 +59,5 @@ const validate = (useJoiError: boolean, validateItem: string, schema: ObjectSche
 
 
 export const mongoIdPathVariableValidator = (validateItems: string, pathName: string): RequestHandler => {
-
     return validate(true,validateItems,mongoIdPathVariableValidatorSchemaFn(pathName))
 }
