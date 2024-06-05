@@ -40,13 +40,14 @@ import { CallSetupComponent } from './components/privatepages/connect/call-setup
 import { CallingscreenComponent } from './components/privatepages/connect/call-setup/callingscreen/callingscreen.component';
 import { SelectGenderComponent } from './components/user/publicpages/home/select-gender/select-gender.component';
 import { ChatComponent } from './components/privatepages/chat/chat.component';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { SearchUserDialogComponent } from './components/privatepages/chat/search-user-dialog/search-user-dialog.component';
+import { ChatpageComponent } from './components/privatepages/chat/chatpage/chatpage.component';
+import { ChatlistComponent } from './components/privatepages/chat/chatlist/chatlist.component';
 
 
-
-
-
-
-
+const token = window.localStorage.getItem('accessToken')
+const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCredentials:true,auth:{token}}}
 
 
 @NgModule({
@@ -72,6 +73,10 @@ import { ChatComponent } from './components/privatepages/chat/chat.component';
     CallingscreenComponent,
     SelectGenderComponent,
     ChatComponent,
+    SearchUserDialogComponent,
+    ChatpageComponent,
+    ChatlistComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -79,7 +84,6 @@ import { ChatComponent } from './components/privatepages/chat/chat.component';
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
-    
     MaterialModule,
     ReactiveFormsModule,
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
@@ -92,7 +96,8 @@ import { ChatComponent } from './components/privatepages/chat/chat.component';
    StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production,
-    })
+   }),
+   SocketIoModule.forRoot(socketConfig)
   ],
   providers: [{
       provide: 'SocialAuthServiceConfig',

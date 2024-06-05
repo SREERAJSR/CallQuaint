@@ -17,7 +17,7 @@ export const chatMessageCommonAggregation = () => {
         {
             $lookup: {
                 from: "users",
-                foriegnField: "_id",
+                foreignField: "_id",
                 localField: "sender",
                 as: "sender",
                 pipeline: [

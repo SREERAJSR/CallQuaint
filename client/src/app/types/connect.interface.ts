@@ -39,7 +39,8 @@ export interface IFriendRequestsApiresponse{
 
 export interface IfriendsList{
   _id: string,
-  firstname:string
+  firstname: string,
+  avatar:string
 }
 
 export interface IFriendsListDataSource{

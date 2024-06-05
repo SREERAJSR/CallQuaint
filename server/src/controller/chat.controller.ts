@@ -40,7 +40,7 @@ export const chatCommonAggregation = () => {
     },
     {
       $lookup: {
-        from: "chatMessages",
+        from: "chatmessages",
         foreignField: "_id",
         localField: "lastMessage",
         as: "lastMessage",
@@ -143,7 +143,7 @@ export const createOrGetAOneOnOneChat = asyncHandler(async (req: Request, res: R
                         participants: { $elemMatch: { $eq: _id } }
                     },
                     {
-                        participants: { $elemMatch: { eq: new mongoose.Types.ObjectId(recieverId) } }
+                        participants: { $elemMatch: { $eq: new mongoose.Types.ObjectId(recieverId) } }
                     }
                 ]
             }
@@ -207,7 +207,7 @@ export const searchAvailableUsers = asyncHandler(async (req: Request, res: Respo
         pipeline: [
           {
              $project: {
-                    username: 1,
+                    firstname: 1,
                     avatar: 1,
                     email: 1,
                   }
