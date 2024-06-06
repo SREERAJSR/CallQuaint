@@ -1,6 +1,6 @@
 <div >
     <!--      upper part-->
-    <div class="flex justify-between    items-center px-16  py-6 border-b-2  bg-indigo-800 rounded ">
+    <div class="flex justify-between    items-center px-16  py-3 border-b-2  bg-indigo-800 rounded ">
 
         <div class="flex flex-col md:flex-row items-center md:gap-1 ">
             <img class="w-10 h-10 rounded-full" [src]="participantData?.avatar" alt="">
@@ -25,12 +25,12 @@
     </div>
     <!--    upper part end-->
 
-<div class="chat flex flex-col gap-2 max-h-96 overflow-scroll p-3">
+<div class="chat flex flex-col gap-2 h-80  overflow-scroll scroll-smooth  p-3" #chatContainer>
     <div *ngFor="let message of chatMessages"
-        [ngClass]="{'justify-end': message.sender._id === currentUserId, 'justify-start': message.sender._id !== currentUserId}"
-        class="flex items-start gap-2.5">
+        [ngClass]="{'justify-end': message.sender._id !== currentUserId, 'justify-start': message.sender._id === currentUserId}"
+        class="flex items-start gap-2.5 ">
 
-        <img *ngIf="message.sender._id !== currentUserId" class="w-9 h-9 rounded-full" [src]="message.sender.avatar"
+        <img *ngIf="message.sender._id == currentUserId" class="w-9 h-9 rounded-full" [src]="message.sender.avatar"
             alt="{{message.sender.firstname}} image">
 
         <div [ngClass]="{'bg-blue-100': message.sender._id === currentUserId, 'bg-gray-100': message.sender._id !== currentUserId}"
@@ -39,44 +39,43 @@
                 <span class="text-sm font-semibold text-gray-900">{{message.sender.firstname}}</span>
                 <span class="text-sm font-normal text-gray-500">{{message.createdAt | date}}</span>
             </div>
+            <div *ngIf="message.attachments.length>0" class="p-5">
+                <div class="flex flex-wrap gap-2">
+                    <div *ngFor="let file of message.attachments" class="relative">
+                        <img [src]="file.url" class="w-20 h-20 rounded" alt="selected image">
+                    </div>
+                </div>
+            </div>
             <p class="text-sm font-normal py-2.5 text-gray-900">{{message.content}}</p>
             <span class="text-sm font-normal text-gray-500">Delivered</span>
         </div>
 
-        <img *ngIf="message.sender._id === currentUserId" class="w-9 h-9 rounded-full" [src]="message.sender.avatar"
+        <img *ngIf="message.sender._id !== currentUserId" class="w-9 h-9 rounded-full" [src]="message.sender.avatar"
             alt="{{message.sender.firstname}} image">
     </div>
-</div>
-
-
-<!-- 
-        <div class="flex justify-end items-start gap-2.5" *ngFor="let sender of chatMessages">
-            <div
-                class="flex flex-col w-full md:max-w-[420px] max-w-[180px]  bg-indigo-500 leading-1.5 p-4 border-gray-200 rounded-e-xl rounded-es-xl ">
-                <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                    <span class="text-sm font-semibold text-white ">{{sender.sender.firstname}}</span>
-                    <span class="text-sm font-normal text-gray-900 ">11:46</span>
-                </div>
-                <p class="text-sm font-normal py-2.5 text-white ">That's awesome. I think our users will really
-                    appreciate the
-                    improvements.</p>
-                <span class="text-sm font-normal text-gray-900 ">Delivered</span>
+    <!-- Display selected files -->
+    <div *ngIf="selectedFiles.length > 0" class="p-5">
+        <div class="flex flex-wrap gap-2">
+            <div *ngFor="let file of fileSelectedToShowInUI" class="relative">
+                <img [src]="file.url" class="w-20 h-20 rounded" alt="selected image">
+                <button (click)="removeFile(file.file)" class="absolute top-0 right-0 text-red-600 text-3xl">x</button>
             </div>
-            <img class="w-8 h-8 rounded-full" src="/assets/images/male.jpg" alt="Jese image">
-        </div> -->
-
-        
-        
+        </div>
     </div>
+
+</div>
+        
+   
     <div class=" flex items-center  md:justify-center  gap-2 md:gap-1 p-5">
-        <button matTooltip="Attach files" class="flex-shrink">
+        <button matTooltip="Attach files" class="flex-shrink" (click)="fileInput.click()">
             <img class="md:w-10 md:h-10  w-7 h-7 rounded-full" src="/assets/logo/paper-clip.png" alt="">
 
         </button>
-        <input placeholder="write a message" type="text" class="md:min-w-[70%] w-full p-3 rounded border ">
-        <button matTooltip="send message" class="flex-shrink">
+        <input #messageInput placeholder="write a message" type="text" class="md:min-w-[70%] w-full p-3 rounded border ">
+        <button matTooltip="send message" class="flex-shrink" (click)="sendMessage()">
             <img class="md:w-10 md:h-10  w-7 h-7 rounded-full" src="/assets/logo/send.png" alt="">
-
         </button>
+        <input type="file" #fileInput (change)="onFilesSelected($event)" accept="image/*" multiple hidden />
     </div>
 
+</div>

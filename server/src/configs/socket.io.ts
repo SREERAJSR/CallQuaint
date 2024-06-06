@@ -9,11 +9,11 @@ import { CustomSocketInterface, RequestSocketInterface } from '../types/socket.i
 import { ChatEventEnum } from '../types/constants/socketEventEnums';
 import { Request } from 'express';
 
-
-const mountJoinEvent = (socket: CustomSocketInterface) => {
+ 
+const mountJoinEvent = (socket: CustomSocketInterface) => { 
     socket.on(ChatEventEnum.JOIN_CHAT_EVENT, (chatId:string) => {
         console.log(`User joined the chat 🤝. chatId: `, chatId);
-        socket.join(chatId)
+        socket.join(chatId) 
     })
 }
 const mountParticipantTypingEvent = (socket: CustomSocketInterface) => {

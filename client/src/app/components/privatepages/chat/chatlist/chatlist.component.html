@@ -11,10 +11,10 @@
 </div>
 <div class="mt-2 flex-col flex gap-1 ">
 
-    <div class="flex justify-between border-b  hover:bg-stone-200 p-4 max-h-20 overflow-hidden" (click) = "sendChatIdAndRecieverId(chat.chatId,chat.userId)" (click)="chatcomponent.wantChatPage()"
+    <div class="flex justify-between border-b hover:cursor-pointer  hover:bg-stone-200 p-4 max-h-20 overflow-hidden" (click) = "sendChatIdAndRecieverId(chat.chatId,chat.userId)" (click)="chatcomponent.wantChatPage()"
 
         *ngFor="let chat of chatList">
-        <div class="flex gap-2 relative">
+        <div  class="flex gap-2 relative ">
             <div class="w-3 h-3 rounded-full bg-green-600 absolute">
 
             </div>

@@ -23,7 +23,7 @@ openDialog(){
 }
   
   ngOnInit() {
-  console.log(this.chatId);
+
 }
   
   getChatIdFromChatList(event:{chatId:string,recieverId:string}) {
