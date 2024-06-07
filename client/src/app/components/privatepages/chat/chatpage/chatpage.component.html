@@ -25,11 +25,11 @@
     </div>
     <!--    upper part end-->
 
-<div class="chat flex flex-col gap-2 h-80  overflow-scroll scroll-smooth  p-3" #chatContainer>
-    <div *ngFor="let message of chatMessages"
+<div class="chat flex flex-col gap-2 h-80  overflow-scroll scroll-smooth  p-3" #chatContainer [scrollTop]="chatContainer.scrollHeight">
+    <div *ngFor="let message of chatMessages; let last = last"
         [ngClass]="{'justify-end': message.sender._id !== currentUserId, 'justify-start': message.sender._id === currentUserId}"
         class="flex items-start gap-2.5 ">
-
+<!-- {{last?scrollToBottom():''}} -->
         <img *ngIf="message.sender._id == currentUserId" class="w-9 h-9 rounded-full" [src]="message.sender.avatar"
             alt="{{message.sender.firstname}} image">
 
@@ -53,6 +53,10 @@
         <img *ngIf="message.sender._id !== currentUserId" class="w-9 h-9 rounded-full" [src]="message.sender.avatar"
             alt="{{message.sender.firstname}} image">
     </div>
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+    
+    <dotlottie-player *ngIf="participantData?.typing" src="https://lottie.host/c600c738-6189-4f06-b402-8865f68adb0d/Bmrhh0x06z.json"
+        background="transparent" speed="1" style="width: 100px; height: 100px;" loop autoplay></dotlottie-player>
     <!-- Display selected files -->
     <div *ngIf="selectedFiles.length > 0" class="p-5">
         <div class="flex flex-wrap gap-2">
@@ -71,7 +75,7 @@
             <img class="md:w-10 md:h-10  w-7 h-7 rounded-full" src="/assets/logo/paper-clip.png" alt="">
 
         </button>
-        <input #messageInput placeholder="write a message" type="text" class="md:min-w-[70%] w-full p-3 rounded border ">
+        <input (input)="onTyping($event)" #messageInput placeholder="write a message" type="text" class="md:min-w-[70%] w-full p-3 rounded border ">
         <button matTooltip="send message" class="flex-shrink" (click)="sendMessage()">
             <img class="md:w-10 md:h-10  w-7 h-7 rounded-full" src="/assets/logo/send.png" alt="">
         </button>

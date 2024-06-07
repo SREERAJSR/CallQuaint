@@ -6,6 +6,8 @@ import { ApiResponse } from '../types/api.interface';
 import { ChatEventEnum } from '../types/socketEvents';
 import { Message } from '../types/message.interface';
 import { Observable, Subject } from 'rxjs';
+import { OnlineUsers } from '../types/chat.interface';
+
 
 @Injectable({
   providedIn: 'root'
@@ -16,20 +18,56 @@ export class ChatService {
     this.socket.on(ChatEventEnum.MESSAGE_RECEIVED_EVENT, (payload: Message) => {
        this.messageReceived$.next(payload)
     })
+     this.socket.on(ChatEventEnum.TYPING_EVENT, (chatId: string) => {
+      console.log(chatId);
+      this.typingInfo$.next(chatId)
+     })
+    this.socket.on(ChatEventEnum.ONLINEUSERS, (onlineUser: OnlineUsers[]) => {
+      console.log(onlineUser,'onlineee');
+      this.onLineUsers$.next(onlineUser)
+    })
     
   }
   http: HttpClient = inject(HttpClient);
   API_URL: string = environment.api_Url;
  messageReceived$ = new Subject<Message>();
-  
+typingInfo$ = new Subject<string>()
+  stopTypingInfo$ = new Subject<string>()
+  onLineUsers$ = new Subject <OnlineUsers[]>()
   establishConnection() {
-    this.socket.on('connected', (res:any) => {
-      console.log(res);
+    this.socket.on(ChatEventEnum.CONNECTED_EVENT, (res:any) => {
+      console.log(' socket connected connected');
     })
+    
+  }
+
+  requestOnlineUsers() {
+    this.socket.emit(ChatEventEnum.GETONLINEUSER)
+  }
+
+  emitJoinChatEvent(chatId: string) {
+
+    this.socket.emit(ChatEventEnum.JOIN_CHAT_EVENT,chatId)
+  }
+
+  emitTypingEvent(chatId:string) {
+  this.socket.emit(ChatEventEnum.TYPING_EVENT,chatId)
   }
 
 
+   
 
+  emitStopTypingEvent(chatId: string) {
+    this.socket.emit(ChatEventEnum.STOP_TYPING_EVENT,chatId)
+  }
+
+  getStopTypingInfo() {
+
+     this.socket.on(ChatEventEnum.STOP_TYPING_EVENT, (chatId: string) => {
+       console.log(chatId,'typing');
+      this.stopTypingInfo$.next(chatId)
+    })
+  }
   getAllChats() {
     return this.http.get<ApiResponse>(`${this.API_URL}/user/chat`)
   }

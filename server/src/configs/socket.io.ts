@@ -9,7 +9,15 @@ import { CustomSocketInterface, RequestSocketInterface } from '../types/socket.i
 import { ChatEventEnum } from '../types/constants/socketEventEnums';
 import { Request } from 'express';
 
- 
+export interface OnlineUsers{
+    userId: string,
+    name:string
+}
+let onlineUsers: Map<string,OnlineUsers> = new Map<string,OnlineUsers>()
+
+const emitOnlineUsersEvent = (io: Server) => {
+    io.emit(ChatEventEnum.ONLINEUSERS, Array.from(onlineUsers.values()))
+}
 const mountJoinEvent = (socket: CustomSocketInterface) => { 
     socket.on(ChatEventEnum.JOIN_CHAT_EVENT, (chatId:string) => {
         console.log(`User joined the chat 🤝. chatId: `, chatId);
@@ -18,13 +26,20 @@ const mountJoinEvent = (socket: CustomSocketInterface) => {
 }
 const mountParticipantTypingEvent = (socket: CustomSocketInterface) => {
     socket.on(ChatEventEnum.TYPING_EVENT, (chatId: string) => {
-        console.log(chatId,'typing')
-        socket.in(chatId).emit('typeeee',ChatEventEnum.TYPING_EVENT,chatId)
+        console.log(chatId, 'typing')
+        socket.in(chatId).emit(ChatEventEnum.TYPING_EVENT,chatId)
     })
 }
 const mountParticipantStopTypingEvent = (socket: CustomSocketInterface) => {
     socket.on(ChatEventEnum.STOP_TYPING_EVENT, (chatId: string) => {
+         console.log(chatId, 'notyping')
         socket.in(chatId).emit(ChatEventEnum.STOP_TYPING_EVENT,chatId)
+    })
+}
+
+const mountGetOnlineUsersEvent = (socket: CustomSocketInterface) => {
+    socket.on(ChatEventEnum.GETONLINEUSER, () => {
+        socket.emit(ChatEventEnum.ONLINEUSERS,Array.from(onlineUsers.values()))
     })
 }
 export const initializeIo = (io: Server) => {
@@ -50,12 +65,26 @@ export const initializeIo = (io: Server) => {
             socket.user = user;
 
             socket.join(user?._id.toString());
-            socket.emit(ChatEventEnum.CONNECTED_EVENT,'haiii')
+            socket.emit(ChatEventEnum.CONNECTED_EVENT, 'connected')
+            const userId = user?._id.toString()
             console.log('User connected 🗼. userId: ', user._id.toString());
-
+            if (userId) {
+                onlineUsers.set(userId,{userId:user._id.toString(),name:user.firstname}) 
+            }
+            emitOnlineUsersEvent(io)
             mountJoinEvent(socket)
             mountParticipantTypingEvent(socket)
             mountParticipantStopTypingEvent(socket)
+            mountGetOnlineUsersEvent(socket)
+            console.log(onlineUsers);
+            socket.on(ChatEventEnum.DISCONNECT_EVENT, () => {
+                console.log("user has disconnected 🚫. userId: " + socket.user?._id);
+                if (socket.user?._id) {
+                    onlineUsers.delete(socket.user._id.toString())
+              socket.leave(socket.user._id);
+                }
+                emitOnlineUsersEvent(io)
+            })
         } catch (error) {
             socket.emit(ChatEventEnum.SOCKET_ERROR_EVENT,
                 (error as Error)?.message || "Something went wrong while connecting to the socket."

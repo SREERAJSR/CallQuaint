@@ -15,7 +15,8 @@
 
         *ngFor="let chat of chatList">
         <div  class="flex gap-2 relative ">
-            <div class="w-3 h-3 rounded-full bg-green-600 absolute">
+
+            <div  [ngClass]="onlineUsers.includes(chat.userId)?   ' bg-green-600':' bg-red-600' " class="w-3 h-3 rounded-full  absolute">
 
             </div>
             <img class="w-10 h-10 rounded-full" [src]="chat.avatar" alt="">
@@ -31,7 +32,7 @@
                 aria-label="Example fab with a heart icon">
                 1
             </button>
-            <p class=" font-extralight text-[14px]">{{chat.lastMessage?.updatedAt | date}}</p>
+            <p class=" font-extralight text-[14px]">{{chat.lastMessage?.createdAt | date:'shortTime'}}</p>
         </div>
 
     </div>

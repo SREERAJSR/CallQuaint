@@ -13,6 +13,7 @@ export interface Participant {
   updatedAt: string;
   __v: number;
   requestSent?: string[];
+  typing?:boolean
 }
 
 export  interface LastMessage {
@@ -49,5 +50,11 @@ export interface IChatList{
     name: string;
     avatar: string;
     gender: string;
-    lastMessage?:LastMessage
+  lastMessage?: LastMessage;
+  online?:boolean
+}
+
+export interface OnlineUsers{
+    userId: string,
+    name:string
 }
