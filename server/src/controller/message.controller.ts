@@ -154,7 +154,7 @@ export const deleteMessage = asynchHandler(async (req: Request, res: Response, n
         throw new AppError("Chat does not exist", HttpStatus.NOT_FOUND)
         return
     }
-    const message = await ChatMessage.findById(new mongoose.Types.ObjectId(chatId))
+    const message = await ChatMessage.findById(new mongoose.Types.ObjectId(messageId))
     
     if (!message) {
         throw new AppError("Message doesn't not exist", HttpStatus.NOT_FOUND)

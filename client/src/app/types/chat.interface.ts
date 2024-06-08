@@ -28,7 +28,6 @@ export  interface LastMessage {
   chat: string;
   createdAt: string;
   updatedAt: string;
-  __v: number;
 }
 
 export interface Chat {
@@ -57,4 +56,8 @@ export interface IChatList{
 export interface OnlineUsers{
     userId: string,
     name:string
+}
+
+export interface SendChatIdAndRecieverIdInterface{
+chatId: string, recieverId: string 
 }

@@ -1,9 +1,12 @@
 import { IfStmt } from '@angular/compiler';
 import { Component, OnInit, inject } from '@angular/core';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatTableDataSource } from '@angular/material/table';
+import { Subject } from 'rxjs';
 import { ChatService } from 'src/app/services/chat.service';
 import { ApiResponse } from 'src/app/types/api.interface';
-import { IfriendsList } from 'src/app/types/connect.interface';
+import { Chat } from 'src/app/types/chat.interface';
+
 
 @Component({
   selector: 'app-search-user-dialog',
@@ -17,17 +20,24 @@ export class SearchUserDialogComponent {
 
   chatService = inject(ChatService)
 
-  constructor() {
+  constructor(private bottom:MatBottomSheet) {
     console.log('invoked');
     this.initAvailableUsersData()
   }
-
-
+  sendChatId(recieverId: string) {
+    this.chatService.createOrGetAOneOnOneChat(recieverId).subscribe((response:ApiResponse) => {
+      const chats = response.data as Chat
+      const payload = { chatId: chats._id, recieverId: recieverId }
+      this.chatService.sendChatIdAndRecieverIdFn(payload)
+      this.chatService.sendChatInfoFn(chats)
+    })
+    this.bottom.dismiss()
+}
   initAvailableUsersData() {
     this.chatService.searchAvailableUsers().subscribe({
       next: (res: ApiResponse) => {
         const availableUsersData: IAvailableUsersResponse= res.data
-        console.log(availableUsersData);
+        console.log(availableUsersData,'ava');
         this.AVAILABLE_USERS_DATA = availableUsersData.friends.map((friend: IFriends, index: number) => {
           return {
             _id:friend._id,

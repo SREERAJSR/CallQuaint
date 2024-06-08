@@ -13,7 +13,7 @@ export const chatRoutes = () => {
             mongoIdPathVariableValidator(validateItems.ROUTE_PARAMS, 'recieverId'),
             createOrGetAOneOnOneChat),
         router.get('/', getAllChat),
-        router.get('/users', searchAvailableUsers),
+        router.get('/users', searchAvailableUsers), 
         router.delete('/remove/:chatId', mongoIdPathVariableValidator(validateItems.ROUTE_PARAMS,'chatId'),deleteOneOnOneChat)
 
     return router;

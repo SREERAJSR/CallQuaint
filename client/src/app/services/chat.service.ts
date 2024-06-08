@@ -6,7 +6,7 @@ import { ApiResponse } from '../types/api.interface';
 import { ChatEventEnum } from '../types/socketEvents';
 import { Message } from '../types/message.interface';
 import { Observable, Subject } from 'rxjs';
-import { OnlineUsers } from '../types/chat.interface';
+import { Chat, OnlineUsers, SendChatIdAndRecieverIdInterface } from '../types/chat.interface';
 
 
 @Injectable({
@@ -15,6 +15,13 @@ import { OnlineUsers } from '../types/chat.interface';
 export class ChatService {
 
   constructor(private socket: Socket) { 
+    this.socket.on(ChatEventEnum.NEW_CHAT_EVENT, (chat: Chat) => {
+      this.newChatInfo$.next(chat)
+    })
+    this.socket.on(ChatEventEnum.LEAVE_CHAT_EVENT, (res: Chat) => {
+      console.log(res,'leaveeeeeeee');
+      this.leaveChatInfo$.next(res)
+    })
     this.socket.on(ChatEventEnum.MESSAGE_RECEIVED_EVENT, (payload: Message) => {
        this.messageReceived$.next(payload)
     })
@@ -26,6 +33,9 @@ export class ChatService {
       console.log(onlineUser,'onlineee');
       this.onLineUsers$.next(onlineUser)
     })
+    this.socket.on(ChatEventEnum.MESSAGE_DELETE_EVENT, (deletedMessage: Message) => {
+      this.deletedMessageInfo$.next(deletedMessage)
+    })
     
   }
   http: HttpClient = inject(HttpClient);
@@ -33,7 +43,18 @@ export class ChatService {
  messageReceived$ = new Subject<Message>();
 typingInfo$ = new Subject<string>()
   stopTypingInfo$ = new Subject<string>()
-  onLineUsers$ = new Subject <OnlineUsers[]>()
+  onLineUsers$ = new Subject<OnlineUsers[]>()
+  sendChatIdAndRecieverId$ = new Subject<SendChatIdAndRecieverIdInterface>();
+  sendChatInfo$ = new Subject<Chat>()
+  leaveChatInfo$ = new Subject<Chat>();
+  newChatInfo$ = new Subject<Chat>();
+  deletedMessageInfo$ = new Subject<Message>()
+  sendChatInfoFn(chat: Chat) {
+    this.sendChatInfo$.next(chat)
+  }
+  sendChatIdAndRecieverIdFn(payload: SendChatIdAndRecieverIdInterface) {
+    this.sendChatIdAndRecieverId$.next(payload)
+  }
   establishConnection() {
     this.socket.on(ChatEventEnum.CONNECTED_EVENT, (res:any) => {
       console.log(' socket connected connected');
@@ -54,8 +75,6 @@ typingInfo$ = new Subject<string>()
   this.socket.emit(ChatEventEnum.TYPING_EVENT,chatId)
   }
 
-
-   
 
   emitStopTypingEvent(chatId: string) {
     this.socket.emit(ChatEventEnum.STOP_TYPING_EVENT,chatId)
@@ -105,7 +124,9 @@ typingInfo$ = new Subject<string>()
     })
 
   }
-  // getMessageReceived(): Observable<Message> {
-  //   return this.messageReceived$;
-  // }
+
+  mountLeaveChatEvent() {
+
+  }
+  
 }

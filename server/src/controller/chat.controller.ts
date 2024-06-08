@@ -226,13 +226,14 @@ const friends = friendsData[0]
 })
 
 export const deleteOneOnOneChat = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-
+  
   const { chatId } = req.params
+  console.log(chatId);
   const _id = req.user?._id
   const chat = await Chat.aggregate([
     {
       $match: {
-        _id: new mongoose.Schema.ObjectId(chatId)
+        _id: new mongoose.Types.ObjectId(chatId)
       },
     },...chatCommonAggregation()
   ])
@@ -242,13 +243,12 @@ export const deleteOneOnOneChat = asyncHandler(async (req: Request, res: Respons
     throw new AppError("Chat doesnot exist",HttpStatus.NOT_FOUND)
   }
   await Chat.findByIdAndDelete(chatId)
-
   await deleteCascadeChatMessage(chatId)
   const participants = payload.participants as Participant[]
   const otherParticipant = participants.find((
-     (participant)=> participant?._id.toString() !== _id
+     (participant)=> participant?._id.toString() !== _id?.toString()
   ))
-  
+console.log(otherParticipant);
   emitSocketEvent(req, otherParticipant?._id.toString() as string, ChatEventEnum.LEAVE_CHAT_EVENT, payload)
   
   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {}, 'Chat deletedSucessfully'));

@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, inject } from '@angular/core';
 import { SearchUserDialogComponent } from './search-user-dialog/search-user-dialog.component';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { ChatService } from 'src/app/services/chat.service';
+import { SendChatIdAndRecieverIdInterface } from 'src/app/types/chat.interface';
 
 
 @Component({
@@ -13,7 +15,8 @@ export class ChatComponent  implements OnInit {
 
   chatPage: boolean = false;
  chatId:string=''
-recieverId:string=''
+  recieverId: string = ''
+  chatService  = inject(ChatService)
   wantChatPage() {
     this.chatPage = !this.chatPage
   }
@@ -23,6 +26,12 @@ openDialog(){
 }
   
   ngOnInit() {
+    this.chatService.sendChatIdAndRecieverId$.subscribe({
+      next: (payload: SendChatIdAndRecieverIdInterface) => {
+        this.chatId = payload.chatId
+        this.recieverId = payload.recieverId
+      }
+    })
 
 }
   

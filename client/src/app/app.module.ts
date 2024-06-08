@@ -44,6 +44,9 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { SearchUserDialogComponent } from './components/privatepages/chat/search-user-dialog/search-user-dialog.component';
 import { ChatpageComponent } from './components/privatepages/chat/chatpage/chatpage.component';
 import { ChatlistComponent } from './components/privatepages/chat/chatlist/chatlist.component';
+import { TimeagoPipe } from './pipes/timeago.pipe';
+import { TrimSpecialCharPipe } from './pipes/trim-special-char.pipe';
+import { MakeFirstCharUppercasePipe } from './pipes/make-first-char-uppercase.pipe';
 
 
 const token = window.localStorage.getItem('accessToken')
@@ -76,6 +79,9 @@ const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCred
     SearchUserDialogComponent,
     ChatpageComponent,
     ChatlistComponent,
+    TimeagoPipe,
+    TrimSpecialCharPipe,
+    MakeFirstCharUppercasePipe,
 
   ],
   imports: [

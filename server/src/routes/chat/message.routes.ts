@@ -16,8 +16,8 @@ export const messageRoutes = () => {
             , mongoIdPathVariableValidator(validateItems.ROUTE_PARAMS, 'chatId')
             , mongoIdPathVariableValidator(validateItems.REQUEST_BODY, 'content'), sendMessage),
         router.delete('/:chatId/:messageId',
-            mongoIdPathVariableValidator(validateItems.ROUTE_PARAMS, 'chatId'),
-            mongoIdPathVariableValidator(validateItems.ROUTE_PARAMS, 'messageId'),
+            // mongoIdPathVariableValidator(validateItems.ROUTE_PARAMS, 'chatId'),
+            // mongoIdPathVariableValidator(validateItems.ROUTE_PARAMS, 'messageId'),
             deleteMessage
         )
     return router
