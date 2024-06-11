@@ -236,7 +236,7 @@ export const logoutUser = asyncHandler(async (req: Request, res: Response, next:
       {
          $set: {
             refreshAccessToken: undefined
-         }
+         } 
       }, {
       new: true
    });

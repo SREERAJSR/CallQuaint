@@ -1,3 +1,5 @@
+import { ILocalVideoTrack, IRemoteVideoTrack } from "agora-rtc-sdk-ng";
+
 export interface Participant {
   _id: string;
   avatar: string;
@@ -60,4 +62,31 @@ export interface OnlineUsers{
 
 export interface SendChatIdAndRecieverIdInterface{
 chatId: string, recieverId: string 
+}
+
+export interface IVideoCallSocketEventPayload{
+  callerId: string
+  callerName: string,
+  callType:'audio' |'video'
+  chatId: string;
+  userId: string;
+  channelName: string
+  uid:string
+}
+
+export interface AcceptCallPayload{
+  uid: string;
+  channelName: string,
+  callerName: string;
+  remoteId?:string
+}
+
+export interface VideoCallProviderInterface{
+  videoTrack: IRemoteVideoTrack | ILocalVideoTrack,
+  uid:string
+}
+
+export interface DeleteVideoCotainProviderInterface {
+  user_id: string,
+  remoteUserId:string
 }

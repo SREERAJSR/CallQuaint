@@ -3,20 +3,24 @@ import { ChatComponent } from '../chat.component';
 import { ChatService } from 'src/app/services/chat.service';
 import { ApiError, ApiResponse } from 'src/app/types/api.interface';
 import { Message } from 'src/app/types/message.interface';
-import { Chat, Participant, SendChatIdAndRecieverIdInterface } from 'src/app/types/chat.interface';
+import { AcceptCallPayload, Chat, Participant, SendChatIdAndRecieverIdInterface } from 'src/app/types/chat.interface';
 import { AuthService } from 'src/app/services/auth.service';
 import { every } from 'lodash';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { Subscription } from 'rxjs';
+import { AgoraService } from 'src/app/services/agora.service';
+import { ConnectService } from 'src/app/services/connect.service';
+import { IAgoraRTCRemoteUser } from 'agora-rtc-sdk-ng';
+
 
 @Component({
   selector: 'app-chatpage',
   templateUrl: './chatpage.component.html',
   styleUrls: ['./chatpage.component.css']
 })
-export class ChatpageComponent implements OnChanges, OnInit, AfterViewChecked, AfterViewInit, OnDestroy {
+export class ChatpageComponent implements OnChanges, OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   currentUserId?: string
   authServices = inject(AuthService)
   chatComponent: ChatComponent = inject(ChatComponent)
@@ -24,11 +28,14 @@ export class ChatpageComponent implements OnChanges, OnInit, AfterViewChecked, A
   changeDectectorRef: ChangeDetectorRef = inject(ChangeDetectorRef)
   toaxtr: ToastrService = inject(ToastrService)
   matDialoog: MatDialog = inject(MatDialog)
+  agoraService: AgoraService = inject(AgoraService)
+  authService: AuthService = inject(AuthService)
+  connectService: ConnectService = inject(ConnectService)
   @Input() chatId?: string
   @Input() recieverId?: string
   @ViewChild('messageInput') messageInput?: ElementRef<HTMLInputElement>
   @ViewChild('chatContainer', { static: false }) chatContainerRef?: ElementRef<HTMLDivElement>;
-
+  @ViewChild('agoraUiKit',{static:false}) agoraUiKit?:ElementRef<HTMLDivElement>
   selectedFiles: File[] = [];
   chatMessages: Message[] | [] = [];
   participantData?: Participant
@@ -36,6 +43,7 @@ export class ChatpageComponent implements OnChanges, OnInit, AfterViewChecked, A
   fileSelectedToShowInUI?: { url: string, file: File }[]
   typingTimeout: any;
   deletedMessageInfoSubscription$?: Subscription
+  chatPageHeight?:number =320
   ngOnInit(): void {
  
     this.chatServices.deletedMessageInfo$.subscribe({
@@ -173,10 +181,7 @@ export class ChatpageComponent implements OnChanges, OnInit, AfterViewChecked, A
   }
  
 
- 
-  ngAfterViewChecked() {
-  
-  }
+
 
 
   scrollToBottom() {
@@ -197,6 +202,9 @@ export class ChatpageComponent implements OnChanges, OnInit, AfterViewChecked, A
         }
       })
     }
+    // this.agoraService.setVideoContainer(this.agoraUiKit!)
+     
+
   }
   deleteMessage(messageId: string, chatId: string) {
     if (messageId && chatId) {
@@ -210,7 +218,7 @@ export class ChatpageComponent implements OnChanges, OnInit, AfterViewChecked, A
               if (res.statusCode === 200) {
                 const deleteMessage = res.data as Message
                 this.updateDeletedMessge(deleteMessage)
-                   this.toaxtr.success('message deleted')
+                this.toaxtr.success('message deleted')
               }
             },
             error: (error: any) => {
@@ -232,9 +240,39 @@ export class ChatpageComponent implements OnChanges, OnInit, AfterViewChecked, A
     }
   
   }
+  startCall() {
+    const accessToken = this.authService.getAccessToken()
+    const { _id, firstname } = this.authService.decodeJwtPayload(accessToken as string)
+    let payload: AcceptCallPayload
+    let channelName:string
+    this.connectService.getChannelNameForChatCall().subscribe((response: ApiResponse) => {
+         channelName = response.data.channelName
+         payload = {
+        callerName: firstname,
+        channelName: channelName,
+        uid: _id,
+        remoteId:this.recieverId as string
+      }
+      console.log(payload);
+      this.agoraService.startVideoCall(payload)
+    })
+
+  
+  }
+  ngAfterViewChecked(): void {
+    this.chatPageHeight = this.chatContainerRef?.nativeElement.scrollHeight
+    this.changeDectectorRef.detectChanges()
+  }
+
+   endCall() {
+ this.agoraService.leaveVideoCall()
+  }
+    
   
   ngOnDestroy(): void {
     this.deletedMessageInfoSubscription$?.unsubscribe()
+  
+  
   }
 }
  

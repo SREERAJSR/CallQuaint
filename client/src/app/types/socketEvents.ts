@@ -23,5 +23,8 @@ export enum ChatEventEnum {
   MESSAGE_DELETE_EVENT = "messageDeleted",
   
   ONLINEUSERS = 'onlineUsers',
-  GETONLINEUSER="getOnlineUsers"
+  GETONLINEUSER = "getOnlineUsers",
+  CALL_REQUEST = 'callRequest',
+  ACCEPT_CALL = 'acceptCall',
+  DECLINE_CALL = 'declineCall'
 }

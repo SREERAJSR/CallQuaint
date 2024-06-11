@@ -27,3 +27,11 @@ export interface ChatInterface {
     participants?: Participant[];
 
 }
+
+
+export interface AcceptCallPayload{
+  uid: string;
+  channelName: string,
+    callerName: string,
+    remoteId:string
+}

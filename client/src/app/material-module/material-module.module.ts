@@ -13,7 +13,8 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatTableModule} from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import {MatSnackBarModule} from '@angular/material/snack-bar'
 @NgModule({
   declarations: [
   ],
@@ -31,10 +32,11 @@ import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
     MatRadioModule,
     MatTableModule,
     MatPaginatorModule,
-    MatBottomSheetModule
+    MatBottomSheetModule,
+    MatSnackBarModule
   ],
   exports: [MatSlideToggleModule, MatButtonModule, MatIconModule, MatDividerModule, MatFormFieldModule, MatInputModule, MatSidenavModule,
-    MatTooltipModule, MatDialogModule, MatTabsModule, MatRadioModule,MatTableModule,MatPaginatorModule,MatBottomSheetModule],
+    MatTooltipModule, MatDialogModule, MatTabsModule, MatRadioModule,MatTableModule,MatPaginatorModule,MatBottomSheetModule,MatSnackBarModule],
   providers:[]
 
 })

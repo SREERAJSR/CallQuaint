@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import  {BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import { AppRoutingModule } from './app-routing.module';
@@ -47,6 +47,11 @@ import { ChatlistComponent } from './components/privatepages/chat/chatlist/chatl
 import { TimeagoPipe } from './pipes/timeago.pipe';
 import { TrimSpecialCharPipe } from './pipes/trim-special-char.pipe';
 import { MakeFirstCharUppercasePipe } from './pipes/make-first-char-uppercase.pipe';
+import { IncomingCallRequestComponent } from './components/call-pages/incoming-call-request/incoming-call-request.component';
+import { VideoCallScreeenComponent } from './components/call-pages/video-call-screeen/video-call-screeen.component';
+import { GlobalErrorHandler } from './global-error-handler';
+
+
 
 
 const token = window.localStorage.getItem('accessToken')
@@ -54,9 +59,9 @@ const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCred
 
 
 @NgModule({
-  declarations: [
+  declarations: [ 
     AppComponent,
-    LoginComponent,
+    LoginComponent,  
     SignupComponent,
     LottifyComponent,
     ForgotpasswordComponent,
@@ -82,6 +87,8 @@ const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCred
     TimeagoPipe,
     TrimSpecialCharPipe,
     MakeFirstCharUppercasePipe,
+    IncomingCallRequestComponent,
+    VideoCallScreeenComponent,
 
   ],
   imports: [
@@ -105,7 +112,10 @@ const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCred
    }),
    SocketIoModule.forRoot(socketConfig)
   ],
-  providers: [{
+  providers: [
+  {provide:ErrorHandler,useClass:GlobalErrorHandler},
+      {provide:HTTP_INTERCEPTORS,useClass:AuthInterceptor,multi:true},
+    {
       provide: 'SocialAuthServiceConfig',
     useValue: {
         autoLogin: false,
@@ -117,9 +127,10 @@ const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCred
         }
       } as SocialAuthServiceConfig,
   },
-    {provide:HTTP_INTERCEPTORS,useClass:AuthInterceptor,multi:true}
+
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+

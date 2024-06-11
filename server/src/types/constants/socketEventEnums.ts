@@ -21,7 +21,10 @@ export enum ChatEventEnum {
   TYPING_EVENT= "typing",
   // ? when message is deleted
   MESSAGE_DELETE_EVENT = "messageDeleted",
-  
-  ONLINEUSERS = 'onlineUsers',
-    GETONLINEUSER="getOnlineUsers"
+    
+      ONLINEUSERS = 'onlineUsers',
+  GETONLINEUSER = "getOnlineUsers",
+  CALL_REQUEST = 'callRequest',
+  ACCEPT_CALL = 'acceptCall',
+  DECLINE_CALL = 'declineCall'
 } 

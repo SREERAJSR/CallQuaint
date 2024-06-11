@@ -15,8 +15,8 @@
                 <img class="md:w-10 md:h-10  w-6 h-6 rounded-full" src="/assets/logo/audio.png" alt="">
 
             </button>
-            <button matTooltip="Video call">
-                <img class="md:w-10 md:h-10  w-6 h-6 rounded-full" src="/assets/logo/video.png" alt="">
+            <button matTooltip="Video call" (click)="startCall()">
+                <img class="md:w-10 md:h-10  w-6 h-6 rounded-full " src="/assets/logo/video.png" alt="">
 
             </button>
 
@@ -25,7 +25,7 @@
     </div>
     <!--    upper part end-->
 
-<div class="chat flex flex-col gap-2 h-80  overflow-scroll scroll-smooth  p-3" #chatContainer [scrollTop]="chatContainer.scrollHeight">
+<div class="chat flex flex-col gap-2 h-80  overflow-scroll  p-3" #chatContainer [scrollTop]="chatContainerRef?.nativeElement?.scrollHeight">
     <div *ngFor="let message of chatMessages; let last = last"
         [ngClass]="{'justify-end': message.sender._id !== currentUserId, 'justify-start': message.sender._id === currentUserId}"
         class="flex items-start gap-2.5 ">
@@ -93,5 +93,12 @@
         </button>
         <input type="file" #fileInput (change)="onFilesSelected($event)" accept="image/*" multiple hidden />
     </div>
+</div>
 
+<div>   
+<div #agoraUiKit class="flex absolute top-52 left-0">
+
+    
+</div>
+<button mat-raised-button (click)="endCall()" color="warn">EndCall</button>
 </div>

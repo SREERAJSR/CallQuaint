@@ -5,8 +5,8 @@ import { environment } from 'src/environments/environment.development';
 import { ApiResponse } from '../types/api.interface';
 import { ChatEventEnum } from '../types/socketEvents';
 import { Message } from '../types/message.interface';
-import { Observable, Subject } from 'rxjs';
-import { Chat, OnlineUsers, SendChatIdAndRecieverIdInterface } from '../types/chat.interface';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { AcceptCallPayload, Chat, IVideoCallSocketEventPayload, OnlineUsers, SendChatIdAndRecieverIdInterface } from '../types/chat.interface';
 
 
 @Injectable({
@@ -36,8 +36,14 @@ export class ChatService {
     this.socket.on(ChatEventEnum.MESSAGE_DELETE_EVENT, (deletedMessage: Message) => {
       this.deletedMessageInfo$.next(deletedMessage)
     })
+
+    this.socket.on(ChatEventEnum.CALL_REQUEST, (payload:AcceptCallPayload)=>{
+      this.incomingCall$.next(payload)
+    })
     
   }
+
+
   http: HttpClient = inject(HttpClient);
   API_URL: string = environment.api_Url;
  messageReceived$ = new Subject<Message>();
@@ -49,6 +55,9 @@ typingInfo$ = new Subject<string>()
   leaveChatInfo$ = new Subject<Chat>();
   newChatInfo$ = new Subject<Chat>();
   deletedMessageInfo$ = new Subject<Message>()
+  incomingCall$ = new BehaviorSubject<AcceptCallPayload | null>( null);
+
+
   sendChatInfoFn(chat: Chat) {
     this.sendChatInfo$.next(chat)
   }
@@ -87,6 +96,13 @@ typingInfo$ = new Subject<string>()
       this.stopTypingInfo$.next(chatId)
     })
   }
+
+  emitCallRequest(payload:AcceptCallPayload) {
+    this.socket.emit(ChatEventEnum.CALL_REQUEST,payload)
+  }
+
+
+  //Api calls 
   getAllChats() {
     return this.http.get<ApiResponse>(`${this.API_URL}/user/chat`)
   }
@@ -113,20 +129,5 @@ typingInfo$ = new Subject<string>()
     return this.http.delete<ApiResponse>(`${this.API_URL}/user/messages/${chatId}/${messageId}`)
   }
 
-
-  //events
-
-  private recievedMessage() {
-    this.socket.on(ChatEventEnum.MESSAGE_RECEIVED_EVENT, (payload: Message) => {
-      console.log(payload,'recieved');
-      // this.messageReceived$.next(payload)
-
-    })
-
-  }
-
-  mountLeaveChatEvent() {
-
-  }
   
 }

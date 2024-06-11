@@ -24,7 +24,6 @@ const io = new Server(httpServer, {
 })
 app.set('io', io);
 
-
 // database config
 databaseConfg()  
 
@@ -39,6 +38,8 @@ routesConfig(app)
 
 //initialize socet.io 
 initializeIo(io)
+
+
 
 app.use(errorHandling) 
 

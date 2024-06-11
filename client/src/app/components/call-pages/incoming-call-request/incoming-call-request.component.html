@@ -1,0 +1,5 @@
+<div *ngIf="incomingCallRequest" class="bg-slate-500 absolute right-0 top-60 z-50">
+    <h2>{{ incomingCallRequest.callerName! | makeFirstCharUppercase }} is calling...</h2>
+    <button mat-raised-button color="primary" (click)="acceptCall()">Accept</button>
+    <button mat-raised-button color="accent" (click)="declineCall()">Decline</button>
+</div>

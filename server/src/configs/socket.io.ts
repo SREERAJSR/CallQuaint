@@ -7,7 +7,9 @@ import configKey from './configkeys';
 import User from '../models/user.model';
 import { CustomSocketInterface, RequestSocketInterface } from '../types/socket.interface';
 import { ChatEventEnum } from '../types/constants/socketEventEnums';
-import { Request } from 'express';
+import { Application, NextFunction, Request,Response } from 'express';
+import { AcceptCallPayload } from '../types/interfaces/common.interface';
+
 
 export interface OnlineUsers{
     userId: string,
@@ -42,6 +44,13 @@ const mountGetOnlineUsersEvent = (socket: CustomSocketInterface) => {
         socket.emit(ChatEventEnum.ONLINEUSERS,Array.from(onlineUsers.values()))
     })
 }
+
+const mountRequestCallEvent = (socket: CustomSocketInterface) => {
+    socket.on(ChatEventEnum.CALL_REQUEST, (payload: AcceptCallPayload) => {
+        console.log(payload);
+genericEmitSocketEventFn(socket,payload.remoteId.toString(),ChatEventEnum.CALL_REQUEST,payload)
+    })
+}
 export const initializeIo = (io: Server) => {
     return io.on('connection', async (socket:CustomSocketInterface) => {
         try {
@@ -50,7 +59,7 @@ export const initializeIo = (io: Server) => {
 
             if (!token)
                 token = socket.handshake.auth?.token;
-
+ 
             if (!token) {
                 throw new AppError("Un-authorized handshake. Token is missing", HttpStatus.UNAUTHORIZED);
             }
@@ -76,6 +85,7 @@ export const initializeIo = (io: Server) => {
             mountParticipantTypingEvent(socket)
             mountParticipantStopTypingEvent(socket)
             mountGetOnlineUsersEvent(socket)
+            mountRequestCallEvent(socket)
             console.log(onlineUsers);
             socket.on(ChatEventEnum.DISCONNECT_EVENT, () => {
                 console.log("user has disconnected 🚫. userId: " + socket.user?._id);
@@ -99,3 +109,6 @@ export const emitSocketEvent = (req: Request, roomId: string, event: string, pay
     
     (req.app.get('io') as Socket).in(roomId).emit(event, payload);
 }
+export const genericEmitSocketEventFn = (socket: Socket, roomId: string, event: string, payload: any) => {
+    socket.in(roomId).emit(event,payload)
+} 
