@@ -268,6 +268,24 @@ export class ChatpageComponent implements OnChanges, OnInit, AfterViewInit, Afte
  this.agoraService.leaveVideoCall()
   }
     
+  startVoiceCall() {
+    const accessToken = this.authService.getAccessToken()
+    const { _id, firstname, gender } = this.authService.decodeJwtPayload(accessToken as string)
+    const customUid = _id+' '+firstname+' '+gender;
+    let payload: AcceptCallPayload
+    let channelName: string
+    this.connectService.getChannelNameForChatCall().subscribe((response: ApiResponse) => {
+      channelName = response.data.channelName
+      payload = {
+        callerName: firstname,
+        channelName: channelName,
+        uid: _id,
+        remoteId: this.recieverId as string
+      }
+      this.agoraService.startVoiceCall(payload,customUid)
+    })
+    
+  }
   
   ngOnDestroy(): void {
     this.deletedMessageInfoSubscription$?.unsubscribe()

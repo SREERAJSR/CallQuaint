@@ -50,6 +50,7 @@ import { MakeFirstCharUppercasePipe } from './pipes/make-first-char-uppercase.pi
 import { IncomingCallRequestComponent } from './components/call-pages/incoming-call-request/incoming-call-request.component';
 import { VideoCallScreeenComponent } from './components/call-pages/video-call-screeen/video-call-screeen.component';
 import { GlobalErrorHandler } from './global-error-handler';
+import { VoiceCallScreenComponent } from './components/call-pages/voice-call-screen/voice-call-screen.component';
 
 
 
@@ -89,6 +90,7 @@ const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCred
     MakeFirstCharUppercasePipe,
     IncomingCallRequestComponent,
     VideoCallScreeenComponent,
+    VoiceCallScreenComponent,
 
   ],
   imports: [

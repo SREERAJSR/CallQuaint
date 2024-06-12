@@ -33,5 +33,6 @@ export interface AcceptCallPayload{
   uid: string;
   channelName: string,
     callerName: string,
-    remoteId:string
+    remoteId: string,
+    callType?:string
 }

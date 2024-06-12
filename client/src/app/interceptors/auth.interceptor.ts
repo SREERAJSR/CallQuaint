@@ -19,12 +19,10 @@ export class AuthInterceptor implements HttpInterceptor {
     
     const accessToken = this.authService.getAccessToken();
     const refreshToken = this.authService.getRefreshToken()
-    if (request.url.includes('/api/v1/user/refreshToken') && refreshToken) {
-      const refreshTokenRequest = request.clone({
-        withCredentials: true,
-        headers:  request.headers.set('refreshToken',refreshToken)
-      })
-      return next.handle(refreshTokenRequest);
+    console.log(request.url);
+
+    if (request.url ===('http://localhost:3000/api/v1/user/refreshToken') && refreshToken) {
+      return next.handle(request);
     }
 
     const authRequest = request.clone({

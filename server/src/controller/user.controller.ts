@@ -96,6 +96,7 @@ export const loginUser = asyncHandler(async(req: Request, res: Response, next: N
 
 export const refreshAccessToken = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
    console.log(req.cookies)
+   console.log(req.body);
    const incomingRefreshToken: string =  req.body.incomingRefreshToken ||req.cookies.refreshToken  ;
    if (!incomingRefreshToken) throw new AppError("Unauthorized request", HttpStatus.UNAUTHORIZED);
    try {
@@ -240,7 +241,7 @@ export const logoutUser = asyncHandler(async (req: Request, res: Response, next:
       }, {
       new: true
    });
-
+  
    res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{},"User logout sucessfully"))
       
-})
+}) 

@@ -37,7 +37,7 @@ export class ChatService {
       this.deletedMessageInfo$.next(deletedMessage)
     })
 
-    this.socket.on(ChatEventEnum.CALL_REQUEST, (payload:AcceptCallPayload)=>{
+    this.socket.on(ChatEventEnum.CALL_REQUEST, (payload: AcceptCallPayload) => {
       this.incomingCall$.next(payload)
     })
     

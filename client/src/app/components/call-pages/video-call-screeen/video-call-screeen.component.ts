@@ -17,7 +17,16 @@ export class VideoCallScreeenComponent  {
   ids: string[] = [];
   idRemove: boolean = false;
   idRemoveInstructionSubscription?: Subscription;
+  videoContainerInstruction?: boolean;
+  videoContainerInstructionSubscripion$?: Subscription;
   constructor() {
+    this.agoraService.openVideoContainer$.subscribe({
+      next: (value: boolean) => {
+        
+        this.videoContainerInstruction =value
+      }
+    })
+
     this.idRemoveInstructionSubscription = this.agoraService.idRemoveInstruction$.subscribe({
       next: (instruction: boolean) => {
         if (instruction) {
@@ -66,5 +75,21 @@ export class VideoCallScreeenComponent  {
       document.getElementById(id)?.remove();
     })
     this.ids = [];
+  }
+
+  isMinimized:boolean = false; // Flag to track minimized state
+
+  
+  @ViewChild('videoCallScreen') videoCallScreen!: ElementRef;
+  isCallMinimized = false;
+
+  minimizeCall() {
+    this.videoCallScreen.nativeElement.classList.add('hidden');
+    this.isCallMinimized = true;
+  }
+
+  maximizeCall() {
+    this.videoCallScreen.nativeElement.classList.remove('hidden');
+    this.isCallMinimized = false;
   }
 }

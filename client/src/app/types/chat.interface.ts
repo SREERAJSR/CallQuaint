@@ -78,15 +78,19 @@ export interface AcceptCallPayload{
   uid: string;
   channelName: string,
   callerName: string;
-  remoteId?:string
+  remoteId?: string,
+  callType?:string
 }
 
 export interface VideoCallProviderInterface{
   videoTrack: IRemoteVideoTrack | ILocalVideoTrack,
-  uid:string
+  uid: string,
+  openVideoContainer?:boolean
 }
 
 export interface DeleteVideoCotainProviderInterface {
   user_id: string,
   remoteUserId:string
 }
+
+export interface VoiceCallInterfaceOpener{ name: string, open: boolean }
