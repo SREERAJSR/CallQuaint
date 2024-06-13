@@ -33,3 +33,11 @@ export const resetPasswordBodySchema = Joi.object({
   confirm_password: Joi.ref('password')
 
 });
+
+
+export const mongoIdPathVariableValidatorSchemaFn = (path: string) => {
+
+  return Joi.object({
+    [path]: Joi.string().required()
+  })
+}

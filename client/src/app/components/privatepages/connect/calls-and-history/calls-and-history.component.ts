@@ -34,7 +34,6 @@ export class CallsAndHistoryComponent {
   displayedColumns: string[] = ['id','firstname', 'callduration', 'date','action'];
   
   initHistoryData() {
-    console.log('invoked');
     this.connectService.fetchCallHistory().subscribe({
       next: (res: ApiResponse) => {
           const callhistoryData: CallhistoryRespone[] = res.data;

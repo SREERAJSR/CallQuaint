@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { CallInfoModel } from "../types/callinfomodel.type";
+import { CallInfoModel } from "../types/model/callinfomodel.interface";
 
 export const callInfoSchema = new mongoose.Schema({
         userId: {

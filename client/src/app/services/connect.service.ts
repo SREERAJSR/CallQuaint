@@ -33,6 +33,8 @@ export class ConnectService {
     return this.http.get<ApiResponse>(this.API_URL+'/user/connect/getfriendrequests')
   }
 
+ 
+
   acceptFriendRequest(remoteId: string):Observable<ApiResponse> {
     return this.http.patch<ApiResponse>(this.API_URL+'/user/connect/acceptrequest',{remoteId:remoteId}).pipe(
      catchError((error: HttpErrorResponse) => {
@@ -55,5 +57,21 @@ export class ConnectService {
         return throwError(()=>err)
       })
     )
+  }
+
+  fetchFriendsList(): Observable<ApiResponse>{
+    return this.http.get<ApiResponse>(this.API_URL + '/user/connect/getFriends').pipe(
+          catchError((error: HttpErrorResponse) => {
+        const err = {
+          message: error?.error?.errorMessage,
+          statusCode:error.status
+        } 
+        return throwError(()=>err)
+      })
+    )
+  }
+
+   getChannelNameForChatCall(): Observable<ApiResponse>{
+    return this.http.get<ApiResponse>(this.API_URL+'/user/connect/call/getChannelName')
   }
 }

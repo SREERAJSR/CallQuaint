@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import configKey from "../configs/configkeys";
 import crypto from 'node:crypto';
-import { TemporaryToken, UserDocument } from "../types/usermodel.types";
+import { TemporaryToken, UserDocument } from "../types/model/usermodel.interface";
 import uuid from 'uuid';
 import { ref } from "joi";
 
@@ -48,6 +48,12 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
          ref:'user'
     }
+    ],
+    requestSent: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref:'user'
+        }
     ],
     friends: [
         {

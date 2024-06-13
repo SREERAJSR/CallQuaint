@@ -1,14 +1,14 @@
 
-<div class="mt-16">
+<div class="mt-16 ">
 <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" dynamicHeight (selectedTabChange)="onTabChanged($event)" [connect]>
     <mat-tab  label="Connect" >
     <app-call-setup  (callHistoryUpdate)="triggerHistoryUpdate($event)"  ></app-call-setup>
     </mat-tab>
     <mat-tab label="Friends">
-        <app-friends></app-friends>
+        <app-friends #friendsComponent></app-friends>
     </mat-tab>
     <mat-tab label="Requests">
-        <app-requests></app-requests>
+        <app-requests #requestComponent ></app-requests>
     </mat-tab>
     <mat-tab label="Call&History">
         <app-calls-and-history #callHistoryComponent [matIndex]="matTabIndex" ></app-calls-and-history>

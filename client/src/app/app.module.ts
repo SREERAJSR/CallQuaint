@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import  {BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import { AppRoutingModule } from './app-routing.module';
@@ -39,19 +39,30 @@ import { CallsAndHistoryComponent } from './components/privatepages/connect/call
 import { CallSetupComponent } from './components/privatepages/connect/call-setup/call-setup.component';
 import { CallingscreenComponent } from './components/privatepages/connect/call-setup/callingscreen/callingscreen.component';
 import { SelectGenderComponent } from './components/user/publicpages/home/select-gender/select-gender.component';
+import { ChatComponent } from './components/privatepages/chat/chat.component';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { SearchUserDialogComponent } from './components/privatepages/chat/search-user-dialog/search-user-dialog.component';
+import { ChatpageComponent } from './components/privatepages/chat/chatpage/chatpage.component';
+import { ChatlistComponent } from './components/privatepages/chat/chatlist/chatlist.component';
+import { TimeagoPipe } from './pipes/timeago.pipe';
+import { TrimSpecialCharPipe } from './pipes/trim-special-char.pipe';
+import { MakeFirstCharUppercasePipe } from './pipes/make-first-char-uppercase.pipe';
+import { IncomingCallRequestComponent } from './components/call-pages/incoming-call-request/incoming-call-request.component';
+import { VideoCallScreeenComponent } from './components/call-pages/video-call-screeen/video-call-screeen.component';
+import { GlobalErrorHandler } from './global-error-handler';
+import { VoiceCallScreenComponent } from './components/call-pages/voice-call-screen/voice-call-screen.component';
 
 
 
 
-
-
-
+const token = window.localStorage.getItem('accessToken')
+const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCredentials:true,auth:{token}}}
 
 
 @NgModule({
-  declarations: [
+  declarations: [ 
     AppComponent,
-    LoginComponent,
+    LoginComponent,  
     SignupComponent,
     LottifyComponent,
     ForgotpasswordComponent,
@@ -70,6 +81,17 @@ import { SelectGenderComponent } from './components/user/publicpages/home/select
     CallSetupComponent,
     CallingscreenComponent,
     SelectGenderComponent,
+    ChatComponent,
+    SearchUserDialogComponent,
+    ChatpageComponent,
+    ChatlistComponent,
+    TimeagoPipe,
+    TrimSpecialCharPipe,
+    MakeFirstCharUppercasePipe,
+    IncomingCallRequestComponent,
+    VideoCallScreeenComponent,
+    VoiceCallScreenComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -77,7 +99,6 @@ import { SelectGenderComponent } from './components/user/publicpages/home/select
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
-    
     MaterialModule,
     ReactiveFormsModule,
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
@@ -90,9 +111,13 @@ import { SelectGenderComponent } from './components/user/publicpages/home/select
    StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production,
-    })
+   }),
+   SocketIoModule.forRoot(socketConfig)
   ],
-  providers: [{
+  providers: [
+  {provide:ErrorHandler,useClass:GlobalErrorHandler},
+      {provide:HTTP_INTERCEPTORS,useClass:AuthInterceptor,multi:true},
+    {
       provide: 'SocialAuthServiceConfig',
     useValue: {
         autoLogin: false,
@@ -104,9 +129,10 @@ import { SelectGenderComponent } from './components/user/publicpages/home/select
         }
       } as SocialAuthServiceConfig,
   },
-    {provide:HTTP_INTERCEPTORS,useClass:AuthInterceptor,multi:true}
+
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+

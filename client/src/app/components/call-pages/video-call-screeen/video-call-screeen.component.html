@@ -1,0 +1,44 @@
+<div *ngIf="this.agoraService.openVideoContainer$ | async"  #videoCallScreen class="fixed inset-0 flex items-center justify-center z-50 bg-gray-500 bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg p-4 sm:p-8 max-w-full mx-4 sm:mx-0 relative">
+        <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+            (click)="minimizeCall()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+            </svg>
+        </button>
+        <div class="relative aspect-w-16 aspect-h-9">
+            <div class="w-full h-full flex flex-col md:flex-row" #videoContainer id="videoContainer"></div>
+        </div>
+        <div class="mt-4 flex justify-center">
+            <button class="hover:bg-red-900 bg-red-500 text-white px-4 py-2 rounded-md mr-2" (click)="endCall()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                        clip-rule="evenodd" />
+                </svg>
+            </button>
+            <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"
+                        clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="isCallMinimized" class="fixed bottom-4 right-4 z-50">
+    <div class="bg-white rounded-lg shadow-lg p-2 flex items-center cursor-pointer" (click)="maximizeCall()">
+        <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center mr-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20"
+                fill="currentColor">
+                <path
+                    d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+            </svg>
+        </div>
+        <span class="text-sm text-gray-700">Video Call</span>
+    </div>
+</div>

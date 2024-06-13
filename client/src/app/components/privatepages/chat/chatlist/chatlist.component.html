@@ -1,0 +1,40 @@
+<div>
+    <div class="sticky top-0 text-end p-2">
+        <span class="material-symbols-outlined cursor-pointer  text-4xl  bg-indigo-700 text-white rounded-full"
+            matTooltip="Search user" (click)="chatcomponent.openDialog()">
+            person_add
+        </span>
+    </div>
+    <div class="text-center ">
+        <h1 class="font-extrabold text-2xl">Chats</h1>
+        <input type="text" placeholder="search chat " class="w-[90%] text-center p-2 border-2"
+            (input)="filterChatList()" [(ngModel)]="searchTerm">
+    </div>
+   <div class="mt-2 flex-col flex gap-1">
+    <div *ngFor="let chat of filteredChatList" class="relative">
+        <div class="flex justify-between border-b hover:cursor-pointer hover:bg-stone-200 p-4 max-h-20 overflow-hidden"
+            (click)="sendChatIdAndRecieverId(chat.chatId,chat.userId)" (click)="chatcomponent.wantChatPage()">
+            <div class="flex gap-2 relative">
+                <div [ngClass]="onlineUsers.includes(chat.userId) ? ' bg-green-600' : ' bg-red-600'"
+                    class="w-3 h-3 rounded-full absolute"></div>
+                <img class="w-10 h-10 rounded-full" [src]="chat.avatar" alt="">
+                <div>
+                    <p class="md:text-[18px] font-bold md:ml-3">{{ chat.name |trimSpecialChar | makeFirstCharUppercase }}</p>
+                    <p class="font-extralight mt-3 ml-4 overflow-hidden text-[15px]">{{ chat.lastMessage?.content ?
+                        chat.lastMessage?.content : 'not any message yet' }}</p>
+                </div>
+            </div>
+            <div class="text-center mr-3">
+                <p class="font-extralight text-[14px]">{{ chat.lastMessage?.createdAt?.toString()! | timeago }}</p>
+            </div>
+        </div>
+        <span class="material-symbols-outlined absolute p-1 rounded-lg hover:bg-red-800  hover:text-white bottom-0 -right-2 cursor-pointer"  matTooltip="delete chat" (click)="deleteChat(chat.chatId,chat.name)">
+            more_vert
+        </span>
+    </div>
+</div>
+
+</div>
+
+
+

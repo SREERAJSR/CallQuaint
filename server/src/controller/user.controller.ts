@@ -10,7 +10,7 @@ import { SocialLoginEnums, UserRolesEnum } from "../types/constants/common.const
 import ApiResponse from "../utils/ApiReponse";
 import { generateAcessTokenAndrefreshToken } from "../services/user.services";
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { GoogleAuthenticatedUserInterface } from "../types/usermodel.types";
+import { GoogleAuthenticatedUserInterface } from "../types/model/usermodel.interface";
 import uuid from 'uuid';
 
 
@@ -96,6 +96,7 @@ export const loginUser = asyncHandler(async(req: Request, res: Response, next: N
 
 export const refreshAccessToken = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
    console.log(req.cookies)
+   console.log(req.body);
    const incomingRefreshToken: string =  req.body.incomingRefreshToken ||req.cookies.refreshToken  ;
    if (!incomingRefreshToken) throw new AppError("Unauthorized request", HttpStatus.UNAUTHORIZED);
    try {
@@ -224,10 +225,11 @@ export const setGenderForGoogleAuthUsers = asyncHandler(async (req: Request, res
    user.save({ validateBeforeSave: false });
   const updatedUser = await User.findById(user._id).select(
       "-password -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
-   );
-   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {user:updatedUser}, 'sucessfully gender information updated'));
+  );
+   const { accessToken, refreshToken } = await generateAcessTokenAndrefreshToken(user_id);
+   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {user:updatedUser,accessToken:accessToken,refreshToken:refreshToken}, 'sucessfully gender information updated'));
 
-})
+}) 
 export const logoutUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 
    const _id = req.user?._id;
@@ -235,11 +237,11 @@ export const logoutUser = asyncHandler(async (req: Request, res: Response, next:
       {
          $set: {
             refreshAccessToken: undefined
-         }
+         } 
       }, {
       new: true
    });
-
+  
    res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{},"User logout sucessfully"))
       
-})
+}) 

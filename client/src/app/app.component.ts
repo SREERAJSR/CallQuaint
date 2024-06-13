@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from './store/store';
 import { selectUserLoginState } from './store/auth/selectors';
 import { changeUserStateInRefresh } from './store/auth/actions';
+import { ChatService } from './services/chat.service';
 
 
 @Component({
@@ -18,6 +19,7 @@ title='angular'
   store: Store<AppState> = inject(Store<AppState>)
   userloggedInStatus: boolean = false;
   ngOnInit(): void {
+    this.chatService.establishConnection()
     this.store.select(selectUserLoginState).subscribe((status) => this.userloggedInStatus = status)
     console.log(this.userloggedInStatus);
     if ((this.authService.getAccessToken() && this.authService.getRefreshToken())&& !this.userloggedInStatus) {
@@ -27,5 +29,6 @@ title='angular'
     }
   }
 
- agoraService = inject(AgoraService)
+  agoraService = inject(AgoraService)
+  chatService = inject(ChatService)
 }

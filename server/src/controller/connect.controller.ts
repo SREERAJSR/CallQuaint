@@ -7,7 +7,7 @@ import ApiResponse from '../utils/ApiReponse';
 import { ConnectUserInterface } from '../types/app.interfaces';
 import { ConnectTargetEnums } from '../types/constants/common.constant';
 import CallInfo from '../models/callInfo.model';
-import { Date, Schema } from 'mongoose';
+import mongoose, { Date, Schema, mongo } from 'mongoose';
 import { async } from 'rxjs';
 
 const selfHost:Set<ConnectUserInterface> = new Set<ConnectUserInterface>();
@@ -27,7 +27,7 @@ export const callSetup = asyncHanlder(async (req: Request, res: Response, next: 
       const randomRemoteUser = getRandomUser(matchedAnyUsers);
       selfHost.delete(randomRemoteUser);
       res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, randomRemoteUser, 'user got a remote user'));
-      res.end();
+      res.end(); 
       return; // Early return to prevent further execution
     }
   } else if (target === ConnectTargetEnums.MALE || target === ConnectTargetEnums.FEMALE) {
@@ -100,7 +100,7 @@ callhistory.sort((a, b) => {
 })
 
 export const sendFriendRequest = asyncHanlder(async (req: Request, res: Response, next: NextFunction) => {
-  const { remoteId } = req.body;
+  const { remoteId } = req.body as {remoteId :string}
   console.log(req.body);
   const _id = req.user?._id;
   const user = await User.findById(_id);
@@ -113,21 +113,23 @@ export const sendFriendRequest = asyncHanlder(async (req: Request, res: Response
     throw new AppError("No user in this id", HttpStatus.BAD_REQUEST)
     return
   }
-  if (user.requests.includes(remoteId)) {
+  if (user.requestSent.includes(new mongoose.Types.ObjectId(remoteId))) {
     throw new AppError("Already you have sent request", HttpStatus.BAD_REQUEST)
     return;
   };
-  user.requests.push(remoteId);
+  user.requestSent.push(new mongoose.Types.ObjectId(remoteId));
   const callHistory = await CallInfo.findOne({userId:_id});
   if (!callHistory) {
     throw new AppError("Not authorized user", HttpStatus.UNAUTHORIZED);
     return;
   }
+  remoteUser.requests.push(user._id);
   callHistory.callInfo.forEach((info) => {
-    if (info.remoteUserId ==remoteId) {
+    if (info.remoteUserId.toString() ==remoteId) {
       info.requestSent = true;
    }
   })
+  await remoteUser.save({validateBeforeSave:false})
   await callHistory.save({ validateBeforeSave: false });
   await user.save({ validateBeforeSave: false });
 
@@ -155,17 +157,21 @@ export const fetchFriendRequestsFromDb = asyncHanlder(async (req: Request, res: 
 
 export const acceptFriendRequest = asyncHanlder( async (req: Request, res: Response, next: NextFunction) => {
   const _id = req.user?._id;
-  const { remoteId } = req.body;
+  const { remoteId } = req.body as {remoteId:string};
   const user = await User.findById(_id);
   if (!user) {
   throw new AppError("unauthorized user", HttpStatus.UNAUTHORIZED);
     return;
   }
+  const remoteUser = await User.findById(new mongoose.Types.ObjectId(remoteId));
   user.requests.forEach((reqstId,index) => {
-    if (reqstId == remoteId) {
+    if (reqstId.toString() == remoteId.toString()) {
      user.friends.push(user.requests.splice(index, 1)[0]);
     }
   })
+  if (remoteUser?.requestSent.includes(user._id))
+    remoteUser.friends.push(user._id);
+  await remoteUser?.save({validateBeforeSave:false})
   await user.save({ validateBeforeSave: false })
   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{},"friend request accepted succesfully"))
 })
@@ -179,6 +185,33 @@ export const rejectFriendRequest = asyncHanlder(async (req: Request, res: Respon
     res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{},"friend request reject succesfully"))
 
 })
+
+export const fetchFriendsList = asyncHanlder(async (req: Request, res: Response, next: NextFunction) => {
+  const _id = req.user?._id;
+  const user = await User.findById(_id).populate('friends', 'firstname');
+  if (!user) {
+        throw new AppError("unauthorized user", HttpStatus.UNAUTHORIZED);
+    return;
+  }
+  const friendsList = user.friends;
+      res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,friendsList,"friends list fetched succesfully"))
+})
+
+
+export const getChannelName = asyncHanlder(async (req: Request, res: Response, next: NextFunction) => {
+  const _id = req.user?._id
+  const channelName = await User.findById(_id).select('channelName')
+  console.log(channelName);
+  if (!channelName) {
+    throw new AppError("user doesnot exist", HttpStatus.BAD_REQUEST)
+    return
+  }
+  res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,channelName || {channelName:'channel123'}  ,"channel name fetched succesfully"))
+
+
+})
+
+
 
 function getRandomUsersByAnyTarget(target: string, userObject: ConnectUserInterface) {
     return [...selfHost].filter((user) => user.target === userObject.target  )

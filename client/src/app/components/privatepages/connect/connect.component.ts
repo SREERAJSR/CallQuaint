@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, ViewChild, inject } from '@angular/core';
 import { MatTab, MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { CallsAndHistoryComponent } from './calls-and-history/calls-and-history.component';
+import { FriendsComponent } from './friends/friends.component';
+import { RequestsComponent } from './requests/requests.component';
 
 @Component({
   selector: 'app-connect',
@@ -9,7 +11,9 @@ import { CallsAndHistoryComponent } from './calls-and-history/calls-and-history.
 })
 export class ConnectComponent {
   selectedIndex: number = 0;
-  @ViewChild('callHistoryComponent')historyComponent?: CallsAndHistoryComponent;
+  @ViewChild('callHistoryComponent') historyComponent?: CallsAndHistoryComponent;
+  @ViewChild('friendsComponent') friendsComponent?: FriendsComponent;
+  @ViewChild('requestComponent') requestsComponent?:RequestsComponent
   constructor() {
     // this.MatTabGroup._allTabs
   }
@@ -23,10 +27,12 @@ export class ConnectComponent {
 matTabIndex?:number
   onTabChanged(event: MatTabChangeEvent) {
     this.matTabIndex = event.index;
-    // if (this.matTabIndex === 3) {
-    //   this.historyComponent?.initHistoryData();
-    // } else if (this.matTabIndex === 2) {
-    //   this.
-    // }
+    if (this.matTabIndex === 1) {
+      this.friendsComponent?.initFriendsListData()
+    } else if (this.matTabIndex === 2) {
+      this.requestsComponent?.initFriendRequestData()
+    } else if (this.matTabIndex === 3) {
+      this.historyComponent?.initHistoryData()
+    }
   }
 }

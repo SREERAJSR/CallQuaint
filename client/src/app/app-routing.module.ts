@@ -10,6 +10,7 @@ import { HomeComponent } from './components/user/publicpages/home/home.component
 import { ErrorpageComponent } from './components/user/publicpages/errorpage/errorpage.component';
 import { ConnectComponent } from './components/privatepages/connect/connect.component';
 import { authGuard } from './routeguards/canActivate/auth.guard';
+import { ChatComponent } from './components/privatepages/chat/chat.component';
 
 
 const routes: Routes = [
@@ -21,7 +22,8 @@ const routes: Routes = [
   { path: "signup", component: SignupComponent ,canActivate:[authGuard]},
   { path: "forgot-password", component: ForgotpasswordComponent,canActivate:[authGuard] },
   { path: "reset-password/:token", component: ResetpasswordComponent ,canActivate:[resetpasswordGuard]},
-  {path:"connect",component:ConnectComponent},
+  { path: "connect", component: ConnectComponent },
+  {path:"chat",component:ChatComponent},
   {path:"**",component:ErrorpageComponent}
 ];
 @NgModule({
