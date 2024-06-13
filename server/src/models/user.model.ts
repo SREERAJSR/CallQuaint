@@ -1,25 +1,31 @@
 import mongoose, { mongo }  from "mongoose";
-import { AvailableSocialLogins, SocialLoginEnums, USER_TEMPORARY_TOKEN_EXPIRY, UserRolesEnum, availableUserRoles } from "../types/constants/common.constant";
+import { AvailableSocialLogins, SocialLoginEnums, USER_TEMPORARY_TOKEN_EXPIRY, UserRolesEnum, availableUserRoles, genders } from "../types/constants/common.constant";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import configKey from "../configs/configkeys";
 import crypto from 'node:crypto';
-
-import { TemporaryToken, UserDocument } from "../types/usermodel.types";
+import { TemporaryToken, UserDocument } from "../types/model/usermodel.interface";
+import uuid from 'uuid';
+import { ref } from "joi";
 
 
 const userSchema = new mongoose.Schema({
    
-    avatar: {   
+    avatar: {
         type: String,
         default: 'https://via.placeholder.com/200x200.png'
-},
+    },
     firstname: {
         type: String,
         required: true
     },
     lastname: {
         type: String,
+    },
+    gender: {
+        type: String || null,
+        required: true,
+        enum:genders || null
     },
     email: {
         type: String,
@@ -37,6 +43,29 @@ const userSchema = new mongoose.Schema({
     password:{
         type: String,
         required:true
+    },
+    requests: [{
+        type: mongoose.Types.ObjectId,
+         ref:'user'
+    }
+    ],
+    requestSent: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref:'user'
+        }
+    ],
+    friends: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref:'user'
+        }
+    ],
+    channelName: {
+        type: String,
+        unique: true,
+        required: true,
+        default:()=> generateChannelName()
     },
     loginType: {
         type: String,
@@ -85,10 +114,14 @@ userSchema.methods.isPasswordCorrect = async function(password: string) {
 userSchema.methods.generateAccessToken = async function ():Promise<string> {
     return jwt.sign(
         {
-            _id: this._id,
             firstname: this.firstname,
+            lastname: this.lastname,
+            _id: this._id,
             email: this.email,
-            role:this.role
+            avatar: this.avatar,
+            gender: this.gender,
+            role: this.role
+            
         },
         configKey().ACCESS_TOKEN_SECRET,
         {expiresIn:configKey().ACCESS_TOKEN_EXPIRY}
@@ -116,7 +149,9 @@ userSchema.methods.generateTemporaryToken = async function ():Promise<TemporaryT
     }
 }
 
-
+function generateChannelName(){
+return `channel${crypto.randomUUID()}`
+}
  const User = mongoose.model<UserDocument>('user', userSchema)    
 
 export default User;

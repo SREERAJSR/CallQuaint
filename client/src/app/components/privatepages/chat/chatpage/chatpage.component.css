@@ -1,0 +1,64 @@
+/* Styles for the modal and grid layout */
+.grid {
+  display: grid;
+  gap: 10px;
+}
+
+.fixed {
+  position: fixed;
+}
+
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.bg-black {
+  background-color: black;
+}
+
+.bg-opacity-75 {
+  opacity: 0.75;
+}
+
+.flex {
+  display: flex;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.relative {
+  position: relative;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.max-w-full {
+  max-width: 100%;
+}
+
+.max-h-screen {
+  max-height: 100vh;
+}
+
+.text-red-600 {
+  color: #e3342f;
+}
+
+.text-white {
+  color: white;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+}

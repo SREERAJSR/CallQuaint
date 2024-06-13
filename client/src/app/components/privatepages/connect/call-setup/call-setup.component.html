@@ -1,0 +1,32 @@
+<div class=" w-full h-[70vh] ">
+    <div class="flex flex-col md:flex-row justify-center mt-16 items-center">
+        <div class="md:w-full bg-slate-100 rounded">
+    <img *ngIf="gender==='male'" class=" mx-auto rounded-full w-72 h-72" src="/assets/images/male.jpg" alt="">
+    <img *ngIf="gender==='female'" class=" mx-auto rounded-full w-72 h-72" src="/assets/images/female.jpg" alt="">
+        </div>
+        <div class="w-full text-center font-bold text-3xl text-gray-500">
+            <mat-divider></mat-divider>
+            <h1 class="mt-3 mb-2">{{'Select gender'| uppercase}}</h1>
+    <mat-divider></mat-divider>
+            <div class="mt-16">
+    <mat-radio-group class="relative" [(ngModel)]="target">
+        <mat-radio-button class=" mr-8"  color="primary"    matTooltip="premium"  value="male" >Male</mat-radio-button>
+        <mat-radio-button class="mr-8"  value="female"   matTooltip="premium"  color="warn" >Female</mat-radio-button>
+        <div class="absolute left-10 -top-5">
+            <img class="" class="w-8" src="/assets/images/premium.png" alt="">
+        </div>
+        <div class="absolute left-40 -top-5">
+            <img  class="w-8" src="/assets/images/premium.png" alt="">
+        </div>
+        <mat-radio-button  class="mr-8" value="any"    color="accent">Any</mat-radio-button>
+    </mat-radio-group>
+
+   <br class="block md:hidden">
+    <button class="block !w-28 !h-12 !rounded mt-3 md:mt-1" (click)="connectToCall()" mat-raised-button color="primary"  >Connect</button>
+    <!-- <button class="block !w-28 !h-12 !rounded mt-3 md:mt-1" (click)="leaveCall()" mat-raised-button color="primary"  >End</button> -->
+
+            </div>
+        </div>
+    
+    </div>
+</div>

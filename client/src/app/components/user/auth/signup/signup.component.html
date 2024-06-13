@@ -1,4 +1,4 @@
-<section class="bg-gray-50  min-h-screen  flex justify-center items-center">
+<section class="bg-gray-50 mt-16 min-h-screen  flex justify-center items-center">
 
     <div class="bg-gray-100 flex max-w-3xl rounded-xl shadow-2xl p-5">
         <!-- form container -->
@@ -48,6 +48,12 @@
                             </ng-container>
                         </ng-container>
                     </mat-form-field>
+                    <mat-radio-group class="col-span-2 gap-4" aria-label="Select an option" formControlName="gender">
+                        <label>Select gender: </label>
+                        <mat-radio-button value="male">Male</mat-radio-button>
+                        <mat-radio-button value="female">Female</mat-radio-button>
+                    </mat-radio-group>
+
                     <mat-form-field class="border rounded-lg col-span-2 gap-6">
                         <mat-label class="font-mono text-sm">Enter your password</mat-label>
                         <input matInput [type]="hide ? 'password' : 'text'" required formControlName="password">

@@ -9,8 +9,12 @@ import {MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule, matFormFieldAnimatio
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatDialogModule} from '@angular/material/dialog';
-
-
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatTableModule} from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import {MatSnackBarModule} from '@angular/material/snack-bar'
 @NgModule({
   declarations: [
   ],
@@ -23,9 +27,16 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatFormFieldModule,
     MatInputModule, MatSidenavModule,
     MatTooltipModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTabsModule,
+    MatRadioModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatBottomSheetModule,
+    MatSnackBarModule
   ],
-  exports: [MatSlideToggleModule, MatButtonModule, MatIconModule, MatDividerModule, MatFormFieldModule, MatInputModule,MatSidenavModule,MatTooltipModule,MatDialogModule],
+  exports: [MatSlideToggleModule, MatButtonModule, MatIconModule, MatDividerModule, MatFormFieldModule, MatInputModule, MatSidenavModule,
+    MatTooltipModule, MatDialogModule, MatTabsModule, MatRadioModule,MatTableModule,MatPaginatorModule,MatBottomSheetModule,MatSnackBarModule],
   providers:[]
 
 })

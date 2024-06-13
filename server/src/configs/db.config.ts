@@ -11,7 +11,7 @@ const databaseConfg = async () => {
     } catch (error) {
         if (error) console.log('Database connection error',error);
         process.exit(1)
-    }
-}
-
-export default databaseConfg
+    } 
+} 
+ 
+export default databaseConfg 

@@ -8,8 +8,21 @@ import AppError from "./utils/AppError";
 import asynchHandler from 'express-async-handler';
 import "./utils/cron";
 import   './passport/index'
+import { Server } from "socket.io";
+import { createServer } from 'http';
+import configKey from "./configs/configkeys";
+import { initializeIo } from "./configs/socket.io";
 
 const app: Application = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+    pingTimeout: 60000,
+    cors: {
+        origin: configKey().ORIGIN,
+        credentials: true
+    }
+})
+app.set('io', io);
 
 // database config
 databaseConfg()  
@@ -18,10 +31,15 @@ databaseConfg()
 expressConfig(app);
 
 //server config 
-serverConfig(app)
+serverConfig(httpServer)
 
 //routes config
 routesConfig(app)
+
+//initialize socet.io 
+initializeIo(io)
+
+
 
 app.use(errorHandling) 
 

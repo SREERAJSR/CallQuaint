@@ -4,12 +4,13 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { ApiError, ApiResponse } from '../types/api.interface';
-
+import {jwtDecode} from 'jwt-decode';
+import { JwtPayload } from '../types/jwt.interface';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor() { }
+  constructor() {console.log('object'); }
   http = inject(HttpClient);
   API_URL: string = environment.api_Url;
   loggedIn: boolean = false;
@@ -87,6 +88,15 @@ export class AuthService {
     }
     removeRefreshToken(): void{
     window.localStorage.removeItem('refreshToken')
+    }
+  
+  setGenderForGoogleAuthUsers(gender:{gender:string}) {
+    return this.http.post<ApiResponse>(this.API_URL+'/user/setgender',gender)
   }
 
+    decodeJwtPayload(accessToken: string) {
+      const decoded = jwtDecode<JwtPayload>(accessToken)
+    return decoded
+  }
+  
 }

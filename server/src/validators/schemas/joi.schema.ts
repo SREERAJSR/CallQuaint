@@ -5,7 +5,8 @@ const PASSWORD_REGEX = new RegExp(
 );
 export const authSignupSchema = Joi.object({
     firstname: Joi.string().alphanum().min(3).max(30).required(),
-    lastname: Joi.string().max(30).required(),  
+  lastname: Joi.string().max(30).required(),
+    gender:Joi.string().required(),
     email: Joi.string().email({ minDomainSegments:2, tlds: { allow: ['com', 'net'] } }).required(),
     password: Joi.string().pattern(PASSWORD_REGEX).min(8).required(),
     confirm_password:Joi.ref('password')
@@ -32,3 +33,11 @@ export const resetPasswordBodySchema = Joi.object({
   confirm_password: Joi.ref('password')
 
 });
+
+
+export const mongoIdPathVariableValidatorSchemaFn = (path: string) => {
+
+  return Joi.object({
+    [path]: Joi.string().required()
+  })
+}

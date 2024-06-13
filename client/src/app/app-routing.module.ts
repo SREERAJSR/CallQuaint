@@ -10,17 +10,20 @@ import { HomeComponent } from './components/user/publicpages/home/home.component
 import { ErrorpageComponent } from './components/user/publicpages/errorpage/errorpage.component';
 import { ConnectComponent } from './components/privatepages/connect/connect.component';
 import { authGuard } from './routeguards/canActivate/auth.guard';
+import { ChatComponent } from './components/privatepages/chat/chat.component';
 
 
 const routes: Routes = [
+  
   {path:"home",component:HomeComponent},
   { path: "", redirectTo:"home",pathMatch:'full'},
   { path: "login/:token", component: LoginComponent, canActivate: [canActivateGuard] },
   { path: "login", component: LoginComponent ,canActivate:[authGuard]},
   { path: "signup", component: SignupComponent ,canActivate:[authGuard]},
   { path: "forgot-password", component: ForgotpasswordComponent,canActivate:[authGuard] },
-  { path: "reset-password/:token", component: ResetpasswordComponent, canActivate: [resetpasswordGuard]},
-  {path:"connect",component:ConnectComponent},
+  { path: "reset-password/:token", component: ResetpasswordComponent ,canActivate:[resetpasswordGuard]},
+  { path: "connect", component: ConnectComponent },
+  {path:"chat",component:ChatComponent},
   {path:"**",component:ErrorpageComponent}
 ];
 @NgModule({

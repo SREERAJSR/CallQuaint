@@ -1,10 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Actions, act, createEffect, ofType } from "@ngrx/effects";
 import { AuthService } from "../../services/auth.service";
-import { googleLoginAction, googleLoginFail, googleLoginSucess, loginAction, loginFail, loginSuccess, logout, logoutFailed, logoutSuccess } from "./actions";
+import {  changeUserStateInRefresh, changeUserStateInRefreshSucess, googleLoginAction, googleLoginFail, googleLoginSucess, loginAction, loginFail, loginSuccess, logout, logoutFailed, logoutSuccess, setGender, setGenderFail, setGenderSucess } from "./actions";
 import { Observable, catchError, map, of, switchMap, tap, throwError } from "rxjs";
 import { Store } from "@ngrx/store";
-import { InitialState } from "@ngrx/store/src/models";
 import { AppState } from "../store";
 import { UserState } from "../state.model";
 import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
@@ -36,7 +35,8 @@ export class appEffects {
                                 firstname: response.data.user.firstname,
                                 lastname: response.data.user.lastname,
                                 fullname: response.data.user.firstname + '' + response.data.user.lastname,
-                                email:response.data.user.email
+                                email: response.data.user.email,
+                                gender:response.data.user.gender
                             } as UserState,
                             userLoggedIn: true
                         }
@@ -75,13 +75,14 @@ export class appEffects {
                                 firstname: response.data?.user?.firstname,
                                 lastname: response.data?.user?.lastname,
                                 fullname: response?.data?.user?.firstname +' ' + response.data.user.lastname,
-                                email:response.data.user.email
+                                email: response.data.user.email,
+                                 gender: response.data.user.gender ?? null
                              } as UserState
                         const payload = {
                             user: user,
                             loginSuccess: response.message
                         }
-                            this.router.navigate(['/home'])
+                this.router.navigate(['/home'])
                      return googleLoginSucess(payload)
                         }
                         throw new Error('something went wrong')
@@ -116,6 +117,61 @@ export class appEffects {
                         return of(logoutFailed())
                     })
                 )
+            })
+        )
+    })
+
+    setGender$ = createEffect(() => {
+        return this.action$.pipe(
+            ofType(setGender),
+            switchMap(({ gender }) => {
+                const payload = {gender:gender}
+                return this.authService.setGenderForGoogleAuthUsers(payload).pipe(
+                    map((response: ApiResponse) => {
+                           this.authService.setAccessToken(response?.data?.accessToken);
+                            this.authService.setRefreshToken(response?.data?.refreshToken);
+                        if (response.statusCode === 200) {
+                               const user= {
+                                avatar: response.data?.user?.avatar,
+                                firstname: response.data?.user?.firstname,
+                                lastname: response.data?.user?.lastname,
+                                fullname: response?.data?.user?.firstname + ' ' + response.data.user.lastname,
+                                gender:response?.data?.user?.gender,
+                                email:response.data.user.email
+                               } as UserState
+                            const payload = { user: user }
+                            return setGenderSucess(payload)
+                        }
+                        throw new Error("error occurs in gender updating")
+                    }),
+                    catchError((error: HttpErrorResponse) => {
+                        return of(setGenderFail())
+                    })
+                )
+            })
+    )
+    })
+
+    changeUserStateEffect$ = createEffect(() => {
+        return this.action$.pipe(
+            ofType(changeUserStateInRefresh),
+            map((action) => {
+                const accessToken =action.accessToken
+                const { firstname, lastname, avatar, email, gender = null } = this.authService.decodeJwtPayload(accessToken)
+                 const user= {
+                                avatar: avatar,
+                                firstname: firstname,
+                                lastname: lastname,
+                                fullname: firstname + ' ' + lastname,
+                                gender:gender,
+                                email:email
+                               } as UserState
+                    const payload = {
+                        user: user,
+                       userLoggedIn :true 
+                    }
+                    return changeUserStateInRefreshSucess(payload)
+
             })
         )
     })

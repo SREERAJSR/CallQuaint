@@ -1,0 +1,36 @@
+
+<!-- <h2 mat-dialog-title class="text-center">Random calling <br><span>{{timer}}</span> </h2> -->
+
+<mat-dialog-content class="mat-typography w-ful">
+    <div class="flex flex-col items-center justify-center ">
+        <div class="left-section">
+            <div class="flex  gap-3 md:gap-40">
+                <div class="md:w-full rounded ">
+                    <h1 class="text-center font-bold">You</h1>
+                    <img *ngIf="data.gender=== 'male'" class="mx-auto rounded-full w-32 h-32 md:w-32 md:h-32"
+                        src="/assets/images/male.jpg" alt="">
+                
+                    <img *ngIf="data.gender==='female'" class="mx-auto rounded-full w-32 h-32 md:w-48 md:h-48"
+                        src="/assets/images/female.jpg" alt="">
+                </div>
+
+                <div class="md:w-full rounded">
+                    <h1 class="text-center font-bold">{{ remoteUserName||'Stranger'}}</h1>
+                        <img *ngIf="remoteGender=== 'male'" class="mx-auto rounded-full w-32 h-32 md:w-48 md:h-48" src="/assets/images/male.jpg"
+                            alt="">
+                        <img *ngIf="remoteGender=== 'female'" class="mx-auto rounded-full w-32 h-32 md:w-48 md:h-48" src="/assets/images/female.jpg" alt="">
+                        <img *ngIf="remoteGender=== 'nouser'" class="mx-auto rounded-full w-32 h-32 md:w-48 md:h-48" src="/assets/images/nouser.jpg" alt="">
+                </div>
+            </div>
+
+
+        </div>
+        <div class="right-section ">
+
+            <mat-dialog-actions align="center">
+                <button *ngIf="remoteGender==='female' || remoteGender==='male' " mat-raised-button  mat-dialog-close="open" (click)="endcall()" color="warn">End call</button>
+                <button *ngIf="remoteGender==='nouser'" mat-button [mat-dialog-close]="true" mat-raised-button  cdkFocusInitial>Close</button>
+            </mat-dialog-actions>
+        </div>
+    </div>
+</mat-dialog-content>
