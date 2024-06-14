@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { CheckoutPageProviderInterface } from '../types/subscription.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -24,5 +25,10 @@ export class SharedService {
   }
   sendResetPasswordToken(token: string) {
     this.resetPasswordTokenSource.next(token);
-}
+  }
+
+  checkoutInfoProvider$ = new BehaviorSubject<CheckoutPageProviderInterface |null>(null)
+  sendCheckoutInfoProvider(info:CheckoutPageProviderInterface) {
+  this.checkoutInfoProvider$.next(info)
+  }
 }

@@ -27,7 +27,8 @@ export interface UserDocument extends Document {
     requests: mongoose.Types.ObjectId[];
     friends: mongoose.Types.ObjectId[];
     requestSent: mongoose.Types.ObjectId[];
-    
+    subscription: boolean,
+    subscriptionEndDate:Date,
     // Define methods
     isPasswordCorrect(password: string): Promise<boolean>;
     generateAccessToken(): Promise<string>;
@@ -49,3 +50,40 @@ provider?:string
 }
 
 
+
+export enum OrderState{
+    PENDING = 'pending',
+    SUCCESS = 'success',
+    FAILED = 'failed'
+}
+export const orderStateEnum = Object.values(OrderState)
+
+export interface IsubscriptionOrderModel extends Document{
+    userId: mongoose.Types.ObjectId,
+    amount: number,
+    paymentStatus: 'pending' | 'success' | 'failed',
+    receipt: string,
+    orderId: string,
+    paymentId?: string,
+    fullname: string,
+    mobile: string,
+    planId: mongoose.Types.ObjectId,
+    paymentmethod: 'razorpay' | 'stripe' | 'paypal',
+    email:string
+}
+
+
+export interface IOrderInfo{
+
+    userId: mongoose.Types.ObjectId,
+    amount: number,
+    paymentStatus: 'pending' | 'success' | 'failed',
+    receipt: string,
+    orderId: string,
+    paymentId?: string,
+    fullname: string,
+    mobile: string,
+    planId: mongoose.Types.ObjectId,
+    paymentmethod: 'razorpay' | 'stripe' | 'paypal',
+    email:string
+}

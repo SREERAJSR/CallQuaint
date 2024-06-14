@@ -18,11 +18,9 @@
                     <div class="hover:bg-blue-500 hover:text-white  cursor-pointer  hover:font-bold p-5" routerLink="/chat"  routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
                         <li><a>Chat</a></li>
                     </div>
-                    <div class="hover:bg-blue-500 hover:text-white  cursor-pointer  hover:font-bold p-5">
-                        <li><a  >Community</a></li>
-                    </div>
-                    <div class="hover:bg-blue-500  hover:text-white   cursor-pointer  hover:font-bold p-5">
-                        <li><a routerLink="/">Subscription</a></li>
+
+                    <div class="hover:bg-blue-500  hover:text-white   cursor-pointer  hover:font-bold p-5" routerLink="/subscriptions"  routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+                        <li><a >Subscription</a></li>
                     </div>
                                 <mat-icon #hamburger class="cursor-pointer md:!hidden mx-auto !w-16 !h-16" aria-hidden="false" aria-label="Example home icon"
                                     (click)="onToggleMenu(hamburger) " fontIcon="menu"></mat-icon>

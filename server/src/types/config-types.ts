@@ -20,7 +20,10 @@ export  interface configTypes{
     CLIENT_SSO_REDIRECT_URL: string,
     GITHUB_CLIENT_SECRET: string,
     GITHUB_CLIENT_ID: string,
-    GITHUB_CALLBACK_URL:string
+    GITHUB_CALLBACK_URL: string,
+    RAZOR_PAY_KEY_ID: string,
+    RAZOR_PAY_SECRET_KEY:string
+    
 }
 
 export type corsOptionsType = { origin:string }

@@ -95,6 +95,13 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now, // Automatically set to the current time
         index: true // Index to facilitate querying
+    },
+    subscription: {
+        type: Boolean,
+        default:false
+    },
+    subscriptionEndDate: {
+        type:Date
     }
 },{
         timestamps:true

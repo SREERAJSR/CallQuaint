@@ -51,6 +51,9 @@ import { IncomingCallRequestComponent } from './components/call-pages/incoming-c
 import { VideoCallScreeenComponent } from './components/call-pages/video-call-screeen/video-call-screeen.component';
 import { GlobalErrorHandler } from './global-error-handler';
 import { VoiceCallScreenComponent } from './components/call-pages/voice-call-screen/voice-call-screen.component';
+import { SubscriptionComponent } from './components/privatepages/subscriptions/subscription/subscription.component';
+import { FormfieldrequiredDirective } from './directives/formfieldrequired.directive';
+import { CheckoutComponent } from './components/privatepages/subscriptions/subscription/checkout/checkout.component';
 
 
 
@@ -91,6 +94,9 @@ const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCred
     IncomingCallRequestComponent,
     VideoCallScreeenComponent,
     VoiceCallScreenComponent,
+    SubscriptionComponent,
+    FormfieldrequiredDirective,
+    CheckoutComponent,
 
   ],
   imports: [

@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { verifyJWT } from "../../middlewares/authMiddlewares";
-import { createSubscriptionPlan, getSubscriptionPlans } from "../../controller/subscription.controller";
+import { createOrder, createSubscriptionPlan, getSubscriptionPlans, savePaymentInfoToDb,saveFailedInfoToDb } from "../../controller/subscription.controller";
 
 
 export const subscriptionRoutes = () => {
@@ -8,6 +8,9 @@ export const subscriptionRoutes = () => {
     router.use(verifyJWT)
     router.
         get('/', getSubscriptionPlans)
-        .post('/',createSubscriptionPlan)
+        .post('/', createSubscriptionPlan)
+        router.post('/createOrder',createOrder)
+    router.post('/orderSuccess', savePaymentInfoToDb)
+    router.post('/orderFailed',saveFailedInfoToDb)
     return router;
 }

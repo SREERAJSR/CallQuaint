@@ -1,6 +1,6 @@
-import {  AuthState } from "./state.model";
+import {  AuthState} from "./state.model";
 
 
 export interface AppState{
-    auth:AuthState
+    auth: AuthState
 }

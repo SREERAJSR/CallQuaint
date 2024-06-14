@@ -1,0 +1,139 @@
+<div class="font-[sans-serif] bg-white p-4 lg:max-w-7xl max-w-xl min-h-xl mt-16 mx-auto">
+    <div class="grid lg:grid-cols-3 gap-10">
+        <div class="lg:col-span-2 max-lg:order-1">
+
+            <div class="flex items-start">
+
+                <div class="w-full">
+                    <div class="flex items-center w-full">
+                        <div
+                            class="w-8 h-8 shrink-0 mx-[-1px] bg-gray-800 p-1.5 flex items-center justify-center rounded-full">
+                            <span class="text-sm text-white font-bold">1</span>
+                        </div>
+                        <div class="w-full h-[3px] mx-4 rounded-lg bg-gray-300"></div>
+                    </div>
+                    <div class="mt-2 mr-4">
+                        <h6 class="text-sm font-bold text-gray-800">Billing</h6>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex items-center">
+                        <div
+                            class="w-8 h-8 shrink-0 mx-[-1px] bg-gray-200 p-1.5 flex items-center justify-center rounded-full">
+                            <span class="text-sm text-white font-bold">2</span>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <h6 class="text-sm font-bold text-gray-300">Confirm</h6>
+                    </div>
+                </div>
+            </div>
+
+            <form class="mt-16 max-w-lg" [formGroup]="orderUserDetailsForm">
+                <h2 class="text-2xl font-extrabold text-gray-800">Payment method</h2>
+                <div class="grid gap-4 sm:grid-cols-2 mt-8">
+
+                    <mat-radio-group formControlName="paymentmethod">
+                        <div class="flex items-center">
+
+                            <mat-radio-button color="accent" value="razorpay">
+                                <label for="paypal" class="ml-4 flex gap-2 cursor-pointer">
+                                    <img src="/assets/logo/Razorpay_logo.png" class="w-20" alt="paypalCard" />
+                                </label>
+                            </mat-radio-button>
+
+                        </div>
+                        <div class="flex items-center">
+
+                            <mat-radio-button color="primary" value="paypal">
+                                <label for="paypal" class="ml-4 flex gap-2 cursor-pointer">
+                                    <img src="/assets/logo/stripe_blurple.png" class="w-20" alt="paypalCard" />
+                                </label>
+                            </mat-radio-button>
+
+                        </div>
+
+                        <div class="flex items-center">
+
+                            <mat-radio-button color="warn" value="paypal">
+                                <label for="paypal" class="ml-4 flex gap-2 cursor-pointer">
+                                    <img src="https://readymadeui.com/images/paypal.webp" class="w-20"
+                                        alt="paypalCard" />
+                                </label>
+                            </mat-radio-button>
+
+                        </div>
+                    </mat-radio-group>
+                </div>
+                <div class="grid gap-4 mt-8">
+
+                    <input appFormfieldrequired="please enter your full name" formControlName="fullname" type="text"
+                        placeholder="Fullname"
+                        class="px-4 py-3.5 bg-white text-gray-800 w-full text-sm border-b-2 focus:border-gray-800 outline-none" />
+
+                </div>
+                <div class="gap-4 mt-8 flex flex-col md:flex-row">
+                    <div>
+
+                        <input appFormfieldrequired=" Email is required" matInput formControlName="email" type="text"
+                            placeholder="Email"
+                            class="px-4 py-3.5 text-sm  bg-white text-gray-800  border-b-2 focus:border-gray-800 outline-none block" />
+                        <ng-container class="text-xs" *ngIf="!orderUserDetailsForm.get('email')?.hasError('required')">
+                            <mat-error class="text-xs"
+                                *ngIf="orderUserDetailsForm.get('email')?.hasError('notLowerCase')">
+                                Email address must be in lowercase.
+                            </mat-error>
+                            <mat-error class="text-xs"
+                                *ngIf="orderUserDetailsForm.get('email')?.hasError('invalidEmail') && !orderUserDetailsForm.get('email')?.hasError('notLowerCase')">
+                                Email is not valid
+                            </mat-error>
+                        </ng-container>
+                    </div>
+                    <div>
+                        <input maxlength="10"  appFormfieldrequired="enter your mobile number" formControlName="mobile" type="text"
+                            placeholder="Mobile"
+                            class="px-4 py-3.5 bg-white text-gray-800  text-sm border-b-2 focus:border-gray-800 outline-none block" />
+                            <ng-container class="text-xs"
+                                *ngIf="orderUserDetailsForm.get('mobile')?.touched || orderUserDetailsForm.get('mobile')?.dirty">
+                                <mat-error class="text-xs" *ngIf="orderUserDetailsForm.get('mobile')?.hasError('required')">
+                                    Mobile number is required.
+                                </mat-error>
+                                <mat-error class="text-xs" *ngIf="orderUserDetailsForm.get('mobile')?.hasError('maxlength')">
+                                    Mobile number cannot exceed 10 digits.
+                                </mat-error>
+                                <mat-error class="text-xs" *ngIf="orderUserDetailsForm.get('mobile')?.hasError('pattern')">
+                                    Mobile number must be exactly 10 digits.
+                                </mat-error>
+                            </ng-container>
+                    </div>
+
+                </div>
+
+
+
+                <div class="flex flex-wrap gap-4 mt-8">
+                    <button type="button" mat-raised-button
+                        class="min-w-[150px] px-6 py-3.5 text-sm bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200!">Back</button>
+                    <button type="submit" (click)="makePayment()"
+                        class="min-w-[150px] px-6 py-3.5 text-sm  text-white rounded-md hover:bg-indigo-500"
+                        mat-raised-button color="primary">Pay
+                        {{'₹'+amount}}</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="bg-gray-100 p-10  rounded-md ">
+            
+            <ul class="text-gray-800 mt-8 space-y-4">
+                <h1>{{"features" | uppercase}}</h1>
+<li  *ngFor="let feature of features" class="flex flex-wrap gap-4 text-sm">
+    <p class="font-bold">{{feature}}</p>
+</li>
+                <li class="flex flex-wrap gap-4 text-2xl font-bold">{{planname}} <span class="ml-auto font-bold text-4xl">{{'₹'+amount}}</span>
+                </li>
+              
+            </ul>
+        </div>
+    </div>
+</div>
