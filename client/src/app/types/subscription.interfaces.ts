@@ -24,10 +24,17 @@ export interface ICreateOrderRequestBody {
     fullname: string,
   mobile: string,
    email:string,
-    paymentmethod: 'razorpay' | 'stripe' | 'paypal',
+    paymentmethod: 'razorpay' | 'gpay',
     planId:string
 }
-
+export interface GpayOrderSucessReqBody{
+     amount: number,
+    fullname: string,
+  mobile: string,
+   email:string,
+    paymentmethod: 'razorpay' | 'gpay',
+    planId:string
+}
 export interface SubscriptionCreateOrderResponse {
   amount: number;
   fullname: string;
@@ -46,9 +53,8 @@ export interface SubscriptionCreateOrderResponse {
 
 
 export enum paymentmethodsEnum{
-    RAZORPAY = 'razorpay',
-    STRIPE = 'stripe',
-    PAYPAL ='paypal'
+  RAZORPAY = 'razorpay',
+  GPAY ='gpay'
 }
 
 export interface RazorpayOrderSuccessResponse {

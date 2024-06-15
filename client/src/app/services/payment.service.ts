@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
 import { ApiResponse } from '../types/api.interface';
 import { Observable } from 'rxjs';
-import { ICreateOrderRequestBody, RazorpayOrderSuccessResponse } from '../types/subscription.interfaces';
+import { GpayOrderSucessReqBody, ICreateOrderRequestBody, RazorpayOrderSuccessResponse } from '../types/subscription.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -20,15 +20,19 @@ export class PaymentService {
   }
 
   createOrder(payload:ICreateOrderRequestBody) {
-    return this.http.post<ApiResponse>(this.API_URL+'/user/subscriptions/createOrder',payload)
+    return this.http.post<ApiResponse>(this.API_URL+'/user/subscriptions/createrazorPayOrder',payload)
   }
 
   orderSuccess(payload: RazorpayOrderSuccessResponse) {
-    return this.http.post<ApiResponse>(this.API_URL+'/user/subscriptions/orderSuccess',payload)
+    return this.http.post<ApiResponse>(this.API_URL+'/user/subscriptions/razorPayorderSuccess',payload)
   }
 
   orderFailed(orderId: string) {
     const payload ={orderId:orderId}
-    return this.http.post<ApiResponse>(this.API_URL+'/user/subscriptions/orderFailed',payload)
+    return this.http.post<ApiResponse>(this.API_URL+'/user/subscriptions/razorPayorderSuccess',payload)
+  }
+  
+  gpayOrderSucess(payload: GpayOrderSucessReqBody) {
+    return this.http.post<ApiResponse>(this.API_URL+'/user/subscriptions/gpayPaymentSucess',payload)
   }
 }

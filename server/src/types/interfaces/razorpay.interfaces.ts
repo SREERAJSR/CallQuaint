@@ -9,14 +9,13 @@ export interface IRazorpaycreateOrderRequestBody {
     amount: number,
     fullname: string,
     mobile: string,
-    paymentmethod: 'razorpay' | 'stripe' | 'paypal',
+    paymentmethod: 'razorpay' | 'gpay',
     planId:string
 }
 
 export enum paymentmethodsEnum{
     RAZORPAY = 'razorpay',
-    STRIPE = 'stripe',
-    PAYPAL ='paypal'
+    GPAY ='gpay'
 }
 export interface RazorpayOrderSuccessReqbody {
   razorpay_order_id: string;
@@ -26,3 +25,13 @@ export interface RazorpayOrderSuccessReqbody {
 }
 
 export const paymentMethodsObjectEnums = Object.values(paymentmethodsEnum)
+
+
+export interface GpayRequestBody{
+    email:string,
+    amount: number,
+    fullname: string,
+    mobile: string,
+    paymentmethod: 'razorpay' | 'gpay',
+    planId:string
+}

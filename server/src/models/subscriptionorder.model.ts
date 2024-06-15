@@ -36,11 +36,9 @@ const subscriptionOrderSchema = new Schema({
     },
     receipt: {
         type: String,
-        required:true
     },
     orderId: {
         type: String,
-        required:true
     },
     paymentId: {
         type:String

@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { verifyJWT } from "../../middlewares/authMiddlewares";
-import { createOrder, createSubscriptionPlan, getSubscriptionPlans, savePaymentInfoToDb,saveFailedInfoToDb } from "../../controller/subscription.controller";
+import { createOrder, createSubscriptionPlan, getSubscriptionPlans, savePaymentInfoToDb,saveFailedInfoToDb, saveGpayTranscation } from "../../controller/subscription.controller";
 
 
 export const subscriptionRoutes = () => {
@@ -9,8 +9,9 @@ export const subscriptionRoutes = () => {
     router.
         get('/', getSubscriptionPlans)
         .post('/', createSubscriptionPlan)
-        router.post('/createOrder',createOrder)
-    router.post('/orderSuccess', savePaymentInfoToDb)
-    router.post('/orderFailed',saveFailedInfoToDb)
+        router.post('/createrazorPayOrder',createOrder)
+    router.post('/razorPayorderSuccess', savePaymentInfoToDb)
+    router.post('/razorPayorderSuccess', saveFailedInfoToDb),
+    router.post('/gpayPaymentSucess',saveGpayTranscation)
     return router;
 }

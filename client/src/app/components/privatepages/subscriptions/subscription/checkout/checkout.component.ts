@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { escape } from 'lodash';
+
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { emailValidator, lowerCaseValidator } from 'src/app/custom-validators/auth-validators';
@@ -16,7 +17,7 @@ import { CheckoutPageProviderInterface, ICreateOrderRequestBody, RazorpayOrderSu
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.css']
 })
-export class CheckoutComponent implements OnInit ,OnDestroy{
+export class CheckoutComponent implements OnInit, OnDestroy {
 
   formbuilder = inject(FormBuilder);
   orderUserDetailsForm: FormGroup
@@ -25,13 +26,14 @@ export class CheckoutComponent implements OnInit ,OnDestroy{
   paymentService = inject(PaymentService)
   windowRef = inject(WindowRefService)
   router = inject(Router)
+
   constructor() {
      
     this.orderUserDetailsForm = this.formbuilder.group({
-      paymentmethod:['',[Validators.required]],
+      paymentmethod: ['razorpay', [Validators.required]],
       fullname: ['', [Validators.required]],
       email: ["", [Validators.required, Validators.email, emailValidator(), lowerCaseValidator()]],
-      mobile: ['', [Validators.min(10), Validators.pattern(/^\d{10}$/),Validators.required]]
+      mobile: ['', [Validators.min(10), Validators.pattern(/^\d{10}$/), Validators.required]]
     })
 
     
@@ -39,26 +41,29 @@ export class CheckoutComponent implements OnInit ,OnDestroy{
   }
 
   ngOnInit(): void {
-    this.checkoutInfoProviderSubscription=   this.sharedServices.checkoutInfoProvider$.subscribe({
-          next: (info: CheckoutPageProviderInterface |null) => {
-            console.log(info, 'checkout ');
-            if (info) {
-                      this.amount = info.amount,
-                        this.planId = info.subscriptionPlanId
-              this.planname = info.planname 
-              this.features = info.features
-            }
+
+
+
+    this.checkoutInfoProviderSubscription = this.sharedServices.checkoutInfoProvider$.subscribe({
+      next: (info: CheckoutPageProviderInterface | null) => {
+        console.log(info, 'checkout ');
+        if (info) {
+          this.amount = info.amount,
+            this.planId = info.subscriptionPlanId
+          this.planname = info.planname
+          this.features = info.features
+        }
       }
-        })
+    })
   }
-amount: number=0;
+  amount: number = 0;
   planId?: string
-  planname: string='select a plan'
+  planname: string = 'select a plan'
   features: string[] = []
   createOrderSubscription?: Subscription
   orderSucessSubscription?: Subscription
   orderFailedSubscription?: Subscription
-  checkoutInfoProviderSubscription?:Subscription
+  checkoutInfoProviderSubscription?: Subscription
   makePayment() {
     const values = this.orderUserDetailsForm.value as ICreateOrderRequestBody
     console.log(this.orderUserDetailsForm.value);
@@ -69,15 +74,15 @@ amount: number=0;
         mobile: values.mobile,
         paymentmethod: values.paymentmethod,
         planId: this.planId!,
-        email:values.email
+        email: values.email
       }
-   this.createOrderSubscription=   this.paymentService.createOrder(payload).subscribe({
+      this.createOrderSubscription = this.paymentService.createOrder(payload).subscribe({
         next: (response: ApiResponse) => {
           const createOrderedInfo = response.data.newOrder as SubscriptionCreateOrderResponse
           const key_id = response.data.keyId as string
           console.log(createOrderedInfo);
           if (createOrderedInfo.paymentmethod === paymentmethodsEnum.RAZORPAY) {
-            this.paywithRazor(createOrderedInfo,key_id)
+            this.paywithRazor(createOrderedInfo, key_id)
           }
         }
       })
@@ -86,10 +91,10 @@ amount: number=0;
     }
   }
 
-  paywithRazor(val:SubscriptionCreateOrderResponse,keyId:string) {
+  paywithRazor(val: SubscriptionCreateOrderResponse, keyId: string) {
     const options: any = {
       key: keyId,
-      amount:val.amount*100,
+      amount: val.amount * 100,
       currency: 'INR',
       name: val.fullname,
       description: "",
@@ -97,11 +102,11 @@ amount: number=0;
       prefills: {
         name: val.fullname,
         email: val.email,
-        phone:val.mobile
+        phone: val.mobile
       },
       order_id: val.orderId,
       modal: {
-        escape:false
+        escape: false
       },
       notes: {},
       theme: '#0c238a',
@@ -114,7 +119,7 @@ amount: number=0;
         this.orderFailedSubscription = this.paymentService.orderFailed(val.orderId).subscribe()
       }
       if (response.status_code === 200) {
-     this.orderSucessSubscription=   this.paymentService.orderSuccess(response).subscribe((response) => {
+        this.orderSucessSubscription = this.paymentService.orderSuccess(response).subscribe((response) => {
           if (response.statusCode === 200) {
             this.toastr.success('You are now a premium member')
             this.router.navigate(['/home'])
@@ -126,25 +131,93 @@ amount: number=0;
       }
 
     })
-     options.modal.ondismiss = (() => {
-       // handle the case when user closes the form while transaction is in progress
-       console.log('Transaction cancelled.');
-       this.orderFailedSubscription = this.paymentService.orderFailed(val.orderId).subscribe({
-         next: (response: ApiResponse) => {
-           if (response.statusCode === 200) {
-             this.toastr.error('Transcation failed,try again!!');
-           }
-  }
-})
+    options.modal.ondismiss = (() => {
+      // handle the case when user closes the form while transaction is in progress
+      console.log('Transaction cancelled.');
+      this.orderFailedSubscription = this.paymentService.orderFailed(val.orderId).subscribe({
+        next: (response: ApiResponse) => {
+          if (response.statusCode === 200) {
+            this.toastr.error('Transcation failed,try again!!');
+          }
+        }
+      })
 
-     });
+    });
     const rzp = new this.windowRef.nativeWindow.Razorpay(options)
     rzp.open()
   }
+
+
 
   ngOnDestroy(): void {
     this.checkoutInfoProviderSubscription?.unsubscribe();
     this.orderSucessSubscription?.unsubscribe();
     this.orderFailedSubscription?.unsubscribe();
   }
+  paymentRequest :google.payments.api.PaymentDataRequest = {
+
+ apiVersion: 2,
+    apiVersionMinor: 0,
+    allowedPaymentMethods: [
+      {
+        type: 'CARD',
+        parameters: {
+          allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+          allowedCardNetworks: ['AMEX', 'VISA', 'MASTERCARD']
+        },
+        tokenizationSpecification: {
+          type: 'PAYMENT_GATEWAY',
+          parameters: {
+            gateway: 'example',
+            gatewayMerchantId: 'exampleGatewayMerchantId'
+          }
+        }
+      }
+    ],
+    merchantInfo: {
+      merchantId: '12345678901234567890',
+      merchantName: 'Demo Merchant'
+
+    },
+    transactionInfo: {
+      totalPriceStatus: 'FINAL',
+      totalPriceLabel: 'Total',
+      totalPrice: this.amount.toString(),
+      currencyCode: 'INR',
+      countryCode: 'IN'
+    },
+    emailRequired: true,
+  }
+
+  buttonWidth = 240;
+
+  makeGpayPayment(event: any) {
+    console.log(event.detail);
+    const values = this.orderUserDetailsForm.value as ICreateOrderRequestBody
+    console.log(this.orderUserDetailsForm.value);
+    if (this.orderUserDetailsForm.valid) {
+      const payload: ICreateOrderRequestBody = {
+        amount: this.amount,
+        fullname: values.fullname,
+        mobile: values.mobile,
+        paymentmethod: values.paymentmethod,
+        planId: this.planId!,
+        email: event.detail.email
+      }
+      this.paymentService.gpayOrderSucess(payload).subscribe({
+        next: (response: ApiResponse) => {
+          if (response.statusCode === 200) {
+           
+            this.router.navigate(['/home'])
+            this.amount = 0;
+            this.features = []
+            this.planId = ''
+                    this.toastr.success('You are now a premium member')
+          }
+        }
+      })
+  
+    }
+  }
 }
+

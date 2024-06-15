@@ -8,8 +8,8 @@ import {  IsubscriptionPlan, IsubscriptionPlanRequestBody } from '../types/model
 import Razorpay from 'razorpay';
 import configKey from '../configs/configkeys';
 import crypto from 'crypto';
-import { IRazorPayConfig, IRazorpaycreateOrderRequestBody, RazorpayOrderSuccessReqbody } from '../types/interfaces/razorpay.interfaces';
-import Order from '../models/Subscriptionorder.model';
+import { GpayRequestBody, IRazorPayConfig, IRazorpaycreateOrderRequestBody, RazorpayOrderSuccessReqbody } from '../types/interfaces/razorpay.interfaces';
+import Order from '../models/subscriptionorder.model';
 import { IOrderInfo, IsubscriptionOrderModel, OrderState, orderStateEnum } from '../types/model/usermodel.interface';
 import mongoose from 'mongoose';
 import User from '../models/user.model';
@@ -182,6 +182,73 @@ export const saveFailedInfoToDb = asynchHandler(async (req: Request, res: Respon
 res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,order,'Order failed sucesfully saved'))
 
 })
-const generateUniqueRecieptId=()=>{
+
+export const saveGpayTranscation = asynchHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const { amount, email, fullname, mobile, paymentmethod, planId } = req.body as GpayRequestBody
+    if (paymentmethod !== 'gpay') {
+        throw new AppError("wrong route handlers ", HttpStatus.BAD_REQUEST);
+        return
+    }
+      const userId = req.user?._id;
+    const generatedOrderId = generateUniqueOrderIdForGpay();
+     const existSubscriber = await User.findOne({
+        _id:new mongoose.Types.ObjectId(userId),
+        subscription :true
+    })
+    if (existSubscriber) {
+        throw new AppError("You are already subscribed a plan ",HttpStatus.BAD_REQUEST)
+    }
+    const successOrder = new Order({
+        amount: amount,
+        email: email,
+        planId: planId,
+        fullname: fullname,
+        mobile: mobile,
+        orderId: generatedOrderId,
+        userId: userId,
+        paymentmethod: paymentmethod,
+        paymentStatus:OrderState.SUCCESS
+    })
+ 
+
+    const subscriptionPlan = await Subscription.findById(planId);
+
+    if (!subscriptionPlan) {
+      throw new AppError('Subscription plan does not exist with this planId', HttpStatus.NOT_FOUND);
+    }
+
+    const { planduration, plandurationunit } = subscriptionPlan;
+    const startDate = new Date();
+    let endDate: Date;
+
+    switch (plandurationunit) {
+      case 'days':
+        endDate = addDays(startDate, planduration);
+        break;
+      case 'weeks':
+        endDate = addWeeks(startDate, planduration);
+        break;
+      case 'months':
+        endDate = addMonths(startDate, planduration);
+        break;
+      case 'years':
+        endDate = addYears(startDate, planduration);
+        break;
+      default:
+        throw new AppError('Invalid plan duration unit', HttpStatus.BAD_REQUEST);
+    }
+   
+       await successOrder.save({ validateBeforeSave: false })
+    await User.findByIdAndUpdate(new mongoose.Types.ObjectId(userId), {
+      subscription: true,
+      subscriptionEndDate: endDate,
+    });
+    res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,successOrder,"Saved payment info in db"))
+})
+const generateUniqueRecieptId=() :string=>{
     return crypto.randomUUID()
+}
+
+const generateUniqueOrderIdForGpay = ():string => {
+    return 'Order' + crypto.randomUUID();
 }

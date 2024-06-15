@@ -68,7 +68,7 @@ export interface IsubscriptionOrderModel extends Document{
     fullname: string,
     mobile: string,
     planId: mongoose.Types.ObjectId,
-    paymentmethod: 'razorpay' | 'stripe' | 'paypal',
+    paymentmethod: 'razorpay' | 'gpay',
     email:string
 }
 
@@ -78,12 +78,12 @@ export interface IOrderInfo{
     userId: mongoose.Types.ObjectId,
     amount: number,
     paymentStatus: 'pending' | 'success' | 'failed',
-    receipt: string,
+    receipt?: string,
     orderId: string,
     paymentId?: string,
     fullname: string,
     mobile: string,
     planId: mongoose.Types.ObjectId,
-    paymentmethod: 'razorpay' | 'stripe' | 'paypal',
+    paymentmethod: 'razorpay' | 'gpay',
     email:string
 }

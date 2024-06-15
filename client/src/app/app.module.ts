@@ -54,6 +54,8 @@ import { VoiceCallScreenComponent } from './components/call-pages/voice-call-scr
 import { SubscriptionComponent } from './components/privatepages/subscriptions/subscription/subscription.component';
 import { FormfieldrequiredDirective } from './directives/formfieldrequired.directive';
 import { CheckoutComponent } from './components/privatepages/subscriptions/subscription/checkout/checkout.component';
+import { GooglePayButtonModule } from '@google-pay/button-angular';
+
 
 
 
@@ -118,7 +120,8 @@ const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCred
       maxAge: 25,
       logOnly: environment.production,
    }),
-   SocketIoModule.forRoot(socketConfig)
+    SocketIoModule.forRoot(socketConfig),
+    GooglePayButtonModule 
   ],
   providers: [
   {provide:ErrorHandler,useClass:GlobalErrorHandler},
