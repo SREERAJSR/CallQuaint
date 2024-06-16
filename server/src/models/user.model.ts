@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
    
     avatar: {
         type: String,
-        default: 'https://via.placeholder.com/200x200.png'
+        default: 'http://localhost:3000/images/accountdp.jpg'
     },
     firstname: {
         type: String,

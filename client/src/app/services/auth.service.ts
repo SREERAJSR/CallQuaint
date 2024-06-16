@@ -41,7 +41,7 @@ export class AuthService {
     }
 
   forgotPasswordRequest(payload: Record<string, string>) {
-    return this.http.post(this.API_URL+`/user/forgot-password`,payload)
+    return this.http.post<ApiResponse>(this.API_URL+`/user/forgot-password`,payload)
   }
 
   resetPasswordRequest(payload: Record<string, string>, token: string) {
@@ -64,6 +64,13 @@ export class AuthService {
     return this.http.post<ApiResponse>(this.API_URL+`/user/refreshToken`,{incomingRefreshToken:incomingRefreshToken})
   }
 
+  getUserInfo() {
+      return this.http.get<ApiResponse>(this.API_URL+`/user/user-info`)
+  }
+
+  editProfile(payload:any) {
+    return this.http.patch<ApiResponse>(this.API_URL+`/user/edit-profile`,payload)
+  }
   getUserLoggedIn():boolean{
     return this.loggedIn
   }

@@ -3,7 +3,7 @@ import {
     loginUser, signupUser, verifyEmail, refreshAccessToken,
     forgotPasswordRequest, resetPasswordRequest,handleSocialLogin,
     logoutUser,
-    setGenderForGoogleAuthUsers
+    setGenderForGoogleAuthUsers,getUserInfo,editProfileInfo
 } from "../../controller/user.controller";
 import {
     routeSchemaValidator, authSingupSchemaValidator,
@@ -13,6 +13,7 @@ import {
 import { validateItems } from "../../types/constants/validateItems";
 import passport from "passport";
 import { verifyJWT } from "../../middlewares/authMiddlewares";
+import { upload } from "../../middlewares/multerMiddleware";
  
 
 const userRoutes = () => {
@@ -27,8 +28,10 @@ const userRoutes = () => {
         userResetPasswordBodyValidator(validateItems.REQUEST_BODY),resetPasswordRequest)
     router.post('/google', handleSocialLogin),
     router.post('/setgender',verifyJWT,setGenderForGoogleAuthUsers)
-    router.post('/logout',verifyJWT,logoutUser)
+    router.post('/logout', verifyJWT, logoutUser)
+    router.get('/user-info', verifyJWT, getUserInfo)
+    router.patch('/edit-profile',verifyJWT,upload.single('avatar'),editProfileInfo)
     return router
-} 
+}  
  
 export default userRoutes; 

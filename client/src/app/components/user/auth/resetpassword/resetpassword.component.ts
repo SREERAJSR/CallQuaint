@@ -53,7 +53,7 @@ export class ResetpasswordComponent implements OnInit ,OnDestroy{
           this.toaster.success(response.message)
          this.ngxLoader.stop()
         setTimeout(() => {
-            this.router.navigate(['/login'])
+            this.router.navigate(['/'])
          }, 2000);
         }
       }, (error) => {

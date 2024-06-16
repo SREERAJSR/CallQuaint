@@ -40,11 +40,11 @@ export const chatMessageCommonAggregation = () => {
 }
 
 
-const getStaticPath = (req:CustomRequest,fileName:string) => {
+export const getStaticPath = (req:CustomRequest,fileName:string) => {
     return `${req.protocol}://${req.get('host')}/images/${fileName}`
 }
 
-const getLocalPath = (fileName:string) => {
+export const getLocalPath = (fileName:string) => {
     return `public/images/${fileName}`;
 }
 

@@ -55,6 +55,9 @@ import { SubscriptionComponent } from './components/privatepages/subscriptions/s
 import { FormfieldrequiredDirective } from './directives/formfieldrequired.directive';
 import { CheckoutComponent } from './components/privatepages/subscriptions/subscription/checkout/checkout.component';
 import { GooglePayButtonModule } from '@google-pay/button-angular';
+import { AccountsettingComponent } from './components/privatepages/accountsetting/accountsetting.component';
+import { PublicprofileComponent } from './components/privatepages/accountsetting/publicprofile/publicprofile.component';
+import { AccountResetPasswordComponent } from './components/privatepages/accountsetting/account-reset-password/account-reset-password.component';
 
 
 
@@ -99,6 +102,9 @@ const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCred
     SubscriptionComponent,
     FormfieldrequiredDirective,
     CheckoutComponent,
+    AccountsettingComponent,
+    PublicprofileComponent,
+    AccountResetPasswordComponent,
 
   ],
   imports: [

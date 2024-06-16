@@ -12,6 +12,10 @@ import { generateAcessTokenAndrefreshToken } from "../services/user.services";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GoogleAuthenticatedUserInterface } from "../types/model/usermodel.interface";
 import uuid from 'uuid';
+import { getStaticPath } from "./message.controller";
+import { CustomRequest } from "../types/app.interfaces";
+import mongoose from "mongoose";
+import { removeLocalFile } from "../services/chat.services";
 
 
 export const signupUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -132,9 +136,11 @@ export const refreshAccessToken = asyncHandler(async (req: Request, res: Respons
 
 export const forgotPasswordRequest = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
    const { email } = req.body;
-   const user = await User.findOne({ email: email });
+   const user = await User.findOne({ email: email});
    if (!user) throw new AppError("user doesn't exist with this email", HttpStatus.BAD_REQUEST);
-
+   if (user.loginType === SocialLoginEnums.GOOGLE) {
+      throw new AppError("This email is registered with google login method",HttpStatus.BAD_REQUEST)
+   }
    const { unHashedToken, hashedToken, tokenExpiry } = await user.generateTemporaryToken();
    user.forgotPasswordToken = hashedToken;
    user.forgotPasswordExpiry = tokenExpiry;
@@ -245,3 +251,54 @@ export const logoutUser = asyncHandler(async (req: Request, res: Response, next:
    res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{},"User logout sucessfully"))
       
 }) 
+
+export const getUserInfo = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+   const _id = req.user?._id;
+
+const user =  await User.findById(_id).select(
+      " -refreshToken -emailVerficationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry "
+);
+   if (!user) {
+      throw new AppError("User is not authorized", HttpStatus.UNAUTHORIZED)
+      return
+   }
+   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, user, "user data fetched sucessfully"));
+})
+
+
+export const editProfileInfo = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+
+   const { firstname, lastname, email, gender } = req.body;
+   const userId = req.user?._id;
+   const user = await User.findById(new mongoose.Types.ObjectId(userId));
+   if (!user) throw new AppError("User is not authorized", HttpStatus.UNAUTHORIZED);
+
+   const updatFields: { [key: string]: string } = {
+      firstname,
+      lastname,
+      email,
+      gender
+   }
+
+   if (req.file) {
+      const filename = req.file.filename;
+      const avatarUrl = getStaticPath(req as CustomRequest, filename);
+      updatFields.avatar = avatarUrl
+   }
+
+   const updatedUser = await User.findByIdAndUpdate(new mongoose.Types.ObjectId(userId), {
+      
+      $set: updatFields,
+  
+   }, { new: true, runValidators: true })
+
+  if (!updatedUser) {
+           throw new AppError("User not found", HttpStatus.NOT_FOUND);
+  }
+   const newUrl = user.avatar.toString().replace("http://localhost:3000/", "public/");
+   if(newUrl!=='public/images/accountdp.jpg')
+  removeLocalFile(newUrl)
+   
+   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, updatedUser,'profile edited sucesfully'))
+})
+

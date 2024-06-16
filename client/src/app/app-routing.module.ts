@@ -13,6 +13,7 @@ import { authGuard } from './routeguards/canActivate/auth.guard';
 import { ChatComponent } from './components/privatepages/chat/chat.component';
 import { SubscriptionComponent } from './components/privatepages/subscriptions/subscription/subscription.component';
 import { CheckoutComponent } from './components/privatepages/subscriptions/subscription/checkout/checkout.component';
+import { AccountsettingComponent } from './components/privatepages/accountsetting/accountsetting.component';
 
 
 
@@ -30,7 +31,8 @@ const routes: Routes = [
   {
     path: "subscriptions", component: SubscriptionComponent,
   },
-   {path:"subscriptions/checkout",component:CheckoutComponent},
+  { path: "subscriptions/checkout", component: CheckoutComponent },
+   {path:"account",component:AccountsettingComponent},
   {path:"**",component:ErrorpageComponent}
 ];
 @NgModule({

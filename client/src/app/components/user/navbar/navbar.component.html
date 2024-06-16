@@ -31,6 +31,10 @@
                 <button class="!rounded-full cursor-pointer !transition ease-in-out delay-150 hover:!bg-indigo-500" mat-raised-button *ngIf="!this.authService.getAccessToken()" routerLink="/login" color="primary">Login</button>
                     <mat-icon  class="mat-18 cursor-pointer"         matTooltip="Notificaton"
    (click)="notification =!notification"  fontIcon="notification_add"></mat-icon>
+<span routerLink="account" class="material-symbols-outlined cursor-pointer ">
+    person
+</span>
+
                 <mat-icon  #hamburger class="cursor-pointer md:!hidden mr-3" aria-hidden="false" aria-label="Example home icon"
                     (click)="onToggleMenu(hamburger)" fontIcon="menu"></mat-icon>
             </div>
