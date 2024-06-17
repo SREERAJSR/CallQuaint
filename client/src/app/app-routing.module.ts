@@ -11,6 +11,10 @@ import { ErrorpageComponent } from './components/user/publicpages/errorpage/erro
 import { ConnectComponent } from './components/privatepages/connect/connect.component';
 import { authGuard } from './routeguards/canActivate/auth.guard';
 import { ChatComponent } from './components/privatepages/chat/chat.component';
+import { SubscriptionComponent } from './components/privatepages/subscriptions/subscription/subscription.component';
+import { CheckoutComponent } from './components/privatepages/subscriptions/subscription/checkout/checkout.component';
+import { AccountsettingComponent } from './components/privatepages/accountsetting/accountsetting.component';
+
 
 
 const routes: Routes = [
@@ -23,7 +27,12 @@ const routes: Routes = [
   { path: "forgot-password", component: ForgotpasswordComponent,canActivate:[authGuard] },
   { path: "reset-password/:token", component: ResetpasswordComponent ,canActivate:[resetpasswordGuard]},
   { path: "connect", component: ConnectComponent },
-  {path:"chat",component:ChatComponent},
+  { path: "chat", component: ChatComponent },
+  {
+    path: "subscriptions", component: SubscriptionComponent,
+  },
+  { path: "subscriptions/checkout", component: CheckoutComponent },
+   {path:"account",component:AccountsettingComponent},
   {path:"**",component:ErrorpageComponent}
 ];
 @NgModule({

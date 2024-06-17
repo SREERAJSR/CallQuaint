@@ -1,0 +1,9 @@
+.error-message {
+
+  bottom: -20px;
+  left: 0;
+}
+
+input {
+  position: relative;
+}

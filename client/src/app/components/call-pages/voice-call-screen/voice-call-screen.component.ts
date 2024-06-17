@@ -18,12 +18,6 @@ export class VoiceCallScreenComponent {
 
       }
     })
-    // this.agoraService.voiceCallProvider$.subscribe({
-    //   next: (value: string | null) => {
-    //     console.log(value); 
-    //     this.callername = value!;
-    //   }
-    // })
   }
 
   callername?: string

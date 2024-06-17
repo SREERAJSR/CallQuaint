@@ -15,3 +15,5 @@ export interface AuthState{
     loginSuccess: string | null,
     loginError: string |null
 }
+
+

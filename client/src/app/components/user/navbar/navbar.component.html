@@ -18,11 +18,9 @@
                     <div class="hover:bg-blue-500 hover:text-white  cursor-pointer  hover:font-bold p-5" routerLink="/chat"  routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
                         <li><a>Chat</a></li>
                     </div>
-                    <div class="hover:bg-blue-500 hover:text-white  cursor-pointer  hover:font-bold p-5">
-                        <li><a  >Community</a></li>
-                    </div>
-                    <div class="hover:bg-blue-500  hover:text-white   cursor-pointer  hover:font-bold p-5">
-                        <li><a routerLink="/">Subscription</a></li>
+
+                    <div class="hover:bg-blue-500  hover:text-white   cursor-pointer  hover:font-bold p-5" routerLink="/subscriptions"  routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+                        <li><a >Subscription</a></li>
                     </div>
                                 <mat-icon #hamburger class="cursor-pointer md:!hidden mx-auto !w-16 !h-16" aria-hidden="false" aria-label="Example home icon"
                                     (click)="onToggleMenu(hamburger) " fontIcon="menu"></mat-icon>
@@ -33,6 +31,10 @@
                 <button class="!rounded-full cursor-pointer !transition ease-in-out delay-150 hover:!bg-indigo-500" mat-raised-button *ngIf="!this.authService.getAccessToken()" routerLink="/login" color="primary">Login</button>
                     <mat-icon  class="mat-18 cursor-pointer"         matTooltip="Notificaton"
    (click)="notification =!notification"  fontIcon="notification_add"></mat-icon>
+<span routerLink="account" class="material-symbols-outlined cursor-pointer ">
+    person
+</span>
+
                 <mat-icon  #hamburger class="cursor-pointer md:!hidden mr-3" aria-hidden="false" aria-label="Example home icon"
                     (click)="onToggleMenu(hamburger)" fontIcon="menu"></mat-icon>
             </div>

@@ -51,6 +51,14 @@ import { IncomingCallRequestComponent } from './components/call-pages/incoming-c
 import { VideoCallScreeenComponent } from './components/call-pages/video-call-screeen/video-call-screeen.component';
 import { GlobalErrorHandler } from './global-error-handler';
 import { VoiceCallScreenComponent } from './components/call-pages/voice-call-screen/voice-call-screen.component';
+import { SubscriptionComponent } from './components/privatepages/subscriptions/subscription/subscription.component';
+import { FormfieldrequiredDirective } from './directives/formfieldrequired.directive';
+import { CheckoutComponent } from './components/privatepages/subscriptions/subscription/checkout/checkout.component';
+import { GooglePayButtonModule } from '@google-pay/button-angular';
+import { AccountsettingComponent } from './components/privatepages/accountsetting/accountsetting.component';
+import { PublicprofileComponent } from './components/privatepages/accountsetting/publicprofile/publicprofile.component';
+import { AccountResetPasswordComponent } from './components/privatepages/accountsetting/account-reset-password/account-reset-password.component';
+
 
 
 
@@ -91,6 +99,12 @@ const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCred
     IncomingCallRequestComponent,
     VideoCallScreeenComponent,
     VoiceCallScreenComponent,
+    SubscriptionComponent,
+    FormfieldrequiredDirective,
+    CheckoutComponent,
+    AccountsettingComponent,
+    PublicprofileComponent,
+    AccountResetPasswordComponent,
 
   ],
   imports: [
@@ -112,7 +126,8 @@ const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCred
       maxAge: 25,
       logOnly: environment.production,
    }),
-   SocketIoModule.forRoot(socketConfig)
+    SocketIoModule.forRoot(socketConfig),
+    GooglePayButtonModule 
   ],
   providers: [
   {provide:ErrorHandler,useClass:GlobalErrorHandler},

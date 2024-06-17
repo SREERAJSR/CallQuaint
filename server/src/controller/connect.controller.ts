@@ -171,7 +171,7 @@ export const acceptFriendRequest = asyncHanlder( async (req: Request, res: Respo
   })
   if (remoteUser?.requestSent.includes(user._id))
     remoteUser.friends.push(user._id);
-  await remoteUser?.save({validateBeforeSave:false})
+  await remoteUser?.save({validateBeforeSave:false}) 
   await user.save({ validateBeforeSave: false })
   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{},"friend request accepted succesfully"))
 })

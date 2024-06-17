@@ -11,7 +11,6 @@ export const availableUserRoles = Object.values(UserRolesEnum)
 
 export const SocialLoginEnums = {
     GOOGLE: "GOOGLE",
-    GITHUB: "GITHUB",
     EMAIL_PASSWORD: "EMAIL_PASSWORD",
 }
 

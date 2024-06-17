@@ -12,6 +12,7 @@ export class GlobalErrorHandler implements ErrorHandler{
         let message: string;
 
         if (error instanceof HttpErrorResponse) {
+            console.log(error);
             notifier.openServerErrorDialog(error.error.errorMessage)
         } else {
             message = error.message ? error.message : error.toString();
