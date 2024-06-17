@@ -286,19 +286,23 @@ export const editProfileInfo = asyncHandler(async (req: Request, res: Response, 
       updatFields.avatar = avatarUrl
    }
 
-   const updatedUser = await User.findByIdAndUpdate(new mongoose.Types.ObjectId(userId), {
+     
+ const updateProfileUser = await User.findByIdAndUpdate(new mongoose.Types.ObjectId(userId), {
       
       $set: updatFields,
   
    }, { new: true, runValidators: true })
 
-  if (!updatedUser) {
-           throw new AppError("User not found", HttpStatus.NOT_FOUND);
-  }
+   if (!updateProfileUser) {
+      throw new AppError("User not found", HttpStatus.NOT_FOUND);
+   }
+  const { accessToken, refreshToken } = await generateAcessTokenAndrefreshToken(updateProfileUser._id);
+   await user.save({ validateBeforeSave: false });
+
    const newUrl = user.avatar.toString().replace("http://localhost:3000/", "public/");
    if(newUrl!=='public/images/accountdp.jpg')
   removeLocalFile(newUrl)
    
-   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, updatedUser,'profile edited sucesfully'))
+   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, { accessToken: accessToken, refreshToken: refreshToken },'profile edited sucesfully'))
 })
 

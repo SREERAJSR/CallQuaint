@@ -37,7 +37,7 @@ export class CallsAndHistoryComponent {
     this.connectService.fetchCallHistory().subscribe({
       next: (res: ApiResponse) => {
           const callhistoryData: CallhistoryRespone[] = res.data;
-          console.log(callhistoryData);
+          console.log(callhistoryData,'hee');
         this.callHistory = callhistoryData.map((item: CallhistoryRespone,index:number) => {
           return {
             id:index+1,

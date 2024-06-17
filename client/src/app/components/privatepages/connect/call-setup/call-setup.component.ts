@@ -3,6 +3,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { CallingscreenComponent } from './callingscreen/callingscreen.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { AgoraService } from 'src/app/services/agora.service';
+import { User } from 'src/app/types/user.inteface';
+import { ApiResponse } from 'src/app/types/api.interface';
+import { ConnectService } from 'src/app/services/connect.service';
 
 
 @Component({
@@ -16,9 +19,11 @@ export class CallSetupComponent implements OnInit {
   matDialog: MatDialog = inject(MatDialog);
   authService = inject(AuthService);
   agoraService = inject(AgoraService)
+  connectService = inject(ConnectService)
   target: string;
   uid!: string
   gender!: string;
+  isSubscriber?:boolean
   constructor() {
     this.target = 'any';
   }
@@ -26,9 +31,14 @@ ngOnInit(): void {
    const accessToken = this.authService.getAccessToken();
   const { _id,gender ,firstname} = this.authService.decodeJwtPayload(accessToken as string)
   this.uid = _id+' '+firstname+' '+gender;
-  this.gender = gender;
 
-
+  this.authService.getUserInfo().subscribe({
+    next: (response: ApiResponse) => {
+      const userData = response.data as User;
+      this.gender = userData.gender;
+      this.isSubscriber = userData.subscription  
+  }
+})
 
     this.agoraService.strangerInfoSupplier.subscribe({
       next: (info) => {
@@ -42,6 +52,7 @@ ngOnInit(): void {
 
      connectToCall() {
        this.agoraService.getChannelName(this.target).subscribe((response) => {
+         console.log(response,'hai hai hai hai');
          const channel = response.data.channelName;
 
          this.agoraService.startCall(channel,this.uid);

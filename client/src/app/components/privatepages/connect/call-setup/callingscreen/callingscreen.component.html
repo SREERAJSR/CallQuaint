@@ -30,6 +30,7 @@
             <mat-dialog-actions align="center">
                 <button *ngIf="remoteGender==='female' || remoteGender==='male' " mat-raised-button  mat-dialog-close="open" (click)="endcall()" color="warn">End call</button>
                 <button *ngIf="remoteGender==='nouser'" mat-button [mat-dialog-close]="true" mat-raised-button  cdkFocusInitial>Close</button>
+                <button *ngIf="!remoteGender" mat-button [mat-dialog-close]="true" (click)="removeFromListening()" mat-raised-button  cdkFocusInitial>Close</button>
             </mat-dialog-actions>
         </div>
     </div>

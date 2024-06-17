@@ -13,6 +13,10 @@ export class ConnectService {
 
   http: HttpClient = inject(HttpClient);
   API_URL = environment.api_Url;
+
+  removeListeningFromSelfHost() {
+    return this.http.delete<ApiResponse>(this.API_URL+'/user/connect/removeFromListening')
+  }
   fetchCallHistory():Observable<ApiResponse> {
     return this.http.get<ApiResponse>(this.API_URL+'/user/connect/callhistory')
   }

@@ -1,11 +1,16 @@
 import { Router } from "express"
-import { acceptFriendRequest, callSetup, fetchFriendRequestsFromDb, fetchFriendsList, getCallHistory, getChannelName, rejectFriendRequest, saveCallInfoToDb, sendFriendRequest } from "../../controller/connect.controller";
+import {
+    acceptFriendRequest, callSetup, fetchFriendRequestsFromDb,
+    fetchFriendsList, getCallHistory, getChannelName, rejectFriendRequest,
+    saveCallInfoToDb, sendFriendRequest,removeListener
+} from "../../controller/connect.controller";
 import { verifyJWT } from "../../middlewares/authMiddlewares";
 
 const connectRoutes = () => { 
     const router = Router();
     router.use(verifyJWT)
     router.get('/call', callSetup),
+        router.delete('/removeFromListening',removeListener)
         router.post('/saveCallInfo',  saveCallInfoToDb),
         router.get('/callhistory',  getCallHistory),
         router.post('/sendfriendrequest', sendFriendRequest),

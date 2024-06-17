@@ -84,8 +84,11 @@ export class PublicprofileComponent implements OnInit ,OnDestroy{
   submitForm() {
     const values = this.userProfileEditForm?.value;
     if (this.userProfileEditForm?.valid) {
+      this.selectedFile = this.imageUrl !==this.selectedFile?this.selectedFile:undefined
       const payload = new FormData()
-      payload.append('avatar', this.selectedFile!)
+      if (this.selectedFile !== this.imageUrl) {
+        payload.append('avatar',this.selectedFile!)
+      }
       payload.append('firstname',values.firstname)
       payload.append('lastname',values.lastname)
       payload.append('email',values.email)
@@ -94,6 +97,9 @@ export class PublicprofileComponent implements OnInit ,OnDestroy{
         next: (response: ApiResponse) => {
           if (response.statusCode === 200) {
             this.toaxt.success(response.message)
+            console.log(response);
+            this.authServices.setAccessToken(response.data.accessToken)
+            this.authServices.setRefreshToken(response.data.refreshToken)
           }
         }
       })

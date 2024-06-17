@@ -8,7 +8,7 @@ import { ConnectUserInterface } from '../types/app.interfaces';
 import { ConnectTargetEnums } from '../types/constants/common.constant';
 import CallInfo from '../models/callInfo.model';
 import mongoose, { Date, Schema, mongo } from 'mongoose';
-import { async } from 'rxjs';
+
 
 const selfHost:Set<ConnectUserInterface> = new Set<ConnectUserInterface>();
 export const callSetup = asyncHanlder(async (req: Request, res: Response, next: NextFunction) => {
@@ -22,10 +22,10 @@ export const callSetup = asyncHanlder(async (req: Request, res: Response, next: 
 
   if (target === ConnectTargetEnums.ANY) {
     const matchedAnyUsers = getRandomUsersByAnyTarget(target as string, userObject);
-    console.log(matchedAnyUsers,'array');
+    console.log(matchedAnyUsers,'match match match');
     if (matchedAnyUsers.length > 0) {
       const randomRemoteUser = getRandomUser(matchedAnyUsers);
-      selfHost.delete(randomRemoteUser);
+      selfHost.delete(randomRemoteUser);   
       res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, randomRemoteUser, 'user got a remote user'));
       res.end(); 
       return; // Early return to prevent further execution
@@ -37,7 +37,7 @@ export const callSetup = asyncHanlder(async (req: Request, res: Response, next: 
       selfHost.delete(randomRemoteUser);
       res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, randomRemoteUser, 'user got a remote user'));
       res.end();  
-      return; // Early return 
+      return; // Early return c
     } 
   }
   
@@ -47,7 +47,30 @@ export const callSetup = asyncHanlder(async (req: Request, res: Response, next: 
   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, userObject, 'user is self hosted'));
   res.end();
 })
+export const removeListener = asyncHanlder(async (req: Request, res: Response, next: NextFunction) => {
+  const _id = req.user?._id
+  const user = await User.findById(new mongoose.Types.ObjectId(_id))
+  const channelName = user?.channelName.toString();
+  if (!channelName) {
+    throw new AppError("Channel name not found",HttpStatus.BAD_REQUEST)
+}
+  let userToRemove: ConnectUserInterface | null = null
+  
+  for (let user of selfHost) {
+    if (user.channelName.toString() === channelName?.toString()) {
+      userToRemove = user
+      break;
+    }
+  }
 
+  if (userToRemove) {
+    selfHost.delete(userToRemove)
+    res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{},'user removed from selfhosted'))
+  } else {
+    res.status(HttpStatus.NOT_FOUND).json(new ApiResponse(HttpStatus.NOT_FOUND,{},'user Not found in selfhost '))
+  }
+
+})
 export const saveCallInfoToDb = asyncHanlder(async(req: Request, res: Response, next: NextFunction)=>{
   
   const { remoteId, duration, date } = req.body;
@@ -67,7 +90,13 @@ export const saveCallInfoToDb = asyncHanlder(async(req: Request, res: Response, 
     res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {}, "callinformation updated"))
     return
   } else {
-    existedCallInfo.callInfo.push({ remoteUserId: remoteId, callDuration:formattedDuration ,date:date })
+    let isRequestSent: boolean = false;
+    existedCallInfo.callInfo.forEach((info) => {
+      if (info.remoteUserId.toString() === remoteId.toString() && info.requestSent === true) {
+        isRequestSent=true
+      }
+    })
+    existedCallInfo.callInfo.push({ remoteUserId: remoteId, callDuration:formattedDuration ,date:date ,requestSent:isRequestSent})
     await existedCallInfo.save({ validateBeforeSave: false })
     res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {}, "callinformation updated"))
     return
@@ -81,6 +110,7 @@ export const getCallHistory = asyncHanlder(async (req: Request, res: Response, n
   const _id = req.user?._id;
 
   const existedCallInfo = await CallInfo.findOne({ userId: _id }).populate('callInfo.remoteUserId', 'firstname lastname ')
+  console.log(existedCallInfo);
   
   if (!existedCallInfo) { 
     res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, [], 'No call history found for this user'));
@@ -108,32 +138,35 @@ export const sendFriendRequest = asyncHanlder(async (req: Request, res: Response
     throw new AppError('unauthorized', HttpStatus.UNAUTHORIZED)
     return;
   }
+   const callHistory = await CallInfo.findOne({userId:new mongoose.Types.ObjectId(_id)});
+  if (!callHistory) {
+    throw new AppError("Not authorized user", HttpStatus.UNAUTHORIZED);
+    return;
+  }
   const remoteUser = await User.findById(remoteId);
   if (!remoteUser) {
     throw new AppError("No user in this id", HttpStatus.BAD_REQUEST)
     return
   }
+callHistory.callInfo.forEach((info) => {
+    if (info.remoteUserId.toString() ==remoteId) {
+      info.requestSent = true;
+   }
+  })
+
   if (user.requestSent.includes(new mongoose.Types.ObjectId(remoteId))) {
     throw new AppError("Already you have sent request", HttpStatus.BAD_REQUEST)
     return;
   };
   user.requestSent.push(new mongoose.Types.ObjectId(remoteId));
-  const callHistory = await CallInfo.findOne({userId:_id});
-  if (!callHistory) {
-    throw new AppError("Not authorized user", HttpStatus.UNAUTHORIZED);
-    return;
-  }
+ 
   remoteUser.requests.push(user._id);
-  callHistory.callInfo.forEach((info) => {
-    if (info.remoteUserId.toString() ==remoteId) {
-      info.requestSent = true;
-   }
-  })
+  
   await remoteUser.save({validateBeforeSave:false})
   await callHistory.save({ validateBeforeSave: false });
   await user.save({ validateBeforeSave: false });
 
-   let callhistory = callHistory.callInfo;
+   let callhistory = callHistory.callInfo; 
     // Sort the call history by date in descending order
 callhistory.sort((a, b) => {
   const dateA = new Date(a.date as any);
@@ -214,10 +247,10 @@ export const getChannelName = asyncHanlder(async (req: Request, res: Response, n
 
 
 function getRandomUsersByAnyTarget(target: string, userObject: ConnectUserInterface) {
-    return [...selfHost].filter((user) => user.target === userObject.target  )
+    return [...selfHost].filter((user) => (user.target === userObject.gender) || (user.target ===userObject.target)  )
 }
 function getRandomUsersByTarget(target: string, userObject: ConnectUserInterface) {
-    return [...selfHost].filter((user)=>user.target===userObject.gender && userObject.target===user.gender)
+    return [...selfHost].filter((user)=>(user.target===userObject.gender && userObject.target===user.gender) ||user.gender ===userObject.target ) 
 }          
 function getRandomUser(checkArray:ConnectUserInterface[]) {
   const randomIndex = Math.floor(Math.random() * checkArray.length);
