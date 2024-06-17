@@ -8,6 +8,7 @@ import { ConnectUserInterface } from '../types/app.interfaces';
 import { ConnectTargetEnums } from '../types/constants/common.constant';
 import CallInfo from '../models/callInfo.model';
 import mongoose, { Date, Schema, mongo } from 'mongoose';
+import { CallHistoryItem } from '../types/interfaces/common.interface';
 
 
 const selfHost:Set<ConnectUserInterface> = new Set<ConnectUserInterface>();
@@ -109,22 +110,31 @@ export const saveCallInfoToDb = asyncHanlder(async(req: Request, res: Response, 
 export const getCallHistory = asyncHanlder(async (req: Request, res: Response, next: NextFunction) => {
   const _id = req.user?._id;
 
-  const existedCallInfo = await CallInfo.findOne({ userId: _id }).populate('callInfo.remoteUserId', 'firstname lastname ')
-  console.log(existedCallInfo);
+  const existedCallInfo = await CallInfo.findOne({ userId: _id }).populate('callInfo.remoteUserId', 'firstname lastname ') as any
   
   if (!existedCallInfo) { 
     res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, [], 'No call history found for this user'));
     return;
   }
 
-     let callhistory = existedCallInfo.callInfo;
-    // Sort the call history by date in descending order
+  let callhistory:CallHistoryItem[]= [...existedCallInfo.callInfo] 
+  const user = await User.findById(new mongoose.Types.ObjectId(_id)).select('friends')
+  const friendsSet = new Set(user?.friends.map((friend) => friend.toString()))
+  callhistory.forEach((history) => {
+    const remoteUserId = history.remoteUserId._id.toString()
+    console.log(friendsSet.has(remoteUserId));
+    if (friendsSet.has(remoteUserId)) {
+      history.friend= true
+    } else {
+      history.friend = false
+    }
+  })
+
 callhistory.sort((a, b) => {
   const dateA = new Date(a.date as any);
   const dateB = new Date(b.date as any);
   return dateB.getTime() - dateA.getTime();
 });
-  
   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,callhistory , 'call history recieved'));
 
 })
@@ -138,17 +148,21 @@ export const sendFriendRequest = asyncHanlder(async (req: Request, res: Response
     throw new AppError('unauthorized', HttpStatus.UNAUTHORIZED)
     return;
   }
+
+  if (user.friends.includes(new mongoose.Types.ObjectId(remoteId))) {
+      throw new AppError("You are already friends now",HttpStatus.BAD_REQUEST)
+  }
    const callHistory = await CallInfo.findOne({userId:new mongoose.Types.ObjectId(_id)});
   if (!callHistory) {
     throw new AppError("Not authorized user", HttpStatus.UNAUTHORIZED);
     return;
   }
-  const remoteUser = await User.findById(remoteId);
+  const remoteUser = await User.findById(new mongoose.Types.ObjectId(remoteId));
   if (!remoteUser) {
     throw new AppError("No user in this id", HttpStatus.BAD_REQUEST)
     return
   }
-callHistory.callInfo.forEach((info) => {
+callHistory.callInfo.forEach((info) => {  
     if (info.remoteUserId.toString() ==remoteId) {
       info.requestSent = true;
    }

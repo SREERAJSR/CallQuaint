@@ -45,7 +45,9 @@ export class CallsAndHistoryComponent {
             date: new Date(item.date), 
             firstname: item.remoteUserId.firstname,
             remoteId: item.remoteUserId._id,
-            requestSent:item.requestSent
+            requestSent: item.requestSent,
+            friend:item.friend
+
           }
         })
     this.dataSource = new MatTableDataSource<ICallHistory>(this.callHistory)

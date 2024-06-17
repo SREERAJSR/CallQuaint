@@ -4,7 +4,8 @@ export interface ICallHistory{
         firstname: string,
   callduration: string,
   date: Date,
-  requestSent:boolean
+  requestSent: boolean,
+  friend?:boolean
   
       }
 
@@ -19,7 +20,8 @@ export interface CallhistoryRespone {
     callDuration: string;
     date: string;
   _id: string;
-  requestSent:boolean
+  requestSent: boolean,
+  friend?:boolean
 }
 
 export interface IRequestsDataSource{

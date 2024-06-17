@@ -14,7 +14,7 @@ export class ChatComponent  implements OnInit {
   constructor(private _bottomSheet: MatBottomSheet) { }
 
   chatPage: boolean = false;
- chatId:string=''
+ chatId:string =''
   recieverId: string = ''
   chatService  = inject(ChatService)
   wantChatPage() {

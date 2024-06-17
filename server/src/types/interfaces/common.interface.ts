@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 export interface Attachment {
     url: string
     localPath:string
@@ -35,4 +37,18 @@ export interface AcceptCallPayload{
     callerName: string,
     remoteId: string,
     callType?:string
+}
+
+  interface remoteUserInfo{
+     _id: mongoose.Types.ObjectId
+      firstname: string
+      lastname: string
+  }
+export interface CallHistoryItem {
+  remoteUserId:remoteUserInfo
+  callDuration: string;
+  date: Date;
+  requestSent?: boolean;
+  friend?: boolean; 
+
 }

@@ -1,4 +1,4 @@
-import { ref } from "joi";
+import { boolean, ref } from "joi";
 
 import mongoose,{Schema} from "mongoose";
 import { ChatModel } from "../types/model/chatmodel.interfaces";

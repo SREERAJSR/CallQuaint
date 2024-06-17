@@ -1,10 +1,19 @@
 <section class="mt-16 md:p-16 pt-5 pl-5 font-sans  ">
   <div class="bg-indigo-50  border rounded-md shadow-2xl h-[75vh] w-full flex ">
 
-    <app-chatlist (getChatIdEvent)="getChatIdFromChatList($event)" class="left-section relative md:min-w-[30%] md:block min-w-full bg-stone-100 pt-5 overflow-scroll"
+    <app-chatlist (getChatIdEvent)="getChatIdFromChatList($event)" class="left-section relative md:min-w-[30%] md:block min-w-full bg-slate-200 pt-5 overflow-scroll"
     [hidden]="chatPage"></app-chatlist>
 
+<div *ngIf="!chatId"
+  class="right-section   mt-52 md:min-w-[70%] w-full hidden md:block  h-full ">
+  <div class="text-center ">
+  <h2 class="text-2xl font-bold mb-4">Welcome to Callquaint</h2>
+  <p class="text-gray-600 mb-8">
+    Select a conversation from the list to start chatting.
+  </p>
+  </div>
 
+</div>
     <app-chatpage   *ngIf="chatId" [chatId]="chatId" [recieverId]="recieverId"  class="right-section md:min-w-[70%]   w-full md:block "  [hidden]="!chatPage"></app-chatpage>
   </div>
 

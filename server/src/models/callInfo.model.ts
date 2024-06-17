@@ -22,6 +22,9 @@ export const callInfoSchema = new mongoose.Schema({
             requestSent: {
                 type: Boolean,
                 default:false
+            },
+            friend: {
+                type:Boolean
             }
         }]
     });

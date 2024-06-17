@@ -23,9 +23,26 @@
             <th mat-header-cell *matHeaderCellDef> Date </th>
             <td mat-cell *matCellDef="let element"> {{element.date | date:'medium'}} </td>
         </ng-container>
-        <ng-container matColumnDef="action">
-            <th mat-header-cell *matHeaderCellDef> Action </th>
-            <td mat-cell *matCellDef="let element"> <button [disabled]="element.requestSent===true"  mat-raised-button (click)="sendFriendRequest(element.remoteId)"  color="accent">{{ element.requestSent===true? 'Request sent': 'Send request'}} </button></td>
+        Based on your code, it seems you're trying to conditionally render a button based on the value of the element.friend
+        property. Here's how you can achieve that using the *ngIf directive and a single <td> element:
+            htmlCopy<ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Action </th>
+        <td mat-cell *matCellDef="let element">
+            <button *ngIf="element.friend; else sendRequestButton" mat-raised-button color="accent" [disabled]="true">
+                Friend
+            </button>
+            <ng-template #sendRequestButton>
+                <button *ngIf="!element.requestSent; else requestSentButton" mat-raised-button color="accent"
+                    (click)="sendFriendRequest(element.remoteId)">
+                    Send request
+                </button>
+                <ng-template #requestSentButton>
+                    <button mat-raised-button color="accent" [disabled]="true">
+                        Request sent
+                    </button>
+                </ng-template>
+            </ng-template>
+        </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
