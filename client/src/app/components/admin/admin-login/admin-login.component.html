@@ -1,0 +1,69 @@
+
+<section class="bg-gray-100 min-h-screen flex justify-center items-center ">
+    <!-- form container -->
+    <div class="bg-gray-100 flex rounded-2xl shadow-lg max-w-3xl p-5 text-center">
+        <!-- form section  -->
+        <div class="sm:w-1/2 text-center">
+            <div class="mt-5">
+                <h1 class="text-2xl">Admin Login</h1>
+            </div>
+
+            <form [formGroup]="adminloginForm" class="mt-8 flex flex-col items-center ">
+                <mat-form-field class="w-60 mt-6 border rounded-sm ">
+                    <mat-label class="font-mono text-sm">Enter your email</mat-label>
+                    <input matInput placeholder="pat@example.com" formControlName="email" required>
+                    <mat-error class="text-xs" *ngIf="adminloginForm.get('email')?.untouched">
+                        Email is required
+                    </mat-error>
+                    <ng-container class="text-xs" *ngIf="adminloginForm.get('email')?.touched">
+                        <mat-error class="text-xs" *ngIf="adminloginForm.get('email')?.hasError('required')">
+                            Email is required
+                        </mat-error>
+                        <ng-container class="text-xs" *ngIf="!adminloginForm.get('email')?.hasError('required')">
+                            <mat-error class="text-xs" *ngIf="adminloginForm.get('email')?.hasError('notLowerCase')">
+                                Email address must be in lowercase.
+                            </mat-error>
+                            <mat-error class="text-xs"
+                                *ngIf="adminloginForm.get('email')?.hasError('invalidEmail') && !adminloginForm.get('email')?.hasError('notLowerCase')">
+                                Email is not valid
+                            </mat-error>
+                        </ng-container>
+                    </ng-container>
+                </mat-form-field>
+                <mat-form-field class="w-60 mt-6 border rounded-sm">
+                    <mat-label class="font-mono text-sm">Enter your password</mat-label>
+                    <input matInput [type]="hide ? 'password' : 'text'" #password formControlName="password">
+                    <mat-error *ngIf="adminloginForm.get('password')?.untouched">Password is required</mat-error>
+                    <mat-error *ngIf="adminloginForm.get('password')?.hasError('minlength')">
+                        For better security, your password must be at least 8 characters long.
+                    </mat-error> <mat-error
+                        *ngIf="adminloginForm.get('password')?.hasError('required') && adminloginForm.get('password')?.touched">Password
+                        isrequired</mat-error>
+                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                        [attr.aria-pressed]="hide">
+                        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </button>
+                </mat-form-field>
+                <!-- <div class="block w-full text-xs mt-4 ml-32">
+                    <p class="cursor-pointer font-light text-indigo-500" routerLink="/forgot-password">Recovery
+                        password?</p>
+                </div> -->
+                <button
+                    class="mt-9 w-52 cursor-pointer !transition ease-in-out delay-150 hover:!bg-blue-500 hover:-translate-y-1 hover:!scale-110 !duration-300 !text-white !bg-blue-400"
+                    type="submit" mat-raised-button (click)="adminloginFormSubmit()" >Login</button>
+            </form>
+
+      
+        </div>
+        <!-- img section -->
+        <div class="w-1/2 my-auto hidden sm:block ">
+            <!-- <app-lottify></app-lottify> -->
+            <img class="rounded-2xl h-full" src="/assets/images/admin.jpg" alt="">
+        </div>
+    </div>
+
+
+</section>
+
+<!-- <ngx-ui-loader></ngx-ui-loader>
+  -->

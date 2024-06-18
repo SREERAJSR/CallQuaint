@@ -58,6 +58,15 @@ import { GooglePayButtonModule } from '@google-pay/button-angular';
 import { AccountsettingComponent } from './components/privatepages/accountsetting/accountsetting.component';
 import { PublicprofileComponent } from './components/privatepages/accountsetting/publicprofile/publicprofile.component';
 import { AccountResetPasswordComponent } from './components/privatepages/accountsetting/account-reset-password/account-reset-password.component';
+import { AdminNavbarComponent } from './components/admin/admin-navbar/admin-navbar.component';
+import { AdminLoginComponent } from './components/admin/admin-login/admin-login.component';
+import { AdminSidebarComponent } from './components/admin/admin-sidebar/admin-sidebar.component';
+import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
+import { AdminUserManagementComponent } from './components/admin/admin-user-management/admin-user-management.component';
+import { SubscriptionManagementComponent } from './components/admin/subscription-management/subscription-management.component';
+import { PremiumMembersComponent } from './components/admin/premium-members/premium-members.component';
+import { SalesReportComponent } from './components/admin/sales-report/sales-report.component';
 
 
 
@@ -105,6 +114,14 @@ const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCred
     AccountsettingComponent,
     PublicprofileComponent,
     AccountResetPasswordComponent,
+    AdminNavbarComponent,
+    AdminLoginComponent,
+    AdminSidebarComponent,
+    AdminDashboardComponent,
+    AdminUserManagementComponent,
+    SubscriptionManagementComponent,
+    PremiumMembersComponent,
+    SalesReportComponent,
 
   ],
   imports: [
@@ -127,7 +144,8 @@ const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCred
       logOnly: environment.production,
    }),
     SocketIoModule.forRoot(socketConfig),
-    GooglePayButtonModule 
+    GooglePayButtonModule,
+    NgApexchartsModule
   ],
   providers: [
   {provide:ErrorHandler,useClass:GlobalErrorHandler},

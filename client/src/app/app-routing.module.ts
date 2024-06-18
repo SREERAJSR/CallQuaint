@@ -14,6 +14,12 @@ import { ChatComponent } from './components/privatepages/chat/chat.component';
 import { SubscriptionComponent } from './components/privatepages/subscriptions/subscription/subscription.component';
 import { CheckoutComponent } from './components/privatepages/subscriptions/subscription/checkout/checkout.component';
 import { AccountsettingComponent } from './components/privatepages/accountsetting/accountsetting.component';
+import { AdminLoginComponent } from './components/admin/admin-login/admin-login.component';
+import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
+import { AdminUserManagementComponent } from './components/admin/admin-user-management/admin-user-management.component';
+import { SubscriptionManagementComponent } from './components/admin/subscription-management/subscription-management.component';
+import { PremiumMembersComponent } from './components/admin/premium-members/premium-members.component';
+import { SalesReportComponent } from './components/admin/sales-report/sales-report.component';
 
 
 
@@ -32,9 +38,15 @@ const routes: Routes = [
     path: "subscriptions", component: SubscriptionComponent,
   },
   { path: "subscriptions/checkout", component: CheckoutComponent },
-   {path:"account",component:AccountsettingComponent},
+  { path: "account", component: AccountsettingComponent },
+  { path: 'admin', component: AdminLoginComponent },
+{path: "admin/dashboard",component:AdminDashboardComponent},
+  { path: "admin/user-management", component: AdminUserManagementComponent },
+  { path: "admin/subscriptions-management", component: SubscriptionManagementComponent },
+  { path: 'admin/premium-members', component: PremiumMembersComponent },
+{path:'admin/sales-report',component:SalesReportComponent},
   {path:"**",component:ErrorpageComponent}
-];
+]
 @NgModule({
   imports: [RouterModule.forRoot(routes)],         
   exports: [RouterModule]

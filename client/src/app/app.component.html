@@ -1,6 +1,16 @@
-    <app-navbar ></app-navbar>
+<ng-container *ngIf="!router.url.startsWith('/admin')">
+    <app-navbar></app-navbar>
     <app-incoming-call-request></app-incoming-call-request>
     <app-video-call-screeen></app-video-call-screeen>
     <app-voice-call-screen></app-voice-call-screen>
-    <router-outlet></router-outlet>   
+</ng-container>
+
+<ng-container *ngIf="router.url.startsWith('/admin')">
+    <!-- <app-admin-navbar></app-admin-navbar> -->
+    <app-admin-sidebar></app-admin-sidebar>
+</ng-container>
+
+<router-outlet></router-outlet>
+<ng-container *ngIf="!router.url.startsWith('/admin')">
     <app-footer></app-footer>
+</ng-container>
