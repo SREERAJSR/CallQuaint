@@ -29,6 +29,7 @@
     "@stripe/stripe-js": "^3.5.0",
     "agora-rtc-sdk-ng": "^4.20.2",
     "jwt-decode": "^4.0.0",
+    "ng-apexcharts": "^1.8.0",
     "ngx-socket-io": "^4.5.1",
     "ngx-toastr": "^18.0.0",
     "ngx-ui-loader": "^13.0.0",

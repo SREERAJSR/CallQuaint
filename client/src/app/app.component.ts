@@ -6,6 +6,8 @@ import { AppState } from './store/store';
 import { selectUserLoginState } from './store/auth/selectors';
 import { changeUserStateInRefresh } from './store/auth/actions';
 import { ChatService } from './services/chat.service';
+import { Router } from '@angular/router';
+
 
 
 @Component({
@@ -17,6 +19,7 @@ export class AppComponent implements OnInit {
 title='angular'
   authService: AuthService = inject(AuthService);
   store: Store<AppState> = inject(Store<AppState>)
+  router:Router = inject(Router)
   userloggedInStatus: boolean = false;
   ngOnInit(): void {
     this.chatService.establishConnection()
