@@ -26,7 +26,7 @@ export class ChatlistComponent implements OnInit, OnDestroy  {
   onlineUsers: string[] = []
   _id?: string 
   newChatInfoSubscription$?:Subscription
-  @Output() getChatIdEvent: EventEmitter<{ chatId: string, recieverId: string }> = new EventEmitter<{ chatId: string, recieverId: string }>();
+  @Output() getChatIdEvent: EventEmitter<{ chatId: string , recieverId: string }> = new EventEmitter<{ chatId: string, recieverId: string }>();
   leaveChatInfoSubscription$ ?:Subscription
   ngOnInit(): void {
     this.newChatInfoSubscription$ = this.chatService.newChatInfo$.subscribe({
@@ -141,7 +141,8 @@ filteredChatList?:IChatList[]
         if (res) {
           this.chatService.deleteChat(chatId).subscribe({next:(response:ApiResponse) => {
             if(response.statusCode === 200) {
-            const chatIndex = this.chatList.findIndex((chat) => chat.chatId === chatId);
+              const chatIndex = this.chatList.findIndex((chat) => chat.chatId === chatId);
+              this.getChatIdEvent.emit({ chatId: '',recieverId:''})
             if (chatIndex !== 1) {
               this.chatList.splice(chatIndex, 1)
               this.filteredChatList = [...this.chatList]

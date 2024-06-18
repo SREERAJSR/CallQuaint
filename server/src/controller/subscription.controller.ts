@@ -19,10 +19,13 @@ import { addDays, addWeeks, addMonths, addYears } from 'date-fns';
         key_secret:configKey().RAZOR_PAY_SECRET_KEY
     })
 export const getSubscriptionPlans = asynchHandler(async (req: Request, res: Response, next: NextFunction) => {
-    
-    const subscriptPlans = await Subscription.find();
-
-    res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,subscriptPlans,"Subscription plans fetched sucessfully"))
+    const _id = req.user?._id
+  const subscriptPlans = await Subscription.find();
+  const user = await User.findById(new mongoose.Types.ObjectId(_id)).select('subscription')
+  if (!user) {
+    // throw new ApiResponse('')
+  }
+    res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{subscriptionPlans:subscriptPlans,user:user?.subscription},"Subscription plans fetched sucessfully"))
 })
 
 export const createSubscriptionPlan = asynchHandler(async (req: Request, res: Response, next: NextFunction) => {

@@ -37,7 +37,7 @@ export class CallsAndHistoryComponent {
     this.connectService.fetchCallHistory().subscribe({
       next: (res: ApiResponse) => {
           const callhistoryData: CallhistoryRespone[] = res.data;
-          console.log(callhistoryData);
+          console.log(callhistoryData,'hee');
         this.callHistory = callhistoryData.map((item: CallhistoryRespone,index:number) => {
           return {
             id:index+1,
@@ -45,7 +45,9 @@ export class CallsAndHistoryComponent {
             date: new Date(item.date), 
             firstname: item.remoteUserId.firstname,
             remoteId: item.remoteUserId._id,
-            requestSent:item.requestSent
+            requestSent: item.requestSent,
+            friend:item.friend
+
           }
         })
     this.dataSource = new MatTableDataSource<ICallHistory>(this.callHistory)

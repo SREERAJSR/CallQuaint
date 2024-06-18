@@ -11,6 +11,15 @@
             (input)="filterChatList()" [(ngModel)]="searchTerm">
     </div>
    <div class="mt-2 flex-col flex gap-1">
+    <div *ngIf="filteredChatList?.length === 0" class="text-center py-8">
+        <img src="assets/images/no-chat.png" alt="No chat" class="w-32 mx-auto mb-4">
+        <h2 class="text-xl font-bold mb-2">No chats yet</h2>
+        <p class="text-gray-600 mb-4">Start a new conversation by searching for a user</p>
+        <button class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors duration-300"
+            (click)="chatcomponent.openDialog()">
+            Start a Chat
+        </button>
+    </div>
     <div *ngFor="let chat of filteredChatList" class="relative">
         <div class="flex justify-between border-b hover:cursor-pointer hover:bg-stone-200 p-4 max-h-20 overflow-hidden"
             (click)="sendChatIdAndRecieverId(chat.chatId,chat.userId)" (click)="chatcomponent.wantChatPage()">

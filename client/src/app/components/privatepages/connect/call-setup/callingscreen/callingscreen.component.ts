@@ -2,6 +2,8 @@ import { Component, Inject, Input, OnInit, inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { AgoraService } from 'src/app/services/agora.service';
+import { ConnectService } from 'src/app/services/connect.service';
+import { ApiResponse } from 'src/app/types/api.interface';
 import { CallingScreenDialog, ConfirmDialogData } from 'src/app/types/confirm-dialog-data';
 
 @Component({
@@ -14,8 +16,9 @@ export class CallingscreenComponent implements OnInit {
   // @Input() avatar?: string;
   open = false;
   agoraService = inject(AgoraService);
-  remoteGender?: string
-  remoteUserName?: string;
+  connectService  = inject(ConnectService)
+  remoteGender: string|null =null
+  remoteUserName: string|null =null;
     timer: number = 0; // Initialize the timer value
 
   ngOnInit(): void {
@@ -27,10 +30,22 @@ export class CallingscreenComponent implements OnInit {
     })
 
   }
+  removeFromListening() {
+    this.connectService.removeListeningFromSelfHost().subscribe({
+      next: (res: ApiResponse) => {
+        if (res.statusCode === 200) {
+  this.agoraService.leaveWithOutCall()
+        }
+  }
+})
+}
+
 
   endcall() {
     this.agoraService.leaveCall()
     this.open = true;
+    this.remoteUserName = null;
+    this.remoteGender = null;
   }
 
 

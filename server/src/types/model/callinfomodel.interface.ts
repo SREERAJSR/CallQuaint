@@ -6,7 +6,8 @@ export interface CallInfoModel extends Document {
         remoteUserId: Types.ObjectId;
         callDuration: string;
         date: Date;
-        requestSent?: boolean;
+        requestSent?: boolean
+        friend?:boolean
     }[];
 }
    

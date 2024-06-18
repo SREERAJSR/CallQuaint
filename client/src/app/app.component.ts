@@ -24,7 +24,7 @@ title='angular'
     console.log(this.userloggedInStatus);
     if ((this.authService.getAccessToken() && this.authService.getRefreshToken())&& !this.userloggedInStatus) {
       let accessToken = this.authService.getAccessToken() as string;
-      const payload  = {accessToken:accessToken} 
+      const payload  = {accessToken:accessToken}
       this.store.dispatch(changeUserStateInRefresh(payload))
     }
   }

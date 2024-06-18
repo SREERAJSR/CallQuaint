@@ -5,5 +5,6 @@ export interface ChatModel extends Document{
     isGroupChat: boolean,
     lastMessage: mongoose.Types.ObjectId,
     participants: mongoose.Types.ObjectId[],
-    admin:mongoose.Types.ObjectId
+    admin: mongoose.Types.ObjectId,
+   
 }

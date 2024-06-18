@@ -10,8 +10,8 @@
     <mat-divider></mat-divider>
             <div class="mt-16">
     <mat-radio-group class="relative" [(ngModel)]="target">
-        <mat-radio-button class=" mr-8"  color="primary"    matTooltip="premium"  value="male" >Male</mat-radio-button>
-        <mat-radio-button class="mr-8"  value="female"   matTooltip="premium"  color="warn" >Female</mat-radio-button>
+        <mat-radio-button class=" mr-8"  color="primary" [disabled]="!isSubscriber"    matTooltip="premium"  value="male" >Male</mat-radio-button>
+        <mat-radio-button class="mr-8"  value="female"  [disabled]="!isSubscriber" matTooltip="premium"  color="warn" >Female</mat-radio-button>
         <div class="absolute left-10 -top-5">
             <img class="" class="w-8" src="/assets/images/premium.png" alt="">
         </div>

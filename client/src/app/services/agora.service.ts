@@ -21,7 +21,7 @@ export class AgoraService {
   appid = environment.appid;
   duration: number = 0;
   token = null;
-  uid = '007eJxTYGD+75f4Zem74MbJbtuY1locbHhnq8Dfkcn51rgt2i8v9IYCg5GJpXmaSZKhcaqlkUmKhUViqrGBkYlpsqWRaZKRhYWBn3tGWkMgI0PqwSNMjAwQCOJzMyRnJOblpeb4JeamMjAAAN6PIKc='
+  uid = null;
   user_id?: string | null =null
   remote_userId?: string | null = null;
   // videoContainer?:ElementRef<HTMLDivElement>
@@ -149,7 +149,11 @@ export class AgoraService {
     this.saveCallInfoToDB()
     this.callType = null;
   }
-
+  async leaveWithOutCall() {
+  this.channelParameters.localAudioTrack?.close();
+    await this.rtcClient?.leave();
+    this.callType =null
+}
   getChannelName(target:string) {
    return this.http.get<ApiResponse>(this.API_URL + `/user/connect/call?target=${target}`)
   }

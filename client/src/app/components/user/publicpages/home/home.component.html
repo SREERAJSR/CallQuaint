@@ -29,7 +29,7 @@
         <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise technology
             acquisitions of 2021 so far, in reverse chronological order.</p>
                 <div class="text-center">
-                    <a href="#"
+                    <a routerLink="/connect"
                         class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white  rounded-lgfocus:ring-4 focus:outline-none focus:ring-blue-300  !transition ease-in-out delay-150 hover:!bg-indigo-500  "
                         mat-raised-button color="primary">
                         Check it out
@@ -50,7 +50,7 @@
         <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise technology
             acquisitions of 2021 so far, in reverse chronological order.</p>
                 <div class="text-center">
-                    <a href="#"
+                    <a routerLink="/chat"
                         class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white  rounded-lgfocus:ring-4 focus:outline-none focus:ring-blue-300  !transition ease-in-out delay-150 hover:!bg-indigo-500  "
                         mat-raised-button color="primary">
                         Check it out
@@ -61,20 +61,21 @@
 
 
 
-<div class="max-w-sm bg-white border  rounded-lg shadow mx-auto">
+<div   class="max-w-sm cursor-not-allowed text-center pointer-events-none  bg-white border  rounded-lg shadow mx-auto">
+    <p class="text-stone-500">{{'Upcoming feature' | uppercase}}</p>
     <a href="#">
         <img class="rounded-t-lg" src="/assets/images/community.jpg" alt="" />
     </a>
     <div class="p-2">
         <a href="#">
-            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 text-center ">Community</h5>
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-stone-500 text-center ">Community</h5>
         </a>
         <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise technology
             acquisitions of 2021 so far, in reverse chronological order.</p>
             <div class="text-center">
     <a href="#"
         class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white  rounded-lgfocus:ring-4 focus:outline-none focus:ring-blue-300  !transition ease-in-out delay-150 hover:!bg-indigo-500  "
-        mat-raised-button color="primary">
+        mat-raised-button disabled color="primary">
         Check it out
     </a>    
             </div>
