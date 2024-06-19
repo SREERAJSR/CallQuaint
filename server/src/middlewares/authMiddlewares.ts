@@ -5,6 +5,7 @@ import HttpStatus from "../types/constants/http-statuscodes";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import configKey from "../configs/configkeys";
 import User from "../models/user.model";
+import { UserDocument } from "../types/model/usermodel.interface";
 
 export const verifyJWT = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const token =  req.cookies?.accessToken?.trim() || req.header("authorization")?.replace("Bearer","").trim();
@@ -21,3 +22,17 @@ export const verifyJWT = asyncHandler(async (req: Request, res: Response, next: 
             throw new AppError( error?.message || "Invalid access token",HttpStatus.UNAUTHORIZED);
     }
 })
+
+
+export const verifyPermission = (roles:string [] =[]) => {
+    return asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        if (!req.user?._id) {
+            throw new AppError("Unauthorized request",HttpStatus.UNAUTHORIZED)
+        }
+        const userDoc =req?.user as UserDocument
+        if (roles.includes(userDoc.role)) {
+        next()
+        }
+        throw new AppError("You are not allowed for this action",HttpStatus.FORBIDDEN)
+    })
+}
