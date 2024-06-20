@@ -102,6 +102,14 @@ const userSchema = new mongoose.Schema({
     },
     subscriptionEndDate: {
         type:Date
+    },
+    subscriptionId: {
+        type: mongoose.Types.ObjectId,
+          ref:'subscriptions'
+    },
+    isBlocked: {
+        type: Boolean,
+        default: false
     }
 },{
         timestamps:true

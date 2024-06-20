@@ -28,7 +28,9 @@ export interface UserDocument extends Document {
     friends: mongoose.Types.ObjectId[];
     requestSent: mongoose.Types.ObjectId[];
     subscription: boolean,
-    subscriptionEndDate:Date,
+    subscriptionEndDate: Date,
+    subscriptionId: mongoose.Types.ObjectId,
+    isBlocked: boolean
     // Define methods
     isPasswordCorrect(password: string): Promise<boolean>;
     generateAccessToken(): Promise<string>;

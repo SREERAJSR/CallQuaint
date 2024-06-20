@@ -13,7 +13,7 @@ const routesConfig = (app: Application) => {
     app.use('/api/v1/user/chat', chatRoutes()),
     app.use('/api/v1/user/messages', messageRoutes()),
     app.use('/api/v1/user/subscriptions', subscriptionRoutes()),
-    app.use('/api/v1/admin',adminRoutes())
+    app.use('/api/v1/admin', adminRoutes())
 }
 
 export default routesConfig;

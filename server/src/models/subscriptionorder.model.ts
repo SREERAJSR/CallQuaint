@@ -43,7 +43,9 @@ const subscriptionOrderSchema = new Schema({
     paymentId: {
         type:String
     }
-})
+},{
+        timestamps:true
+    })
 
 const Order = mongoose.model<IsubscriptionOrderModel>('subscriptionorder', subscriptionOrderSchema)
 
