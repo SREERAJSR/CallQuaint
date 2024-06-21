@@ -16,7 +16,7 @@ import { refreshAccessToken } from "./user.controller";
 
 export const getAllUsersData = async () => {
     try {
-        const users = await User.find({},'firstname lastname email subscription avatar _id')
+        const users = await User.find({},'firstname lastname email subscription avatar _id isBlocked')
         return users
         
     } catch (error:any) {
@@ -182,6 +182,30 @@ export const blockUser = asyncHandler(async (req: Request, res: Response, next: 
     res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, blockUser, 'sucessfully blocked the user'));
 
 })
+export const unblockUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const { userId } = req.params;
+    const user = await User.findById(new mongoose.Types.ObjectId(userId));
+    if (!user) {
+        throw new AppError("User with this userId doesnot exist", HttpStatus.NOT_FOUND);
+        return;
+    }
+    if (user.isBlocked === false) {
+        throw new AppError("This user is already unblocked", HttpStatus.BAD_REQUEST)
+        return
+    }
+    const unblockedUser = await User.findByIdAndUpdate(new mongoose.Types.ObjectId(userId), {
+        isBlocked: false
+    }, {
+        new: true
+    }
+    )
+    if (!unblockUser) {
+        throw new AppError("Error in unblocking the user", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, unblockUser, "Unblocked user sucesfully"))
+
+}
+)
 
 
 

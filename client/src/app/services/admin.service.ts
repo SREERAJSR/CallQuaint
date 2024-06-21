@@ -31,6 +31,10 @@ export class AdminService {
     return this.http.patch<ApiResponse>(this.API_URL+`/block-user/${userId}`,{})
   }
 
+  unblockUser(userId: string) {
+    return this.http.patch<ApiResponse>(this.API_URL+`/unblock-user/${userId}`,{})
+  }
+
   getSubscriptionPlanData() {
     return this.http.get<ApiResponse>(this.API_URL+'/susbscriptions')
   }

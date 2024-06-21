@@ -1,0 +1,17 @@
+.premium-label {
+  display: inline-block;
+  padding: 2px 6px;
+  color: #fff;
+  background-color: #4caf50; /* Green background */
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.standard-label {
+  display: inline-block;
+  padding: 2px 6px;
+  color: #fff;
+  background-color: #f44336; /* Red background */
+  border-radius: 4px;
+  font-weight: bold;
+}

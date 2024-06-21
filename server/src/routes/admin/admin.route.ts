@@ -1,6 +1,6 @@
 import { Router } from "express"
 import {
-    loginAdmin, fetchDashBoardData, fetchAllUsers, blockUser,
+    loginAdmin, fetchDashBoardData, fetchAllUsers, blockUser,unblockUser,
     createSubscriptionPlan, getAllSubscriptonPlans,fetchSalesReports,logoutAdmin
 } from "../../controller/admin.controller";
 import { authLoginSchemaValidator } from "../../validators/auth/user.validators";
@@ -15,6 +15,7 @@ export const adminRoutes = () => {
     router.get("/dashboard", fetchDashBoardData)
     router.get('/users', fetchAllUsers)
     router.patch('/block-user/:userId', mongoIdPathVariableValidator(validateItems.ROUTE_PARAMS, 'userId'), blockUser)
+    router.patch('/unblock-user/:userId', mongoIdPathVariableValidator(validateItems.ROUTE_PARAMS, 'userId'), unblockUser)
     router.get('/susbscriptions',getAllSubscriptonPlans)
         .post('/subscriptions', createSubscriptionPlan)
     router.get('/sales-report/:period', mongoIdPathVariableValidator(validateItems.ROUTE_PARAMS, 'period'), fetchSalesReports);

@@ -44,3 +44,16 @@ export interface DashboardData {
   normalUsers: number;
   last5subscribedUsers: LastSubscribedUser[];
 }
+
+
+
+export interface UserManagement {
+    index?:number
+  _id: string;
+  avatar: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+    subscription: boolean;
+    isBlocked:boolean
+}
