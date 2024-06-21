@@ -12,7 +12,7 @@ import CallInfo from "../models/callInfo.model";
 import { IsubscriptionPlanRequestBody } from "../types/model/subscriptionmodel.interface";
 import { Subscription } from "../models/subscription.model";
 import { refreshAccessToken } from "./user.controller";
-
+import moment from 'moment';
 
 export const getAllUsersData = async () => {
     try {
@@ -255,48 +255,47 @@ export const getAllSubscriptonPlans = asyncHandler(async (req: Request, res: Res
 
 export const fetchSalesReports = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 
-    const { period } = req.params;
-
-    let groupBy;
-    let dateFormat;
-
-    if (period === 'week') {
-        groupBy = {
-            year: { $year: "$createdAt" },
-            week:{$week:"$createdAt"}
-        }
-         dateFormat = {
-      $dateToString: { format: "%Y-%U", date: "$createdAt" }
-    };
-    } else if (period === 'month') {
-        groupBy = {
-            year: { $year: "$createdAt" },
-            month:{$month:"$createdAt"}
-        }
-         dateFormat = {
-      $dateToString: { format: "%Y-%m", date: "$createdAt" }
-    };
-    } else if (period === 'year') {
-        groupBy = {
-            year: { $year: '$createdAt' }
-        }
-          dateFormat = {
-      $dateToString: { format: "%Y", date: "$createdAt" }
-    };
-    } else {
-        throw new AppError("Invalid period",HttpStatus.BAD_REQUEST)
+    const { date } = req.query
+    
+    if (!date) {
+        throw new AppError("Date is required", HttpStatus.BAD_REQUEST)
+        return;
     }
 
+    const selectedDate = moment(date as string);
+    let startDate: Date;
+    let endDate: Date;
+
+    if (!selectedDate.isValid()) {
+        throw new AppError("invalid date format", HttpStatus.BAD_REQUEST);
+        return
+    }
+
+    if (selectedDate.isSame(selectedDate.clone().startOf('year'), 'day')) {
+        startDate = selectedDate.clone().startOf('year').toDate();
+        endDate = selectedDate.clone().endOf('year').toDate();
+    } else if (selectedDate.isSame(selectedDate.clone().startOf('month'), 'day')) {
+        startDate = selectedDate.clone().startOf('month').toDate();
+        endDate = selectedDate.clone().endOf('month').toDate();
+    } else {
+        startDate = selectedDate.clone().startOf('day').toDate();
+        endDate = selectedDate.clone().endOf('day').toDate();
+    }
     const salesReport = await Order.aggregate([
         {
+            $match: {
+                createdAt: {
+                    $gte: startDate,
+                    $lte:endDate
+                }
+            }
+        }, {
             $group: {
-                _id: groupBy,
+                _id: null,
                 totalSales: { $sum: "$amount" },
                 count: { $sum: 1 },
                 details:{$push:"$$ROOT"}
             }
-        }, {
-            $sort:{"_id.year":1,"_id.month":1,"_id.week":1}
         }
     ])
     console.log(salesReport);

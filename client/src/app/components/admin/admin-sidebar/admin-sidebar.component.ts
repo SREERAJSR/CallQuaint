@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { AdminService } from 'src/app/services/admin.service';
+import { ApiResponse } from 'src/app/types/api.interface';
 
 @Component({
   selector: 'app-admin-sidebar',
@@ -11,6 +13,7 @@ import { Router } from '@angular/router';
 })
 export class AdminSidebarComponent {
 
+  adminService = inject(AdminService)
   matDialog = inject(MatDialog)
   toastr = inject(ToastrService)
   router = inject(Router)
@@ -20,8 +23,18 @@ export class AdminSidebarComponent {
 },
     disableClose:true
   }).afterClosed().subscribe((res) => {
-    this.toastr.success('admin logout success');
+    if (res) {
+      this.adminService.logoutAdmin().subscribe({
+        next: (response: ApiResponse) => {
+          if (response.statusCode === 200) {
+          this.toastr.success('admin logout success');
     this.router.navigate(['/admin'])
+          }
+     
+        }
+      })
+    }
+
     })
   }
 

@@ -18,7 +18,7 @@ export const adminRoutes = () => {
     router.patch('/unblock-user/:userId', mongoIdPathVariableValidator(validateItems.ROUTE_PARAMS, 'userId'), unblockUser)
     router.get('/susbscriptions',getAllSubscriptonPlans)
         .post('/subscriptions', createSubscriptionPlan)
-    router.get('/sales-report/:period', mongoIdPathVariableValidator(validateItems.ROUTE_PARAMS, 'period'), fetchSalesReports);
+    router.get('/sales-report',  fetchSalesReports);
     router.post('/logout',logoutAdmin)
     return router
 }

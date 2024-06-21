@@ -57,3 +57,29 @@ export interface UserManagement {
     subscription: boolean;
     isBlocked:boolean
 }
+
+
+export interface OrderDetail {
+    index?:number
+    _id: string;
+    email: string;
+    fullname: string;
+    mobile: string;
+    planId: string;
+    paymentmethod: string;
+    userId: string;
+    amount: number;
+    paymentStatus: string;
+    receipt?: string;
+    orderId: string;
+    createdAt: string;
+    updatedAt: string;
+    paymentId?: string;
+}
+
+export interface SalesReport {
+    _id: string | null;
+    totalSales: number;
+    count: number;
+    details: OrderDetail[];
+}

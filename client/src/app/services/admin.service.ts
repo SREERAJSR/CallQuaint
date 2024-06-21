@@ -42,8 +42,8 @@ export class AdminService {
     return this.http.post<ApiResponse>(this.API_URL+'/susbscriptions',payload)
   }
 
-  getSalesReportWithPeriod(period:string) {
-    return this.http.get<ApiResponse>(this.API_URL+`/sales-report/${period}`)
+  getSalesReport(date:string) {
+    return this.http.get<ApiResponse>(this.API_URL+`/sales-report?date=${date}`)
   }
 
   logoutAdmin() {
