@@ -142,7 +142,7 @@ export const fetchDashBoardData = asyncHandler(async (req: Request, res: Respons
     
     const payload = {
         totalUsers: totalUsers,
-        sucessOrdersCount: sucessOrdersCount,
+        successOrdersCount: sucessOrdersCount,
         currentSubscribersCount: currentSubscribersCount,
         randomCallsCount: randomCallsCount,
         salesByMonth: salesByMonth,
