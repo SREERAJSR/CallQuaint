@@ -102,6 +102,14 @@ const userSchema = new mongoose.Schema({
     },
     subscriptionEndDate: {
         type:Date
+    },
+    subscriptionId: {
+        type: mongoose.Types.ObjectId,
+          ref:'subscriptions'
+    },
+    isBlocked: {
+        type: Boolean,
+        default: false
     }
 },{
         timestamps:true
@@ -115,7 +123,7 @@ userSchema.pre('save', async function(next) {
     next();
 })
 
-userSchema.methods.isPasswordCorrect = async function(password: string) {
+userSchema.methods.isPasswordCorrect = async function (password: string) {
     return bcrypt.compare(password, this.password);
 }
 userSchema.methods.generateAccessToken = async function ():Promise<string> {

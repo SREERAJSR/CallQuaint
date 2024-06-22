@@ -5,8 +5,7 @@
     <app-voice-call-screen></app-voice-call-screen>
 </ng-container>
 
-<ng-container *ngIf="router.url.startsWith('/admin')">
-    <!-- <app-admin-navbar></app-admin-navbar> -->
+<ng-container *ngIf="router.url.startsWith('/admin') && !router.url.startsWith('/admin/login')">
     <app-admin-sidebar></app-admin-sidebar>
 </ng-container>
 

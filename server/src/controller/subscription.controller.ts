@@ -28,39 +28,41 @@ export const getSubscriptionPlans = asynchHandler(async (req: Request, res: Resp
     res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{subscriptionPlans:subscriptPlans,user:user?.subscription},"Subscription plans fetched sucessfully"))
 })
 
-export const createSubscriptionPlan = asynchHandler(async (req: Request, res: Response, next: NextFunction) => {
-    
-    const subscriptionPlanDetails = req.body as IsubscriptionPlanRequestBody;
 
-    if (!subscriptionPlanDetails) {
-        throw new AppError("Request body is empty",HttpStatus.BAD_REQUEST)
+export const getCurrentSubscriptionPlan = asynchHandler(async (req: Request, res: Response, next: NextFunction)=>{
+  
+  const userId = req.user?._id;
+  const subscriptionDetails = await User.aggregate([
+    {
+      $match:{_id:new mongoose.Types.ObjectId(userId)}
+    },
+    {
+      $project: {
+        firstname: 1,
+        email: 1,
+        subscription: 1,
+        subscriptionEndDate: 1,
+        subscriptionId: 1,
+        avatar:1
+      }
+    }, {
+      $lookup: {
+        from: 'subscriptions',
+        foreignField: '_id',
+        localField: 'subscriptionId',
+        as:'subscriptionDetails'
+      }
+    }, {
+      $addFields: {
+        subscriptionDetails: { $first: "$subscriptionDetails" }  
+      }
     }
-    const existingPlanNameDetails = await Subscription.findOne({
-        planname: subscriptionPlanDetails.planname,
-    })
-    if (existingPlanNameDetails) 
-        throw new AppError("This planname is already exist ", HttpStatus.BAD_REQUEST)
-    
-      // Check if plantype already exists
- const existingPlanTypeDetails = await Subscription.findOne({
-        plantype: subscriptionPlanDetails.plantype,
-        plandurationunit: subscriptionPlanDetails.plandurationunit
-    });
-    if (existingPlanTypeDetails) {
-        throw new AppError("A plan with the same type and duration unit already exists", HttpStatus.BAD_REQUEST);
-    }
+  ])
 
+  const currentSubscriptonDetails = subscriptionDetails[0]
 
-    // Check if features are valid strings
-    const invalidFeatures = subscriptionPlanDetails.features.filter(feature => typeof feature !== 'string');
-    if (invalidFeatures.length > 0) {
-        throw new AppError("Invalid feature(s) found", HttpStatus.BAD_REQUEST);
-    }
-
-    const newSubscriptionPlan = await Subscription.create(subscriptionPlanDetails);
-    res.status(HttpStatus.CREATED).json(new ApiResponse(HttpStatus.CREATED, newSubscriptionPlan,'plan is created'))
+  res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,currentSubscriptonDetails,"Current subscriptionPlan fetched sucessfully"))
 })
-
 
 export const createOrder = asynchHandler(async (req: Request, res: Response, next: NextFunction) => {
 
@@ -117,7 +119,7 @@ export const savePaymentInfoToDb = asynchHandler(async (req: Request, res: Respo
     const orderedUserId = order.userId;
     const orderedPlanId = order.planId;
     order.paymentStatus = OrderState.SUCCESS; 
-    order.paymentId = razorpay_payment_id;
+  order.paymentId = razorpay_payment_id;
     await order.save();
 
     const subscriptionPlan = await Subscription.findById(orderedPlanId);
@@ -156,6 +158,7 @@ export const savePaymentInfoToDb = asynchHandler(async (req: Request, res: Respo
     await User.findByIdAndUpdate(new mongoose.Types.ObjectId(orderedUserId), {
       subscription: true,
       subscriptionEndDate: endDate,
+      subscriptionId:order.planId
     });
 
     res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{},'Payment info saved and subscription updated successfully'));
@@ -245,6 +248,7 @@ export const saveGpayTranscation = asynchHandler(async (req: Request, res: Respo
     await User.findByIdAndUpdate(new mongoose.Types.ObjectId(userId), {
       subscription: true,
       subscriptionEndDate: endDate,
+      subscriptionId:planId
     });
     res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,successOrder,"Saved payment info in db"))
 })

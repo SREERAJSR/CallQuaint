@@ -306,3 +306,19 @@ export const editProfileInfo = asyncHandler(async (req: Request, res: Response, 
    res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, { accessToken: accessToken, refreshToken: refreshToken },'profile edited sucesfully'))
 })
 
+
+export const assignRole = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+
+   const { userId } = req.params
+   const { role }: { role: string } = req.body
+   const user = await User.findById(new mongoose.Types.ObjectId(userId))
+
+   if (!user) {
+      throw new AppError("not authorized", HttpStatus.UNAUTHORIZED);
+      return
+   }
+   user.role = role;
+   await user.save({validateBeforeSave:false})
+
+   res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {}, "Role changed for the user"));
+})

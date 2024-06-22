@@ -67,8 +67,11 @@ import { AdminUserManagementComponent } from './components/admin/admin-user-mana
 import { SubscriptionManagementComponent } from './components/admin/subscription-management/subscription-management.component';
 import { PremiumMembersComponent } from './components/admin/premium-members/premium-members.component';
 import { SalesReportComponent } from './components/admin/sales-report/sales-report.component';
-
-
+import { YearlyReportComponent } from './components/admin/sales-report/yearly-report/yearly-report.component';
+import { MonthlyReportComponent } from './components/admin/sales-report/monthly-report/monthly-report.component';
+import { DayReportComponent } from './components/admin/sales-report/day-report/day-report.component';
+import { AdminAuthInterceptor } from './interceptors/admin-auth.interceptor';
+import { PremiumcardComponent } from './components/privatepages/accountsetting/premiumcard/premiumcard.component';
 
 
 
@@ -122,6 +125,10 @@ const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCred
     SubscriptionManagementComponent,
     PremiumMembersComponent,
     SalesReportComponent,
+    YearlyReportComponent,
+    MonthlyReportComponent,
+    DayReportComponent,
+    PremiumcardComponent,
 
   ],
   imports: [
@@ -149,7 +156,8 @@ const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCred
   ],
   providers: [
   {provide:ErrorHandler,useClass:GlobalErrorHandler},
-      {provide:HTTP_INTERCEPTORS,useClass:AuthInterceptor,multi:true},
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+      {provide:HTTP_INTERCEPTORS,useClass:AdminAuthInterceptor,multi:true},
     {
       provide: 'SocialAuthServiceConfig',
     useValue: {
@@ -161,8 +169,7 @@ const socketConfig:SocketIoConfig ={url:environment.socket_URL,options:{withCred
           console.error(err);
         }
       } as SocialAuthServiceConfig,
-  },
-
+  }
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

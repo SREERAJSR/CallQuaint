@@ -63,3 +63,28 @@ export interface RazorpayOrderSuccessResponse {
   razorpay_signature: string;
   status_code: number;
 }
+
+
+
+
+export interface SubscriptionDetails {
+  _id: string;
+  planname: string;
+  plantype: string;
+  amount: number;
+  features: string[];
+  planduration: number;
+  plandurationunit: string;
+  __v: number;
+}
+
+export interface SubscribedUser {
+  _id: string;
+  avatar: string;
+  firstname: string;
+  email: string;
+  subscription: boolean;
+  subscriptionEndDate: string;
+  subscriptionId: string;
+  subscriptionDetails: SubscriptionDetails;
+}

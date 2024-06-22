@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -14,6 +14,9 @@ import {
   ApexNonAxisChartSeries,
   ApexResponsive
 } from "ng-apexcharts";
+import { AdminService } from 'src/app/services/admin.service';
+import { DashboardData, LastSubscribedUser } from 'src/app/types/admin.intefaces';
+import { ApiResponse } from 'src/app/types/api.interface';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -35,48 +38,64 @@ export type PieChartOptions = {
   labels: any;
 };
 
-
-
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
 })
-export class AdminDashboardComponent {
+export class AdminDashboardComponent implements OnInit {
 
   @ViewChild("chart") chart?: ChartComponent; 
-  public chartOptions: Partial<ChartOptions>;
+  public chartOptions?: Partial<ChartOptions>;
 
-   @ViewChild("piechart") piechart?: ChartComponent;
-  public pieChartOptions: Partial<PieChartOptions>;
+  @ViewChild("piechart") piechart?: ChartComponent;
+  public pieChartOptions?: Partial<PieChartOptions>;
+
+  adminServices = inject(AdminService)
+
+  totalSalesBymonth: number[] = []
+  totalUsersCount?: number
+  totalSales?: number
+  premiumMembersCount?: number
+  randomCallsCount?: number
+  normalUsers?: number
+  last5subscribers?: LastSubscribedUser[];
+
   constructor() {
+    this.initializeChartDiagram()
+    this.initializePieDiagram()
+  }
 
-    this.pieChartOptions = {
-         series: [1,100],
-      chart: {
-        type: "donut"
+  ngOnInit(): void {
+    this.fetchDashboardData();
+  }
+
+  fetchDashboardData() {
+    this.adminServices.fetchDashboardData().subscribe({
+      next: (response: ApiResponse) => {
+        const dashboardData = response.data as DashboardData;
+        this.totalUsersCount = dashboardData.totalUsers;
+        this.totalSales = dashboardData.successOrdersCount;
+        this.premiumMembersCount = dashboardData.currentSubscribersCount;
+        this.randomCallsCount = dashboardData.randomCallsCount;
+        this.totalSalesBymonth = dashboardData.salesByMonth;
+        this.normalUsers = dashboardData.normalUsers;
+        this.last5subscribers = dashboardData.last5subscribedUsers
+        this.initializeChartDiagram();
+        this.initializePieDiagram();
       },
-      labels: ["Premium users", "Normal users"],
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 100
-            },
-            legend: {
-              position: "bottom"
-            }
-          }
-        }
-      ]
-    }
+      error: (error) => {
+        console.error('Error fetching dashboard data', error);
+      }
+    });
+  }
 
+  initializeChartDiagram() {
     this.chartOptions = {
       series: [
         {
-          name: "Likes",
-          data: [4, 3, 10, 9, 29, 19, 22, 9, 12, 7, 19, 5, 13, 9, 17, 2, 7, 5]
+          name: "Total Sales",
+          data: this.totalSalesBymonth
         }
       ],
       chart: {
@@ -88,30 +107,11 @@ export class AdminDashboardComponent {
         curve: "smooth"
       },
       xaxis: {
-        type: "datetime",
-        categories: [
-          "2/11/2000",
-          "1/11/2000",
-          "3/11/2000",
-          "4/11/2000",
-          "5/11/2000",
-          "6/11/2000",
-          "7/11/2000",
-          "8/11/2000",
-          "9/11/2000",
-          "10/11/2000",
-          "11/11/2000",
-          "12/11/2000",
-          "1/11/2001",
-          "2/11/2001",
-          "3/11/2001",
-          "4/11/2001",
-          "5/11/2001",
-          "6/11/2001"
-        ]
+        type: "category",
+        categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
       },
       title: {
-        text: "Social Media",
+        text: "Monthly Sales",
         align: "left",
         style: {
           fontSize: "16px",
@@ -140,13 +140,34 @@ export class AdminDashboardComponent {
         }
       },
       yaxis: {
-        min: -10,
-        max: 40,
+        min: 0, // Adjust according to your data range
         title: {
-          text: "Engagement"
+          text: "Total Sales"
         }
       }
     };
   }
 
+  initializePieDiagram() {
+    this.pieChartOptions = {
+      series: [this.premiumMembersCount!, this.normalUsers!],
+      chart: {
+        type: "donut"
+      },
+      labels: ["Premium users", "Normal users"],
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 100
+            },
+            legend: {
+              position: "bottom"
+            }
+          }
+        }
+      ]
+    };
+  }
 }

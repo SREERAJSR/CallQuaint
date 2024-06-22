@@ -20,6 +20,8 @@ import { AdminUserManagementComponent } from './components/admin/admin-user-mana
 import { SubscriptionManagementComponent } from './components/admin/subscription-management/subscription-management.component';
 import { PremiumMembersComponent } from './components/admin/premium-members/premium-members.component';
 import { SalesReportComponent } from './components/admin/sales-report/sales-report.component';
+import { useronlyGuard } from './routeguards/canActivate/useronly.guard';
+import { adminOnlyGuard } from './routeguards/canActivate/admin-only.guard';
 
 
 
@@ -32,18 +34,16 @@ const routes: Routes = [
   { path: "signup", component: SignupComponent ,canActivate:[authGuard]},
   { path: "forgot-password", component: ForgotpasswordComponent,canActivate:[authGuard] },
   { path: "reset-password/:token", component: ResetpasswordComponent ,canActivate:[resetpasswordGuard]},
-  { path: "connect", component: ConnectComponent },
-  { path: "chat", component: ChatComponent },
-  {
-    path: "subscriptions", component: SubscriptionComponent,
-  },
-  { path: "subscriptions/checkout", component: CheckoutComponent },
-  { path: "account", component: AccountsettingComponent },
-  { path: 'admin', component: AdminLoginComponent },
-{path: "admin/dashboard",component:AdminDashboardComponent},
-  { path: "admin/user-management", component: AdminUserManagementComponent },
-  { path: "admin/subscriptions-management", component: SubscriptionManagementComponent },
-  { path: 'admin/premium-members', component: PremiumMembersComponent },
+  { path: "connect", component: ConnectComponent,canActivate:[useronlyGuard]},
+  { path: "chat", component: ChatComponent,canActivate:[useronlyGuard] },
+  { path: "subscriptions", component: SubscriptionComponent,canActivate:[useronlyGuard]},
+  { path: "subscriptions/checkout", component: CheckoutComponent,canActivate:[useronlyGuard] },
+  { path: "account", component: AccountsettingComponent,canActivate:[useronlyGuard] },
+  { path: 'admin/login', component: AdminLoginComponent },
+{path: "admin",component:AdminDashboardComponent,canActivate:[adminOnlyGuard]},
+  { path: "admin/user-management", component: AdminUserManagementComponent ,canActivate:[adminOnlyGuard]},
+  { path: "admin/subscriptions-management", component: SubscriptionManagementComponent ,canActivate:[adminOnlyGuard]},
+  { path: 'admin/premium-members', component: PremiumMembersComponent,canActivate:[adminOnlyGuard] },
 {path:'admin/sales-report',component:SalesReportComponent},
   {path:"**",component:ErrorpageComponent}
 ]

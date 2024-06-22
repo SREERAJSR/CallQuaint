@@ -3,8 +3,10 @@ import { Component, ViewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
+import { ChatService } from 'src/app/services/chat.service';
 import { ConnectService } from 'src/app/services/connect.service';
 import { ApiResponse } from 'src/app/types/api.interface';
 import { IFriendRequests, IFriendsListDataSource, IRequestsDataSource, IfriendsList } from 'src/app/types/connect.interface';
@@ -89,6 +91,18 @@ export class FriendsComponent {
       }
     }) 
     }
+    })
+  }
+
+  router = inject(Router)
+  chatService = inject(ChatService)
+  makeChat(remoteId:string) {
+    this.chatService.createOrGetAOneOnOneChat(remoteId).subscribe({
+      next: (response: ApiResponse) => {
+        if (response.statusCode === 200 || response.statusCode === 201) {
+          this.router.navigate(['/chat'])
+        }
+      }
     })
   }
 }
