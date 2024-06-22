@@ -109,6 +109,7 @@ export class appEffects {
                         if(response.statusCode ===200){
                             this.authService.removeAccessToken();
                             this.authService.removeRefreshToken();
+                            this.router.navigate(['/login'])
                             return logoutSuccess()
                         }
                         throw new Error("logout error ")

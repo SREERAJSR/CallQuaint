@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 
 export interface Attachment {
     url: string
@@ -52,3 +52,8 @@ export interface CallHistoryItem {
   friend?: boolean; 
 
 }
+
+export interface AdminCustomRequest extends Request{
+  admin?: Document;
+}
+

@@ -29,6 +29,40 @@ export const getSubscriptionPlans = asynchHandler(async (req: Request, res: Resp
 })
 
 
+export const getCurrentSubscriptionPlan = asynchHandler(async (req: Request, res: Response, next: NextFunction)=>{
+  
+  const userId = req.user?._id;
+  const subscriptionDetails = await User.aggregate([
+    {
+      $match:{_id:new mongoose.Types.ObjectId(userId)}
+    },
+    {
+      $project: {
+        firstname: 1,
+        email: 1,
+        subscription: 1,
+        subscriptionEndDate: 1,
+        subscriptionId: 1,
+        avatar:1
+      }
+    }, {
+      $lookup: {
+        from: 'subscriptions',
+        foreignField: '_id',
+        localField: 'subscriptionId',
+        as:'subscriptionDetails'
+      }
+    }, {
+      $addFields: {
+        subscriptionDetails: { $first: "$subscriptionDetails" }  
+      }
+    }
+  ])
+
+  const currentSubscriptonDetails = subscriptionDetails[0]
+
+  res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,currentSubscriptonDetails,"Current subscriptionPlan fetched sucessfully"))
+})
 
 export const createOrder = asynchHandler(async (req: Request, res: Response, next: NextFunction) => {
 

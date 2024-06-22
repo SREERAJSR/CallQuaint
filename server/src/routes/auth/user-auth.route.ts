@@ -16,6 +16,7 @@ import { verifyJWT, verifyPermission } from "../../middlewares/authMiddlewares";
 import { upload } from "../../middlewares/multerMiddleware";
 import { UserRolesEnum } from "../../types/constants/common.constant";
 import { mongoIdPathVariableValidator } from "../../validators/chat/chat.validator";
+import { getCurrentSubscriptionPlan } from "../../controller/subscription.controller";
  
 
 const userRoutes = () => {
@@ -33,6 +34,7 @@ const userRoutes = () => {
     router.post('/logout', verifyJWT, logoutUser)
     router.get('/user-info', verifyJWT, getUserInfo)
     router.patch('/edit-profile', verifyJWT, upload.single('avatar'), editProfileInfo)
+    router.get('/current-plan',verifyJWT,getCurrentSubscriptionPlan)
     router.route('/assign-role/:userId').post(verifyJWT, verifyPermission([UserRolesEnum.ADMIN]),
         mongoIdPathVariableValidator(validateItems.ROUTE_PARAMS,'userId'),assignRole)
     return router

@@ -64,6 +64,7 @@ export class AuthService {
     return this.http.post<ApiResponse>(this.API_URL+`/user/refreshToken`,{incomingRefreshToken:incomingRefreshToken})
   }
 
+
   getUserInfo() {
       return this.http.get<ApiResponse>(this.API_URL+`/user/user-info`)
   }
@@ -89,7 +90,7 @@ export class AuthService {
   }
   setRefreshToken( token: string) {
     window.localStorage.setItem('refreshToken',token)
-  }
+  } 
     getRefreshToken() {
       return window.localStorage.getItem('refreshToken')
     }
@@ -106,4 +107,28 @@ export class AuthService {
     return decoded
   }
   
+//Admin
+
+    setAdminAccessToken(token: string) {
+    window.localStorage.setItem('adminAccessToken',token)
+  }
+   setAdminRefreshToken( token: string) {
+    window.localStorage.setItem('adminRefreshToken',token)
+   }
+    getAdminAccessToken() {
+    return window.localStorage.getItem('adminAccessToken')
+  }
+    getAdminRefreshToken() {
+      return window.localStorage.getItem('adminRefreshToken')
+    }
+    removeAdminAccessToken(): void{
+    window.localStorage.removeItem('adminAccessToken')
+  }
+      removeAdminRefreshToken(): void{
+    window.localStorage.removeItem('adminRefreshToken')
+      }
+  
+  getCurrentSubscriptionDetails() {
+    return this.http.get<ApiResponse>(this.API_URL+'/user/current-plan')
+  }
 }

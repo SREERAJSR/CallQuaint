@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
 import { AdminLoginPayload, IsubscriptionPlanRequestBody } from '../types/admin.intefaces';
 import { ApiResponse } from '../types/api.interface';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class AdminService {
 
   constructor() { }
 
+  authService = inject(AuthService)
   http = inject(HttpClient);
   API_URL = environment.api_Url+'/admin';
 
@@ -48,5 +50,10 @@ export class AdminService {
 
   logoutAdmin() {
     return this.http.post<ApiResponse>(this.API_URL+`/logout`,{})
+  }
+
+    refreshAdminAccessToken() {
+    const incomingRefreshToken = this.authService.getAdminRefreshToken()
+    return this.http.post<ApiResponse>(this.API_URL+`/admin/refreshToken`,{incomingRefreshToken:incomingRefreshToken})
   }
 }

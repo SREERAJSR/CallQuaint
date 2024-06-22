@@ -16,7 +16,7 @@
         <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef> Action </th>
             <td mat-cell *matCellDef="let element">
-                <button class="!bg-blue-800 !text-white" mat-raised-button >Chat </button>
+                <button class="!bg-blue-800 !text-white" (click)="makeChat(element.remoteId)" mat-raised-button >Chat </button>
             </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

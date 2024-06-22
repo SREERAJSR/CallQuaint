@@ -11,8 +11,11 @@ import Order from "../models/subscriptionorder.model";
 import CallInfo from "../models/callInfo.model";
 import { IsubscriptionPlanRequestBody } from "../types/model/subscriptionmodel.interface";
 import { Subscription } from "../models/subscription.model";
-import { refreshAccessToken } from "./user.controller";
 import moment from 'moment';
+import { AdminCustomRequest } from "../types/interfaces/common.interface";
+import configKey from "../configs/configkeys";
+import { JwtPayload } from "jsonwebtoken";
+import jwt from 'jsonwebtoken'
 
 export const getAllUsersData = async () => {
     try {
@@ -27,8 +30,9 @@ export const getAllUsersData = async () => {
 }
 export const loginAdmin = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const { email, password }: { email: string, password: string } = req.body;
-
-    const user = await User.findOne({ email: email })
+    console.log(email);
+    console.log(password);
+    const user = await User.findOne({ email: email ,role:UserRolesEnum.ADMIN})
     if (!user) {
         throw new AppError("Admin doesnt exist with this email", HttpStatus.NOT_FOUND)
         return
@@ -304,14 +308,48 @@ export const fetchSalesReports = asyncHandler(async (req: Request, res: Response
 })
 
 
-export const logoutAdmin = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const _id = 'dummy Id';
+export const logoutAdmin = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
 
-
-    const user = await User.findByIdAndUpdate(new mongoose.Types.ObjectId(_id), {
+    const adminId = req.admin._id
+    const user = await User.findByIdAndUpdate(new mongoose.Types.ObjectId(new mongoose.Types.ObjectId(adminId)), {
         $set: {
             refreshAccessToken:undefined
         }
     }, { new: true })
     res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK, {}, "admin logout succesfully"));
 })
+export const refreshAdminAccessToken = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+   console.log(req.cookies)
+   console.log(req.body);
+   const incomingRefreshToken: string =  req.body.incomingRefreshToken ||req.cookies.refreshToken  ;
+   if (!incomingRefreshToken) throw new AppError("Unauthorized request", HttpStatus.UNAUTHORIZED);
+   try {
+      const decodedToken = await jwt.verify(
+         incomingRefreshToken,
+         configKey().REFRESH_TOKEN_SECRET) as JwtPayload;
+      const user = await User.findById(new mongoose.Types.ObjectId(decodedToken?._id)) 
+      if (!user) throw new AppError('Invalid refresh token', HttpStatus.UNAUTHORIZED);
+      if (incomingRefreshToken !== user?.refreshToken)
+         throw new AppError("Refresh token is expired or used", HttpStatus.UNAUTHORIZED);
+      const { accessToken, refreshToken: newRefreshToken } =
+         await generateAcessTokenAndrefreshToken(user._id);
+         const options = {
+      httpOnly: true,
+      secure:configKey().NODE_ENV === "production",
+         };
+      res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", newRefreshToken, options)
+      .json(
+        new ApiResponse(
+          HttpStatus.OK,
+          { accessToken, refreshToken: newRefreshToken },
+          "Access token refreshed"
+        )
+      );
+      
+   } catch (error) {
+         throw new AppError("Invalid refresh token", HttpStatus.UNAUTHORIZED)
+   }
+});

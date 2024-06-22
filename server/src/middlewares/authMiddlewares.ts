@@ -6,6 +6,9 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import configKey from "../configs/configkeys";
 import User from "../models/user.model";
 import { UserDocument } from "../types/model/usermodel.interface";
+import mongoose, { Document } from "mongoose";
+import { UserRolesEnum } from "../types/constants/common.constant";
+import { AdminCustomRequest } from "../types/interfaces/common.interface";
 
 export const verifyJWT = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const token =  req.cookies?.accessToken?.trim() || req.header("authorization")?.replace("Bearer","").trim();
@@ -22,6 +25,27 @@ export const verifyJWT = asyncHandler(async (req: Request, res: Response, next: 
             throw new AppError( error?.message || "Invalid access token",HttpStatus.UNAUTHORIZED);
     }
 })
+
+
+export const verifyAdminJWT = asyncHandler(async (req:any, res: Response, next: NextFunction) => {
+    const token =  req.cookies?.accessToken?.trim()   || req.header("authorization")?.replace("Bearer","").trim();
+    if (!token) throw new AppError("Unauthorized request", HttpStatus.UNAUTHORIZED);
+    try {
+        
+        const secret = configKey().ACCESS_TOKEN_SECRET;
+        const decodedToken =  jwt.verify(token,secret) as JwtPayload ;    
+        const admin = await User.findOne({
+            _id: new mongoose.Types.ObjectId(decodedToken?._id),
+            role:UserRolesEnum.ADMIN
+        }).select("-password -refreshToken -emailVerificationToken -emailVerificationExpiry") as Document
+        if (!admin) throw new AppError("Invalid access token", HttpStatus.UNAUTHORIZED);
+        req.admin = admin;
+        next()
+    } catch (error:any) {
+            throw new AppError( error?.message || "Invalid access token",HttpStatus.UNAUTHORIZED);
+    }
+})
+
 
 
 export const verifyPermission = (roles:string [] =[]) => {
