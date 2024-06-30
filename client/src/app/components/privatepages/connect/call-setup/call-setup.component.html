@@ -1,8 +1,8 @@
 <div class=" w-full h-[70vh] ">
     <div class="flex flex-col md:flex-row justify-center mt-16 items-center">
         <div class="md:w-full bg-slate-100 rounded">
-    <img *ngIf="gender==='male'" class=" mx-auto rounded-full w-72 h-72" src="/assets/images/male.jpg" alt="">
-    <img *ngIf="gender==='female'" class=" mx-auto rounded-full w-72 h-72" src="/assets/images/female.jpg" alt="">
+    <img *ngIf="gender==='male'" class=" mx-auto rounded-full w-72 h-72" src="https://d9d3263cc7ac2.cloudfront.net/male.jpg" alt="">
+    <img *ngIf="gender==='female'" class=" mx-auto rounded-full w-72 h-72" src="https://d9d3263cc7ac2.cloudfront.net/female.jpg" alt="">
         </div>
         <div class="w-full text-center font-bold text-3xl text-gray-500">
             <mat-divider></mat-divider>
@@ -13,10 +13,10 @@
         <mat-radio-button class=" mr-8"  color="primary" [disabled]="!isSubscriber"    matTooltip="premium"  value="male" >Male</mat-radio-button>
         <mat-radio-button class="mr-8"  value="female"  [disabled]="!isSubscriber" matTooltip="premium"  color="warn" >Female</mat-radio-button>
         <div class="absolute left-10 -top-5">
-            <img class="" class="w-8" src="/assets/images/premium.png" alt="">
+            <img class="" class="w-8" src="https://d9d3263cc7ac2.cloudfront.net/premium.png" alt="">
         </div>
         <div class="absolute left-40 -top-5">
-            <img  class="w-8" src="/assets/images/premium.png" alt="">
+            <img  class="w-8" src="https://d9d3263cc7ac2.cloudfront.net/premium.png" alt="">
         </div>
         <mat-radio-button  class="mr-8" value="any"    color="accent">Any</mat-radio-button>
     </mat-radio-group>
