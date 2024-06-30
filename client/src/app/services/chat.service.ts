@@ -19,18 +19,17 @@ export class ChatService {
       this.newChatInfo$.next(chat)
     })
     this.socket.on(ChatEventEnum.LEAVE_CHAT_EVENT, (res: Chat) => {
-      console.log(res,'leaveeeeeeee');
       this.leaveChatInfo$.next(res)
     })
     this.socket.on(ChatEventEnum.MESSAGE_RECEIVED_EVENT, (payload: Message) => {
        this.messageReceived$.next(payload)
     })
      this.socket.on(ChatEventEnum.TYPING_EVENT, (chatId: string) => {
-      console.log(chatId);
+
       this.typingInfo$.next(chatId)
      })
     this.socket.on(ChatEventEnum.ONLINEUSERS, (onlineUser: OnlineUsers[]) => {
-      console.log(onlineUser,'onlineee');
+
       this.onLineUsers$.next(onlineUser)
     })
     this.socket.on(ChatEventEnum.MESSAGE_DELETE_EVENT, (deletedMessage: Message) => {
@@ -66,7 +65,7 @@ typingInfo$ = new Subject<string>()
   }
   establishConnection() {
     this.socket.on(ChatEventEnum.CONNECTED_EVENT, (res:any) => {
-      console.log(' socket connected connected');
+
     })
     
   }
@@ -92,7 +91,7 @@ typingInfo$ = new Subject<string>()
   getStopTypingInfo() {
 
      this.socket.on(ChatEventEnum.STOP_TYPING_EVENT, (chatId: string) => {
-       console.log(chatId,'typing');
+
       this.stopTypingInfo$.next(chatId)
     })
   }

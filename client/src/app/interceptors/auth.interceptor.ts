@@ -19,7 +19,6 @@ export class AuthInterceptor implements HttpInterceptor {
     
     const accessToken = this.authService.getAccessToken();
     const refreshToken = this.authService.getRefreshToken()
-    console.log(request.url);
 
     if (request.url ===('http://localhost:3000/api/v1/user/refreshToken') && refreshToken) {
       return next.handle(request);
@@ -31,7 +30,6 @@ export class AuthInterceptor implements HttpInterceptor {
     if (accessToken) {
       return next.handle(authRequest).pipe(
         catchError((error: HttpErrorResponse) => {
-          console.log('error occured',error);
           if (error.status === 401) {
 
            return this.authService.refreshAccessToken().pipe(

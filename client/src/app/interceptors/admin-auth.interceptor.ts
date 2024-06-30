@@ -32,7 +32,6 @@ export class AdminAuthInterceptor implements HttpInterceptor {
     if (accessToken) {
       return next.handle(adminAuthReuest).pipe(
         catchError((error: HttpErrorResponse) => {
-          console.log(error);
           if (error.status === 401) {
             return this.adminServices.refreshAdminAccessToken().pipe(
               switchMap((response: ApiResponse) => {

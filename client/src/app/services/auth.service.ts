@@ -1,16 +1,16 @@
 import { SocialUser } from '@abacritt/angularx-social-login';
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
+import { Observable, catchError,  throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
-import { ApiError, ApiResponse } from '../types/api.interface';
+import {  ApiResponse } from '../types/api.interface';
 import {jwtDecode} from 'jwt-decode';
 import { JwtPayload } from '../types/jwt.interface';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor() {console.log('object'); }
+  constructor() { }
   http = inject(HttpClient);
   API_URL: string = environment.api_Url;
   loggedIn: boolean = false;

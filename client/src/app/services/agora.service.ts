@@ -1,10 +1,10 @@
-import { HttpClient, HttpHandler } from '@angular/common/http';
-import { ElementRef, Injectable, inject } from '@angular/core';
-import AgoraRTC, { ClientConfig, IAgoraRTCClient, IAgoraRTCRemoteUser, IAgoraRTC,ILocalAudioTrack,IRemoteAudioTrack ,UID, ILocalVideoTrack, IRemoteVideoTrack} from 'agora-rtc-sdk-ng'
+import { HttpClient} from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import AgoraRTC, {  IAgoraRTCClient, IAgoraRTCRemoteUser, ILocalAudioTrack,IRemoteAudioTrack ,UID, ILocalVideoTrack, IRemoteVideoTrack} from 'agora-rtc-sdk-ng'
 import { environment } from 'src/environments/environment.development';
 import { ApiResponse } from '../types/api.interface';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { AcceptCallPayload, DeleteVideoCotainProviderInterface, IVideoCallSocketEventPayload, VideoCallProviderInterface, VoiceCallInterfaceOpener } from '../types/chat.interface';
+import { AcceptCallPayload,  VideoCallProviderInterface, VoiceCallInterfaceOpener } from '../types/chat.interface';
 import { ChatService } from './chat.service';
 @Injectable({
   providedIn: 'root'
@@ -65,11 +65,9 @@ export class AgoraService {
           } else if (this.callType === 'voice') {
             const {fname}=this.getremoteIdAndGender(user.uid)
             //voice call providers
-            console.log(fname);
             this.openVoiceCallContainer$.next({name:fname,open:true})
         }
       } catch (error) {
-        console.log(error);
         throw error;   
       }
      
@@ -78,7 +76,7 @@ export class AgoraService {
       try {
          await this.rtcClient?.subscribe(user, mediaType);
       if (mediaType === 'video' && this.callType ==='video') {
-        console.log('subscribed video sucess');
+
         const remoteVideoTrack = user.videoTrack as IRemoteVideoTrack;
         this.videoCallProvider$.next({ videoTrack: remoteVideoTrack, uid: user.uid.toString() })
             this.channelParameters.remoteUid = user.uid;
@@ -102,7 +100,7 @@ export class AgoraService {
         remoteAudioTrack?.play()
         }
       } catch (error) {
-        console.log(error);
+
         throw error;
       }
      
@@ -126,7 +124,7 @@ export class AgoraService {
              this.callType = null;
       }
       } catch (error) {
-        console.log(error);
+
         throw error;
       }
    
@@ -163,7 +161,6 @@ export class AgoraService {
     const payload = {remoteId:remoteId,duration:this.duration,date: new Date() }
     this.http.post<ApiResponse>(this.API_URL + '/user/connect/saveCallInfo', payload).subscribe({
       next: (response) => {
-        console.log(response);
    }
  })
   }
@@ -189,7 +186,6 @@ export class AgoraService {
 
     // this.user_id = payload.uid;
   } catch (error) {
-    console.error(error);
     throw error;
   }
    
@@ -206,7 +202,7 @@ export class AgoraService {
       await this.rtcClient?.publish([this.channelParameters.localAudioTrack, this.channelParameters.localVideoTrack]);
       this.videoCallProvider$.next({ videoTrack: this.channelParameters.localVideoTrack, uid: payload.uid })
     } catch (error) {
-      console.log(error);
+
       throw error
     }
    
@@ -221,7 +217,7 @@ export class AgoraService {
       await this.rtcClient?.leave();
       this.openVideoContainer$.next(false)
     } catch (error) {
-      console.log(error);
+
       throw error;
     }
    
@@ -244,7 +240,7 @@ export class AgoraService {
       this.chatService.emitCallRequest(payload)
       this.openVoiceCallContainer$.next({name:"calling",open:true})
     } catch (error) {
-      console.log(error);
+
       throw error;
     }
 
@@ -258,7 +254,7 @@ export class AgoraService {
       await this.rtcClient?.publish([this.channelParameters.localAudioTrack])
 
     } catch (error) {
-      console.log(error);
+
       throw error;
     }
   }
