@@ -11,9 +11,8 @@ import { SubscribedUser } from 'src/app/types/subscription.interfaces';
 })
 export class PremiumcardComponent implements OnInit,OnDestroy{
   authServices = inject(AuthService);
-
   currentPlanSubscription?: Subscription;
-
+ planDetails?: SubscribedUser;
   ngOnInit(): void {
     this.currentPlanSubscription =this.authServices.getCurrentSubscriptionDetails().subscribe(
       {
@@ -25,7 +24,7 @@ export class PremiumcardComponent implements OnInit,OnDestroy{
     )
   }
 
-  planDetails?: SubscribedUser;
+ 
 
 ngOnDestroy(): void {
   this.currentPlanSubscription?.unsubscribe()

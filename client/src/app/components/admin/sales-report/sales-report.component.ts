@@ -1,6 +1,6 @@
 
 
-import { Component, VERSION, ViewChild, inject } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-sales-report',

@@ -1,14 +1,13 @@
-import { GoogleLoginProvider, SocialAuthService,  SocialUser } from '@abacritt/angularx-social-login';
-import { Component, Inject, OnDestroy, OnInit, inject } from '@angular/core';
+
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { NgxUiLoaderService } from 'ngx-ui-loader'
-import { Observable, Subscription, catchError, map, pluck, tap, throwError } from 'rxjs';
+import {  Subscription, } from 'rxjs';
 import { emailValidator, lowerCaseValidator } from 'src/app/custom-validators/auth-validators';
 import { AuthService } from 'src/app/services/auth.service';
 import { SharedService } from 'src/app/services/shared.service';
 import {Router} from "@angular/router";
-import { ApiResponse } from 'src/app/types/api.interface';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/store';
 import { loginAction } from 'src/app/store/auth/actions';

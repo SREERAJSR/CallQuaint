@@ -1,6 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 import { PaymentService } from 'src/app/services/payment.service';
 import { SharedService } from 'src/app/services/shared.service';
 import { ApiResponse } from 'src/app/types/api.interface';
@@ -11,13 +12,14 @@ import { CheckoutPageProviderInterface, IsubscriptionPlans } from 'src/app/types
   templateUrl: './subscription.component.html',
   styleUrls: ['./subscription.component.css']
 })
-export class SubscriptionComponent implements OnInit {
+export class SubscriptionComponent implements OnInit ,OnDestroy {
 
   paymentService = inject(PaymentService)
   toast = inject(ToastrService)
   router = inject(Router)
+  getSubscriptionPlanSubscription$?: Subscription;
   ngOnInit(): void {
-    this.paymentService.getSubscriptionPlans().subscribe({
+   this.getSubscriptionPlanSubscription$ = this.paymentService.getSubscriptionPlans().subscribe({
       next: (response: ApiResponse) => {
         this.subscriptionPlans = response.data.subscriptionPlans
         this.isSubscriberUser = response.data.user
@@ -35,9 +37,13 @@ export class SubscriptionComponent implements OnInit {
       features:features
     }
 
-    console.log(payload);
     this.sharedService.sendCheckoutInfoProvider(payload)      
       this.router.navigate(['subscriptions/checkout'])
+
+  }
+
+  ngOnDestroy(): void {
+    this.getSubscriptionPlanSubscription$?.unsubscribe();
 
   }
 }

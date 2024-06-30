@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import {  Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { AgoraService } from 'src/app/services/agora.service';
 import { VoiceCallInterfaceOpener } from 'src/app/types/chat.interface';
 
@@ -7,11 +8,12 @@ import { VoiceCallInterfaceOpener } from 'src/app/types/chat.interface';
   templateUrl: './voice-call-screen.component.html',
   styleUrls: ['./voice-call-screen.component.css']
 })
-export class VoiceCallScreenComponent {
+export class VoiceCallScreenComponent implements OnDestroy {
 
+  openVoiceCallContainerSubscription?:Subscription
   constructor(private agoraService: AgoraService) {
   
-    this.agoraService.openVoiceCallContainer$.subscribe({
+  this.openVoiceCallContainerSubscription=  this.agoraService.openVoiceCallContainer$.subscribe({
       next: (value:VoiceCallInterfaceOpener  ) => {
         this.openContainer = value.open;
         this.callername =value.name
@@ -40,5 +42,9 @@ export class VoiceCallScreenComponent {
   declineCall() {
     this.agoraService.leaveVoiceCall()
     this.openContainer =false
+  }
+
+  ngOnDestroy(): void {
+    this.openVoiceCallContainerSubscription?.unsubscribe()
   }
 }

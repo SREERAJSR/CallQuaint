@@ -1,10 +1,10 @@
 
 import { HttpErrorResponse } from '@angular/common/http';
-import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, Component, DoCheck, Input, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnDestroy, ViewChild, inject } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource, MatTableDataSourcePaginator } from '@angular/material/table';
+import { MatTableDataSource,} from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 import { ConnectService } from 'src/app/services/connect.service';
 import { ApiResponse } from 'src/app/types/api.interface';
 import { CallhistoryRespone, ICallHistory } from 'src/app/types/connect.interface';
@@ -16,7 +16,7 @@ import { CallhistoryRespone, ICallHistory } from 'src/app/types/connect.interfac
 
 })
  
-export class CallsAndHistoryComponent {
+export class CallsAndHistoryComponent implements OnDestroy{
 
 
   @ViewChild(MatPaginator) paginator?: MatPaginator;
@@ -28,16 +28,16 @@ export class CallsAndHistoryComponent {
 
   }
 
-
+  fetchCallhistorySubscription$?: Subscription;
+  sendFriendRequstSubscription$?: Subscription;
   toaxtrService = inject(ToastrService)
   connectService = inject(ConnectService);
   displayedColumns: string[] = ['id','firstname', 'callduration', 'date','action'];
   
   initHistoryData() {
-    this.connectService.fetchCallHistory().subscribe({
+  this.fetchCallhistorySubscription$ =  this.connectService.fetchCallHistory().subscribe({
       next: (res: ApiResponse) => {
           const callhistoryData: CallhistoryRespone[] = res.data;
-          console.log(callhistoryData,'hee');
         this.callHistory = callhistoryData.map((item: CallhistoryRespone,index:number) => {
           return {
             id:index+1,
@@ -59,19 +59,20 @@ export class CallsAndHistoryComponent {
   }
 
   sendFriendRequest(remoteId: string) {
-    this.connectService.sendFriendRequest(remoteId).subscribe({
+ this.sendFriendRequstSubscription$=   this.connectService.sendFriendRequest(remoteId).subscribe({
       next: (response) => {
         if (response.statusCode === 200) {
           this.initHistoryData()
           this.toaxtrService.success(response.message)
         }
-      },  
-      error: (err:HttpErrorResponse) => {
-        console.log(err);
-        this.toaxtrService.error(err.message)
-      }
+      }, 
     })
   }
 
+
+  ngOnDestroy(): void {
+    this.fetchCallhistorySubscription$?.unsubscribe();
+    this.sendFriendRequstSubscription$?.unsubscribe();
+  }
 }
 

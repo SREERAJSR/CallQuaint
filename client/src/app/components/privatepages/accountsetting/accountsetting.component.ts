@@ -11,11 +11,12 @@ import { SubscribedUser } from 'src/app/types/subscription.interfaces';
   styleUrls: ['./accountsetting.component.css']
 })
 export class AccountsettingComponent implements OnInit ,OnDestroy{
-
+ subscribed:boolean=false
+  currentPage?:string='profile'
     authServices = inject(AuthService);
+    toaxtr = inject(ToastrService)
 
   currentPlanSubscription?: Subscription;
-toaxtr = inject(ToastrService)
   ngOnInit(): void {
     this.currentPlanSubscription =this.authServices.getCurrentSubscriptionDetails().subscribe(
       {
@@ -27,9 +28,7 @@ toaxtr = inject(ToastrService)
     )
   }
 
-  subscribed:boolean=false
-
-  currentPage?:string='profile'
+ 
 
   setCurrentPage(page: string) {
     this.currentPage =page

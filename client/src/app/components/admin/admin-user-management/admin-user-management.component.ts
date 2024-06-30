@@ -1,24 +1,22 @@
 
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component, ViewChild, inject } from '@angular/core';
+import { Component, OnDestroy, ViewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
-import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
+import { Subscription } from 'rxjs';
 import { AdminService } from 'src/app/services/admin.service';
 import { ConnectService } from 'src/app/services/connect.service';
 import { UserManagement } from 'src/app/types/admin.intefaces';
 import { ApiResponse } from 'src/app/types/api.interface';
-import { IFriendRequests, IFriendsListDataSource, IRequestsDataSource, IfriendsList } from 'src/app/types/connect.interface';
 
 @Component({
   selector: 'app-admin-user-management',
   templateUrl: './admin-user-management.component.html',
   styleUrls: ['./admin-user-management.component.css']
 })
-export class AdminUserManagementComponent {
+export class AdminUserManagementComponent  implements OnDestroy{
   @ViewChild(MatPaginator) paginator?: MatPaginator;
   @ViewChild(MatSort) sort?: MatSort;
   private sortState: 'all' | 'premium' | 'standard' = 'all';
@@ -34,7 +32,9 @@ this.initUsersList()
   connectService = inject(ConnectService);
   adminService  = inject(AdminService)
   displayedColumns: string[] = ['index','firstname','subscription','action'];
-  userList:UserManagement[] =[]
+  userList: UserManagement[] = []
+  blockUserSubscription?: Subscription;
+  unblockUserSubscription?:Subscription
   
 
   initUsersList() {
@@ -104,6 +104,11 @@ this.initUsersList()
         }
       }
     })
+  }
+
+  ngOnDestroy(): void {
+    this.blockUserSubscription?.unsubscribe();
+    this.unblockUserSubscription?.unsubscribe();
   }
 }
 

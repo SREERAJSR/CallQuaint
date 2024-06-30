@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CallingscreenComponent } from './callingscreen/callingscreen.component';
 import { AuthService } from 'src/app/services/auth.service';
@@ -6,6 +6,7 @@ import { AgoraService } from 'src/app/services/agora.service';
 import { User } from 'src/app/types/user.inteface';
 import { ApiResponse } from 'src/app/types/api.interface';
 import { ConnectService } from 'src/app/services/connect.service';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -13,7 +14,7 @@ import { ConnectService } from 'src/app/services/connect.service';
   templateUrl: './call-setup.component.html',
   styleUrls: ['./call-setup.component.css']
 })
-export class CallSetupComponent implements OnInit {
+export class CallSetupComponent implements OnInit ,OnDestroy{
 
   @Output() callHistoryUpdate = new EventEmitter<string>();
   matDialog: MatDialog = inject(MatDialog);
@@ -23,7 +24,10 @@ export class CallSetupComponent implements OnInit {
   target: string;
   uid!: string
   gender!: string;
-  isSubscriber?:boolean
+  isSubscriber?: boolean
+  getUserInfoSubscription$?: Subscription
+  strangerSupplierSubscripiton$?: Subscription
+  getChannelNameSubscripiton$?:Subscription
   constructor() {
     this.target = 'any';
   }
@@ -32,7 +36,7 @@ ngOnInit(): void {
   const { _id,gender ,firstname} = this.authService.decodeJwtPayload(accessToken as string)
   this.uid = _id+' '+firstname+' '+gender;
 
-  this.authService.getUserInfo().subscribe({
+this.getUserInfoSubscription$=  this.authService.getUserInfo().subscribe({
     next: (response: ApiResponse) => {
       const userData = response.data as User;
       this.gender = userData.gender;
@@ -40,7 +44,7 @@ ngOnInit(): void {
   }
 })
 
-    this.agoraService.strangerInfoSupplier.subscribe({
+   this.strangerSupplierSubscripiton$ = this.agoraService.strangerInfoSupplier.subscribe({
       next: (info) => {
         if (info.gender === 'nouser') {
           this.callHistoryUpdate.emit('updatecallhistory')
@@ -51,8 +55,7 @@ ngOnInit(): void {
 
 
      connectToCall() {
-       this.agoraService.getChannelName(this.target).subscribe((response) => {
-         console.log(response,'hai hai hai hai');
+    this.getChannelNameSubscripiton$=   this.agoraService.getChannelName(this.target).subscribe((response) => {
          const channel = response.data.channelName;
 
          this.agoraService.startCall(channel,this.uid);
@@ -64,6 +67,14 @@ ngOnInit(): void {
   }
   leaveCall() {
     this.agoraService.leaveCall();
+  }
+
+  ngOnDestroy(): void {
+    this.getChannelNameSubscripiton$?.unsubscribe();
+    this.getUserInfoSubscription$?.unsubscribe();
+    this.strangerSupplierSubscripiton$?.unsubscribe();
+
+ 
   }
 }
  

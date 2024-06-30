@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
@@ -9,26 +9,17 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
-
 import { AdminService } from 'src/app/services/admin.service';
 import { OrderDetail, SalesReport } from 'src/app/types/admin.intefaces';
 import { ApiResponse } from 'src/app/types/api.interface';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import * as FileSaver from 'file-saver';
+import { YEAR_MODE_FORMATS } from 'src/app/configs/date.config';
+import { Subscription } from 'rxjs';
 
 
-export const YEAR_MODE_FORMATS = {
-  parse: {
-    dateInput: 'YYYY',
-  },
-  display: {
-    dateInput: 'YYYY',
-    monthYearLabel: 'YYYY',
-    dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'YYYY',
-  },
-};
+
 @Component({
   selector: 'app-yearly-report',
   templateUrl: './yearly-report.component.html',
@@ -42,21 +33,19 @@ export const YEAR_MODE_FORMATS = {
     { provide: MAT_DATE_FORMATS, useValue: YEAR_MODE_FORMATS },
   ]
 })
-export class YearlyReportComponent implements OnInit {
+export class YearlyReportComponent implements OnInit, OnDestroy {
+  @ViewChild('picker') picker?: MatDatepicker<moment.Moment>;
 @ViewChild(MatPaginator) paginator?: MatPaginator;
   dataSource: any
-  ngOnInit(): void {
-    this.fetchReport()
-  }
+  yearControl = new FormControl(moment());
   matDialog = inject(MatDialog)
   toaxtrService = inject(ToastrService)
   displayedColumns: string[] = ['index', 'fullname','amount','orderId','paymentmethod' ,'action'];
   salesReportList?: OrderDetail[];
-
-  
- @ViewChild('picker') picker?: MatDatepicker<moment.Moment>;
-  yearControl = new FormControl(moment());
-
+  getSalesReportSubscription?:Subscription
+  ngOnInit(): void {
+    this.fetchReport()
+  }
   chosenYearHandler(normalizedYear: moment.Moment, datepicker: MatDatepicker<moment.Moment>) {
     const ctrlValue = this.yearControl.value;
     ctrlValue?.year(normalizedYear.year());
@@ -69,9 +58,8 @@ adminServices = inject(AdminService)
     const selectedYear = this.yearControl.value
     if (selectedYear) {
       const formattedDate = selectedYear.format('YYYY-01-01');
-      this.adminServices.getSalesReport(formattedDate).subscribe({
+    this.getSalesReportSubscription=  this.adminServices.getSalesReport(formattedDate).subscribe({
         next: (response: ApiResponse) => {
-          console.log(response);
           const salesReport = response.data[0] as SalesReport;
           if (!salesReport) {
             this.salesReportList = []
@@ -108,7 +96,7 @@ adminServices = inject(AdminService)
     const element = document.getElementById('report');
 
     if (!element) {
-      console.error('Element not found');
+
       return;
     }
 
@@ -139,7 +127,6 @@ adminServices = inject(AdminService)
  downloadCsvFromDiv(): void {
     const divElement = document.getElementById('report');
     if (!divElement) {
-      console.error('Element not found!');
       return;
     }
 
@@ -159,6 +146,10 @@ adminServices = inject(AdminService)
       csvContent += rowData + '\r\n';
     });
     return csvContent;
+  }
+
+  ngOnDestroy(): void {
+    this.getSalesReportSubscription?.unsubscribe()
   }
   }
 

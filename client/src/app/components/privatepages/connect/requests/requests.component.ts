@@ -1,20 +1,21 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, ViewChild, inject } from '@angular/core';
+import { Component, OnDestroy, ViewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { ConnectService } from 'src/app/services/connect.service';
 import { ApiResponse } from 'src/app/types/api.interface';
-import { CallhistoryRespone, ICallHistory, IFriendRequests, IFriendRequestsApiresponse, IRequestsDataSource } from 'src/app/types/connect.interface';
+import {  IFriendRequests, IRequestsDataSource } from 'src/app/types/connect.interface';
 
 @Component({
   selector: 'app-requests',
   templateUrl: './requests.component.html',
   styleUrls: ['./requests.component.css']
 })
-export class RequestsComponent {
+export class RequestsComponent implements OnDestroy {
 
 
   @ViewChild(MatPaginator) paginator?: MatPaginator;
@@ -29,13 +30,13 @@ export class RequestsComponent {
   toaxtrService = inject(ToastrService)
   connectService = inject(ConnectService);
   displayedColumns: string[] = ['id','name', 'action'];
-  
+   fetchFriendRequestListSubscription$?: Subscription;
+  acceptFriendRequestSubscription$?: Subscription;
+  rejectFriendRquestSubscription?: Subscription;
   initFriendRequestData() {
-    console.log('invoked');
-    this.connectService.getFriendRequests().subscribe({
+   this.rejectFriendRquestSubscription= this.connectService.getFriendRequests().subscribe({
       next: (res: ApiResponse) => {
           const friendRequestsArray: IFriendRequests[]= res.data;
-          console.log(friendRequestsArray);
         this.friendRequests = friendRequestsArray.map((item: IFriendRequests,index:number) => {
           return {
             id: index + 1,
@@ -54,7 +55,7 @@ export class RequestsComponent {
   
 
   acceptFriendRequest(remoteId: string) {
-    this.connectService.acceptFriendRequest(remoteId).subscribe({
+   this.acceptFriendRequestSubscription$ = this.connectService.acceptFriendRequest(remoteId).subscribe({
       next: (response) => {
         this.initFriendRequestData()
         this.toaxtrService.success(response.message)
@@ -73,7 +74,7 @@ export class RequestsComponent {
     disableClose:true
   }).afterClosed().subscribe((res) => {
     if (res) {
-        this.connectService.rejectFriendRequest(remoteId).subscribe({
+    this.rejectFriendRquestSubscription =    this.connectService.rejectFriendRequest(remoteId).subscribe({
       next: (response) => {
         this.initFriendRequestData()
         this.toaxtrService.success(response.message)
@@ -84,5 +85,11 @@ export class RequestsComponent {
     }) 
     }
     })
+  }
+
+  ngOnDestroy(): void {
+    this.rejectFriendRquestSubscription?.unsubscribe();
+    this.acceptFriendRequestSubscription$?.unsubscribe();
+    this.fetchFriendRequestListSubscription$?.unsubscribe();
   }
 }

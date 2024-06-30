@@ -1,11 +1,11 @@
-import { IfStmt } from '@angular/compiler';
-import { Component, OnInit, inject } from '@angular/core';
+
+import { Component, OnDestroy, inject } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatTableDataSource } from '@angular/material/table';
-import { Subject } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ChatService } from 'src/app/services/chat.service';
 import { ApiResponse } from 'src/app/types/api.interface';
-import { Chat } from 'src/app/types/chat.interface';
+import { Chat, IAvailableFriendsList, IAvailableUsersResponse, IFriends } from 'src/app/types/chat.interface';
 
 
 @Component({
@@ -16,16 +16,18 @@ import { Chat } from 'src/app/types/chat.interface';
   
 
 
-export class SearchUserDialogComponent {
+export class SearchUserDialogComponent implements OnDestroy{
 
+AVAILABLE_USERS_DATA:IAvailableFriendsList[]=[]
+  displayedColumns: string[] = ['position', 'name', '_id'];
+  dataSource: any
   chatService = inject(ChatService)
-
+createOrGetAOneOnOneChatSubscription?:Subscription
   constructor(private bottom:MatBottomSheet) {
-    console.log('invoked');
     this.initAvailableUsersData()
   }
   sendChatId(recieverId: string) {
-    this.chatService.createOrGetAOneOnOneChat(recieverId).subscribe((response:ApiResponse) => {
+  this.createOrGetAOneOnOneChatSubscription=  this.chatService.createOrGetAOneOnOneChat(recieverId).subscribe((response:ApiResponse) => {
       const chats = response.data as Chat
       const payload = { chatId: chats._id, recieverId: recieverId }
       this.chatService.sendChatIdAndRecieverIdFn(payload)
@@ -37,7 +39,6 @@ export class SearchUserDialogComponent {
     this.chatService.searchAvailableUsers().subscribe({
       next: (res: ApiResponse) => {
         const availableUsersData: IAvailableUsersResponse= res.data
-        console.log(availableUsersData,'ava');
         this.AVAILABLE_USERS_DATA = availableUsersData.friends.map((friend: IFriends, index: number) => {
           return {
             _id:friend._id,
@@ -46,18 +47,15 @@ export class SearchUserDialogComponent {
             position:index +1
           }
         })
-        console.log(this.AVAILABLE_USERS_DATA);
          this.dataSource = new MatTableDataSource<IAvailableFriendsList>(this.AVAILABLE_USERS_DATA)
       }
     })
   }
 
 
-AVAILABLE_USERS_DATA:IAvailableFriendsList[]=[]
-
-
-  displayedColumns: string[] = ['position', 'name', '_id'];
-  dataSource: any
+  ngOnDestroy(): void {
+    this.createOrGetAOneOnOneChatSubscription?.unsubscribe()
+  }
 
 }
 
@@ -69,21 +67,4 @@ AVAILABLE_USERS_DATA:IAvailableFriendsList[]=[]
   symbol: string;
   }
 
-export interface IAvailableFriendsList{
-  position: number;
-  name: string;
-  _id: string;
-  avatar: string;
-}
-  
-export interface IAvailableUsersResponse {
-  _id: string,
-  friends: IFriends[] | []
-}
 
-interface IFriends{
-  _id: string,
-  avatar: string,
-  firstname: string,
-  email:string
- }

@@ -17,9 +17,9 @@ export class PublicprofileComponent implements OnInit ,OnDestroy{
   authServices = inject(AuthService)
   toaxt = inject(ToastrService)
   formbuilder = inject(FormBuilder)
+  getUserInfoSubscription?: Subscription;
+  editProfileSubscripiton?: Subscription;
   constructor() {
-    
-    
   }
   ngOnInit(): void {
 
@@ -29,7 +29,7 @@ export class PublicprofileComponent implements OnInit ,OnDestroy{
       email: ["", [Validators.required, Validators.email, emailValidator(), lowerCaseValidator()]],
       gender:["",[Validators.required]],
    })
-    this.authServices.getUserInfo().subscribe({
+   this.getUserInfoSubscription= this.authServices.getUserInfo().subscribe({
       next: (response: ApiResponse) => {
         const user: User = response.data
         this.user = user
@@ -50,13 +50,10 @@ export class PublicprofileComponent implements OnInit ,OnDestroy{
    
   
   imageUrl?: string
-  getUserInfoSubscrition?: Subscription
   user?: User
   selectedFile?:File
   onFileSelected(event: Event) {
-    console.log(event.target);
     const input = event.target as HTMLInputElement
-
     if (input.files && input.files[0]) {
       const file = input.files[0]
       if (!file.type.startsWith('image/')) {
@@ -93,11 +90,10 @@ export class PublicprofileComponent implements OnInit ,OnDestroy{
       payload.append('lastname',values.lastname)
       payload.append('email',values.email)
       payload.append('gender',values.gender)
-      this.authServices.editProfile(payload).subscribe({
+    this.editProfileSubscripiton=  this.authServices.editProfile(payload).subscribe({
         next: (response: ApiResponse) => {
           if (response.statusCode === 200) {
             this.toaxt.success(response.message)
-            console.log(response);
             this.authServices.setAccessToken(response.data.accessToken)
             this.authServices.setRefreshToken(response.data.refreshToken)
           }
@@ -106,7 +102,8 @@ export class PublicprofileComponent implements OnInit ,OnDestroy{
     }
   }
   ngOnDestroy(): void {
-    this.getUserInfoSubscrition?.unsubscribe()
+    this.getUserInfoSubscription?.unsubscribe()
+    this.editProfileSubscripiton?.unsubscribe()
   }
 
 }

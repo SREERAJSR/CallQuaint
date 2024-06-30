@@ -8,7 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { ConnectService } from 'src/app/services/connect.service';
 import { ApiResponse } from 'src/app/types/api.interface';
-import { IFriendRequests, IFriendsListDataSource, IRequestsDataSource, IfriendsList } from 'src/app/types/connect.interface';
+import {  IFriendsListDataSource, IRequestsDataSource, IfriendsList } from 'src/app/types/connect.interface';
 
 
 

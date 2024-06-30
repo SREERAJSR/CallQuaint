@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit,  inject } from '@angular/core';
 import { SearchUserDialogComponent } from './search-user-dialog/search-user-dialog.component';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ChatService } from 'src/app/services/chat.service';
 import { SendChatIdAndRecieverIdInterface } from 'src/app/types/chat.interface';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -10,13 +11,14 @@ import { SendChatIdAndRecieverIdInterface } from 'src/app/types/chat.interface';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent  implements OnInit {
+export class ChatComponent  implements OnInit,OnDestroy {
   constructor(private _bottomSheet: MatBottomSheet) { }
 
   chatPage: boolean = false;
  chatId:string =''
   recieverId: string = ''
-  chatService  = inject(ChatService)
+  chatService = inject(ChatService)
+  sendChatIdSubscription?: Subscription;
   wantChatPage() {
     this.chatPage = !this.chatPage
   }
@@ -24,9 +26,14 @@ export class ChatComponent  implements OnInit {
 openDialog(){
     this._bottomSheet.open(SearchUserDialogComponent)
 }
+    
+  getChatIdFromChatList(event:{chatId:string,recieverId:string}) {
+    this.chatId = event.chatId,
+    this.recieverId = event.recieverId
+  }
   
   ngOnInit() {
-    this.chatService.sendChatIdAndRecieverId$.subscribe({
+  this.sendChatIdSubscription =  this.chatService.sendChatIdAndRecieverId$.subscribe({
       next: (payload: SendChatIdAndRecieverIdInterface) => {
         this.chatId = payload.chatId
         this.recieverId = payload.recieverId
@@ -34,10 +41,9 @@ openDialog(){
     })
 
 }
-  
-  getChatIdFromChatList(event:{chatId:string,recieverId:string}) {
-    this.chatId = event.chatId,
-    this.recieverId = event.recieverId
+
+  ngOnDestroy(): void {
+    this.sendChatIdSubscription?.unsubscribe();
   }
 
 }

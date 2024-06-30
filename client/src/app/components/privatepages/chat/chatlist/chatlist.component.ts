@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, 
 import { AuthService } from 'src/app/services/auth.service';
 import { ChatService } from 'src/app/services/chat.service';
 import { ApiResponse } from 'src/app/types/api.interface';
-import { Chat, IChatList, OnlineUsers, SendChatIdAndRecieverIdInterface } from 'src/app/types/chat.interface';
+import { Chat, IChatList, OnlineUsers, } from 'src/app/types/chat.interface';
 import { ChatComponent } from '../chat.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';

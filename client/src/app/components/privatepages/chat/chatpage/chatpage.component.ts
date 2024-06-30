@@ -1,18 +1,16 @@
 import {  AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { ChatComponent } from '../chat.component';
 import { ChatService } from 'src/app/services/chat.service';
-import { ApiError, ApiResponse } from 'src/app/types/api.interface';
+import {  ApiResponse } from 'src/app/types/api.interface';
 import { Message } from 'src/app/types/message.interface';
 import { AcceptCallPayload, Chat, Participant, SendChatIdAndRecieverIdInterface } from 'src/app/types/chat.interface';
 import { AuthService } from 'src/app/services/auth.service';
-import { every } from 'lodash';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { Subscription } from 'rxjs';
 import { AgoraService } from 'src/app/services/agora.service';
 import { ConnectService } from 'src/app/services/connect.service';
-import { IAgoraRTCRemoteUser } from 'agora-rtc-sdk-ng';
 
 
 @Component({
@@ -42,22 +40,24 @@ export class ChatpageComponent implements OnChanges, OnInit, AfterViewInit, Afte
   typing: boolean = false;
   fileSelectedToShowInUI?: { url: string, file: File }[]
   typingTimeout: any;
+  chatPageHeight?: number = 320
   deletedMessageInfoSubscription$?: Subscription
-  chatPageHeight?:number =320
+  messageRecievedSubscription?: Subscription;
+  sendChatidSubscription?:Subscription
   ngOnInit(): void {
  
-    this.chatServices.deletedMessageInfo$.subscribe({
+   this.deletedMessageInfoSubscription$= this.chatServices.deletedMessageInfo$.subscribe({
       next: (deletedMessage: Message) => {
         this.updateDeletedMessge(deletedMessage)
       }
     })
-    this.chatServices.sendChatIdAndRecieverId$.subscribe((payload: SendChatIdAndRecieverIdInterface) => {
+  this.sendChatidSubscription =  this.chatServices.sendChatIdAndRecieverId$.subscribe((payload: SendChatIdAndRecieverIdInterface) => {
       this.chatId = payload.chatId,
         this.recieverId = payload.recieverId
     })
 
     this.chatServices.emitJoinChatEvent(this.chatId!)
-    this.chatServices.messageReceived$.subscribe((message: Message) => {
+  this.messageRecievedSubscription =  this.chatServices.messageReceived$.subscribe((message: Message) => {
       this.chatMessages = [...this.chatMessages, message]
     })
 
@@ -135,7 +135,6 @@ export class ChatpageComponent implements OnChanges, OnInit, AfterViewInit, Afte
     this.chatServices.getMessageById(chatId).subscribe({
       next: (response: ApiResponse) => {
         const messages = response.data as Message[];
-        console.log(messages);
         this.chatMessages = messages.sort((a, b) => new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime());
 
       }
@@ -202,7 +201,6 @@ export class ChatpageComponent implements OnChanges, OnInit, AfterViewInit, Afte
         }
       })
     }
-    // this.agoraService.setVideoContainer(this.agoraUiKit!)
      
 
   }
@@ -253,7 +251,6 @@ export class ChatpageComponent implements OnChanges, OnInit, AfterViewInit, Afte
         uid: _id,
         remoteId:this.recieverId as string
       }
-      console.log(payload);
       this.agoraService.startVideoCall(payload)
     })
 
@@ -267,14 +264,14 @@ export class ChatpageComponent implements OnChanges, OnInit, AfterViewInit, Afte
    endCall() {
  this.agoraService.leaveVideoCall()
   }
-    
+  getChannaleNameForChatCallSubscription$?: Subscription;
   startVoiceCall() {
     const accessToken = this.authService.getAccessToken()
     const { _id, firstname, gender } = this.authService.decodeJwtPayload(accessToken as string)
     const customUid = _id+' '+firstname+' '+gender;
     let payload: AcceptCallPayload
     let channelName: string
-    this.connectService.getChannelNameForChatCall().subscribe((response: ApiResponse) => {
+   this.getChannaleNameForChatCallSubscription$= this.connectService.getChannelNameForChatCall().subscribe((response: ApiResponse) => {
       channelName = response.data.channelName
       payload = {
         callerName: firstname,
@@ -289,8 +286,9 @@ export class ChatpageComponent implements OnChanges, OnInit, AfterViewInit, Afte
   
   ngOnDestroy(): void {
     this.deletedMessageInfoSubscription$?.unsubscribe()
-  
-  
+    this.sendChatidSubscription?.unsubscribe();
+    this.getChannaleNameForChatCallSubscription$?.unsubscribe();
+    this.messageRecievedSubscription?.unsubscribe();
   }
 }
  

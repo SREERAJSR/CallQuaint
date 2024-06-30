@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -14,6 +14,7 @@ import {
   ApexNonAxisChartSeries,
   ApexResponsive
 } from "ng-apexcharts";
+import { Subscription } from 'rxjs';
 import { AdminService } from 'src/app/services/admin.service';
 import { DashboardData, LastSubscribedUser } from 'src/app/types/admin.intefaces';
 import { ApiResponse } from 'src/app/types/api.interface';
@@ -43,7 +44,7 @@ export type PieChartOptions = {
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminDashboardComponent implements OnInit ,OnDestroy {
 
   @ViewChild("chart") chart?: ChartComponent; 
   public chartOptions?: Partial<ChartOptions>;
@@ -52,7 +53,6 @@ export class AdminDashboardComponent implements OnInit {
   public pieChartOptions?: Partial<PieChartOptions>;
 
   adminServices = inject(AdminService)
-
   totalSalesBymonth: number[] = []
   totalUsersCount?: number
   totalSales?: number
@@ -60,7 +60,7 @@ export class AdminDashboardComponent implements OnInit {
   randomCallsCount?: number
   normalUsers?: number
   last5subscribers?: LastSubscribedUser[];
-
+  fetchDashobardDataSubscription?:Subscription
   constructor() {
     this.initializeChartDiagram()
     this.initializePieDiagram()
@@ -70,8 +70,9 @@ export class AdminDashboardComponent implements OnInit {
     this.fetchDashboardData();
   }
 
+
   fetchDashboardData() {
-    this.adminServices.fetchDashboardData().subscribe({
+   this.fetchDashobardDataSubscription= this.adminServices.fetchDashboardData().subscribe({
       next: (response: ApiResponse) => {
         const dashboardData = response.data as DashboardData;
         this.totalUsersCount = dashboardData.totalUsers;
@@ -84,8 +85,8 @@ export class AdminDashboardComponent implements OnInit {
         this.initializeChartDiagram();
         this.initializePieDiagram();
       },
-      error: (error) => {
-        console.error('Error fetching dashboard data', error);
+     error: (error) => {
+       throw error;
       }
     });
   }
@@ -169,5 +170,9 @@ export class AdminDashboardComponent implements OnInit {
         }
       ]
     };
+  }
+
+  ngOnDestroy(): void {
+    this.fetchDashobardDataSubscription?.unsubscribe()
   }
 }

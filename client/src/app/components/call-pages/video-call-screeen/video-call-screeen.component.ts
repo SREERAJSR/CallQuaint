@@ -1,9 +1,7 @@
-import { AfterViewInit, Component, ElementRef, Injectable, OnInit, ViewChild, inject } from '@angular/core';
-import { TitleStrategy } from '@angular/router';
-import { ILocalVideoTrack, IRemoteVideoTrack } from 'agora-rtc-sdk-ng';
+import { Component, ElementRef, Injectable,  OnDestroy,  ViewChild, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AgoraService } from 'src/app/services/agora.service';
-import { DeleteVideoCotainProviderInterface, VideoCallProviderInterface } from 'src/app/types/chat.interface';
+import { VideoCallProviderInterface } from 'src/app/types/chat.interface';
 
 @Injectable()
 @Component({
@@ -11,18 +9,22 @@ import { DeleteVideoCotainProviderInterface, VideoCallProviderInterface } from '
   templateUrl: './video-call-screeen.component.html',
   styleUrls: ['./video-call-screeen.component.css'],
 })
-export class VideoCallScreeenComponent  {
+export class VideoCallScreeenComponent implements OnDestroy {
   @ViewChild('videoContainer') videoContainer?: ElementRef<HTMLDivElement>
+  @ViewChild('videoCallScreen') videoCallScreen!: ElementRef;
+  isCallMinimized = false;
 
   ids: string[] = [];
   idRemove: boolean = false;
-  idRemoveInstructionSubscription?: Subscription;
+  isMinimized:boolean = false; // Flag to track minimized state
+  agoraService = inject(AgoraService)
   videoContainerInstruction?: boolean;
-  videoContainerInstructionSubscripion$?: Subscription;
+  idRemoveInstructionSubscription?: Subscription;
+  openVideoContainerSubscription?: Subscription;
+  videoCallProviderSubscription?:Subscription
   constructor() {
-    this.agoraService.openVideoContainer$.subscribe({
+    this.openVideoContainerSubscription =this.agoraService.openVideoContainer$.subscribe({
       next: (value: boolean) => {
-        
         this.videoContainerInstruction =value
       }
     })
@@ -34,7 +36,7 @@ export class VideoCallScreeenComponent  {
         }
       }
     })
-    this.agoraService.videoCallProvider$.subscribe({
+    this.videoCallProviderSubscription = this.agoraService.videoCallProvider$.subscribe({
       next: (videoTrackProviders:VideoCallProviderInterface) => {
         if (videoTrackProviders.videoTrack) {
           const videoContainer = document.getElementById('videoContainer');
@@ -52,20 +54,14 @@ export class VideoCallScreeenComponent  {
       }
     })
   }
-  deleteVideoCallContainerProviderSubscription$ ?:Subscription
-  agoraService = inject(AgoraService)
+  
 
-
-  ngAfterViewInit() {
-    // this.agoraService.setVideoContainer(this.videoContainer!)
-  }
 
   async endCall() {
     try {
       await this.agoraService.leaveVideoCall()
       this.deleteContainers()
     } catch (error) {
-      console.log(error);
       throw error
     }
    
@@ -77,11 +73,9 @@ export class VideoCallScreeenComponent  {
     this.ids = [];
   }
 
-  isMinimized:boolean = false; // Flag to track minimized state
+  
 
   
-  @ViewChild('videoCallScreen') videoCallScreen!: ElementRef;
-  isCallMinimized = false;
 
   minimizeCall() {
     this.videoCallScreen.nativeElement.classList.add('hidden');
@@ -92,4 +86,11 @@ export class VideoCallScreeenComponent  {
     this.videoCallScreen.nativeElement.classList.remove('hidden');
     this.isCallMinimized = false;
   }
+
+  ngOnDestroy(): void {
+    this.idRemoveInstructionSubscription?.unsubscribe();
+    this.openVideoContainerSubscription?.unsubscribe();
+    this.videoCallProviderSubscription?.unsubscribe()
+  }
+
 }

@@ -1,7 +1,6 @@
-import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component,  OnDestroy, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-import { escape } from 'lodash';
+import { Router} from '@angular/router';
 
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';

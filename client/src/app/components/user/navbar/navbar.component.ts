@@ -1,8 +1,7 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Renderer2, ViewChild, ViewChildren, inject } from '@angular/core';
+import {  Component, ElementRef, HostListener, Renderer2, ViewChild, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 
 import { AuthService } from 'src/app/services/auth.service';
-import { NotificationComponent } from './notification/notification.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { AppState } from 'src/app/store/store';

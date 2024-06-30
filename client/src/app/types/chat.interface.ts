@@ -94,3 +94,24 @@ export interface DeleteVideoCotainProviderInterface {
 }
 
 export interface VoiceCallInterfaceOpener{ name: string, open: boolean }
+
+
+
+export interface IAvailableFriendsList{
+  position: number;
+  name: string;
+  _id: string;
+  avatar: string;
+}
+  
+export interface IAvailableUsersResponse {
+  _id: string,
+  friends: IFriends[] | []
+}
+
+export interface IFriends{
+  _id: string,
+  avatar: string,
+  firstname: string,
+  email:string
+ }

@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, ViewChild, inject } from '@angular/core';
-import { MatTab, MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
+import {  Component, ViewChild } from '@angular/core';
+import {  MatTabChangeEvent} from '@angular/material/tabs';
 import { CallsAndHistoryComponent } from './calls-and-history/calls-and-history.component';
 import { FriendsComponent } from './friends/friends.component';
 import { RequestsComponent } from './requests/requests.component';
@@ -14,9 +14,7 @@ export class ConnectComponent {
   @ViewChild('callHistoryComponent') historyComponent?: CallsAndHistoryComponent;
   @ViewChild('friendsComponent') friendsComponent?: FriendsComponent;
   @ViewChild('requestComponent') requestsComponent?:RequestsComponent
-  constructor() {
-    // this.MatTabGroup._allTabs
-  }
+  constructor() {}
   callHistoryTrigger:boolean= false;
   triggerHistoryUpdate(str: string) {
     if (str === 'updatecallhistory') {
