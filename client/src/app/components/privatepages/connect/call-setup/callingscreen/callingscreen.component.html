@@ -8,18 +8,18 @@
                 <div class="md:w-full rounded ">
                     <h1 class="text-center font-bold">You</h1>
                     <img *ngIf="data.gender=== 'male'" class="mx-auto rounded-full w-32 h-32 md:w-32 md:h-32"
-                        src="/assets/images/male.jpg" alt="">
+                        src="https://d9d3263cc7ac2.cloudfront.net/male.jpg" alt="">
                 
                     <img *ngIf="data.gender==='female'" class="mx-auto rounded-full w-32 h-32 md:w-48 md:h-48"
-                        src="/assets/images/female.jpg" alt="">
+                        src="https://d9d3263cc7ac2.cloudfront.net/female.jpg" alt="">
                 </div>
 
                 <div class="md:w-full rounded">
                     <h1 class="text-center font-bold">{{ remoteUserName||'Stranger'}}</h1>
-                        <img *ngIf="remoteGender=== 'male'" class="mx-auto rounded-full w-32 h-32 md:w-48 md:h-48" src="/assets/images/male.jpg"
+                        <img *ngIf="remoteGender=== 'male'" class="mx-auto rounded-full w-32 h-32 md:w-48 md:h-48" src="https://d9d3263cc7ac2.cloudfront.net/male.jpg"
                             alt="">
-                        <img *ngIf="remoteGender=== 'female'" class="mx-auto rounded-full w-32 h-32 md:w-48 md:h-48" src="/assets/images/female.jpg" alt="">
-                        <img *ngIf="remoteGender=== 'nouser'" class="mx-auto rounded-full w-32 h-32 md:w-48 md:h-48" src="/assets/images/nouser.jpg" alt="">
+                        <img *ngIf="remoteGender=== 'female'" class="mx-auto rounded-full w-32 h-32 md:w-48 md:h-48" src="https://d9d3263cc7ac2.cloudfront.net/female.jpg" alt="">
+                        <img *ngIf="remoteGender=== 'nouser'" class="mx-auto rounded-full w-32 h-32 md:w-48 md:h-48" src="https://d9d3263cc7ac2.cloudfront.net/nouser.jpg" alt="">
                 </div>
             </div>
 
