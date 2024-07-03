@@ -6,6 +6,7 @@ import { AgoraService } from 'src/app/services/agora.service';
 import { User } from 'src/app/types/user.inteface';
 import { ApiResponse } from 'src/app/types/api.interface';
 import { ConnectService } from 'src/app/services/connect.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 
 @Component({
@@ -20,6 +21,7 @@ export class CallSetupComponent implements OnInit {
   authService = inject(AuthService);
   agoraService = inject(AgoraService)
   connectService = inject(ConnectService)
+  ngxLoader = inject(NgxUiLoaderService)
   target: string;
   uid!: string
   gender!: string;
@@ -52,15 +54,19 @@ ngOnInit(): void {
 
      connectToCall() {
        this.agoraService.getChannelName(this.target).subscribe((response) => {
-         console.log(response,'hai hai hai hai');
          const channel = response.data.channelName;
-
+         this.ngxLoader.start()
+         
          this.agoraService.startCall(channel,this.uid);
-    })
-    this.matDialog.open(CallingscreenComponent, {
+       })
+       setTimeout(() => {
+         this.ngxLoader.stop()
+         this.matDialog.open(CallingscreenComponent, {
       data: { title: "calling",gender:this.gender},
       disableClose:true
     }).afterClosed()
+       }, 3000);
+   
   }
   leaveCall() {
     this.agoraService.leaveCall();

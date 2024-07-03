@@ -5,6 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "sync": "aws s3   --region 'ap-south-1' sync ./dist/client/ 's3://callquaint-site/'",
+    "invalidate": "aws cloudfront --region 'ap-south-1' create-invalidation --distribution-id E2C0BNVWI67SQD --paths '/*'",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

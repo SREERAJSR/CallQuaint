@@ -1,5 +1,6 @@
 import { Component, Inject, Input, OnInit, inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { Subscription } from 'rxjs';
 import { AgoraService } from 'src/app/services/agora.service';
 import { ConnectService } from 'src/app/services/connect.service';
@@ -16,7 +17,8 @@ export class CallingscreenComponent implements OnInit {
   // @Input() avatar?: string;
   open = false;
   agoraService = inject(AgoraService);
-  connectService  = inject(ConnectService)
+  connectService = inject(ConnectService)
+  ngXLoader = inject(NgxUiLoaderService)
   remoteGender: string|null =null
   remoteUserName: string|null =null;
     timer: number = 0; // Initialize the timer value
@@ -31,21 +33,32 @@ export class CallingscreenComponent implements OnInit {
 
   }
   removeFromListening() {
-    this.connectService.removeListeningFromSelfHost().subscribe({
+    this.ngXLoader.start()
+          this.connectService.removeListeningFromSelfHost().subscribe({
       next: (res: ApiResponse) => {
         if (res.statusCode === 200) {
-  this.agoraService.leaveWithOutCall()
+          this.agoraService.leaveWithOutCall()
         }
-  }
-})
+      }
+    })
+    setTimeout(() => {
+    this.ngXLoader.stop()
+    }, 2000);
+ 
 }
 
 
   endcall() {
-    this.agoraService.leaveCall()
+    this.ngXLoader.start()
+    setTimeout(() => {
+      this.agoraService.leaveCall()
+      this.ngXLoader.stop()
+    }, 2000);
+ 
     this.open = true;
     this.remoteUserName = null;
     this.remoteGender = null;
+
   }
 
 
