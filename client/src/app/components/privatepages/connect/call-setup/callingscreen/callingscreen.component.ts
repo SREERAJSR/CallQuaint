@@ -50,11 +50,10 @@ export class CallingscreenComponent implements OnInit {
 
   endcall() {
     this.ngXLoader.start()
+       this.agoraService.leaveCall()
     setTimeout(() => {
-      this.agoraService.leaveCall()
       this.ngXLoader.stop()
     }, 2000);
- 
     this.open = true;
     this.remoteUserName = null;
     this.remoteGender = null;

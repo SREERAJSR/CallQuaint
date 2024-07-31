@@ -37,13 +37,14 @@ export class AuthInterceptor implements HttpInterceptor {
            return this.authService.refreshAccessToken().pipe(
              switchMap((response: ApiResponse) => {
                this.authService.setAccessToken(response.data.accessToken)
-               this.authService.setRefreshToken(response.data.refreshToken)
                const newAuthRequest = request.clone({
                 headers: request.headers.set('authorization', `Bearer ${response.data.accessToken}`)
                })
                return next.handle(newAuthRequest)
              }),
              catchError((refreshToken) => {
+               this.authService.removeAccessToken()
+               this.authService.removeRefreshToken();
                this.authService.userLogout();
                return throwError(()=> refreshToken)
              })
